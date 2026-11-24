@@ -15,7 +15,7 @@ import { passes, pathSimilarity } from './resolve.js';
 import { detectBuildDir } from './scan.js';
 import { renderScanHtml, renderScanText, summarizeScan } from './scanreport.js';
 import { verify } from './verify.js';
-import type { Lockfile } from './types.js';
+import type { Lockfile, Orphan } from './types.js';
 
 const VERSION: string = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version;
 
@@ -187,7 +187,18 @@ async function runCheck(write: boolean, dirArg: string | undefined, values: Valu
   if (values.json) {
     console.log(
       JSON.stringify(
-        { ok: passes(res), created: r.created, changed: res.changed, written: r.written, added: res.added, revived: res.revived, redirected: res.redirected, collapsed: res.collapsed, orphans: res.orphans, errors: res.errors },
+        {
+          ok: passes(res),
+          created: r.created,
+          changed: res.changed,
+          written: r.written,
+          added: res.added,
+          revived: res.revived,
+          redirected: res.redirected,
+          collapsed: res.collapsed,
+          orphans: res.orphans.map((o) => ({ ...o, fixes: fixesFor(o) })),
+          errors: res.errors,
+        },
         null,
         2,
       ),
@@ -213,6 +224,13 @@ async function runCheck(write: boolean, dirArg: string | undefined, values: Valu
     return 1;
   }
   return 0;
+}
+
+/** Commands that settle an orphan, ready to run: what an agent needs to act on --json output. */
+function fixesFor(o: Orphan): string[] {
+  const q = (u: string) => (/^[\w\-./:%~]+$/.test(u) ? u : `'${u.replace(/'/g, `'\\''`)}'`);
+  const to = o.suggestion?.to;
+  return [...(to ? [`permalock redirect ${q(o.url)} ${q(to)}`] : []), `permalock retire ${q(o.url)} --reason "<why>"`];
 }
 
 async function runInit(dirArg: string | undefined, values: Values, lockfilePath: string): Promise<number> {

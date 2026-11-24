@@ -53,6 +53,10 @@ describe('cli', () => {
     expect(r.out).toMatch(/✗ \/promo\/\s+orphan/);
     expect(r.out).toContain('permalock retire /promo/');
     expect(readFileSync(path.join(cwd, 'permalock.json'), 'utf8')).toBe(before);
+    // agents get ready-to-run fixes
+    const failing = JSON.parse(run(cwd, 'check', '--json').out);
+    expect(failing.ok).toBe(false);
+    expect(failing.orphans[0].fixes.at(-1)).toBe('permalock retire /promo/ --reason "<why>"');
 
     // decide, then update writes the redirect
     r = run(cwd, 'retire', '/promo/', '--reason', 'campaign ended');

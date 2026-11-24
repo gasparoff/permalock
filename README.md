@@ -209,6 +209,18 @@ Common options: `--base /docs`, `--exclude "/drafts/**"`, `--no-similar`,
 - run: npx permalock verify --against ${{ steps.deploy.outputs.url }}
 ```
 
+## With AI coding agents
+
+Agents rename and delete pages all day, and they don't know which URLs the
+rest of the web depends on. Permalock tells them, and tells them how to fix it:
+
+- `permalock check --json` lists each orphan with `fixes`, commands ready to run.
+- [`skills/permalock`](skills/permalock/SKILL.md) is an agent skill for any
+  tool that reads `SKILL.md`: copy it into your agent's skills folder.
+- Or add one line to your `AGENTS.md`:
+  *"After changing pages, run `npx permalock check --json` and settle every
+  orphan with one of its `fixes`."*
+
 ## The specification
 
 The lockfile format, the resolution algorithm and the verification procedure
