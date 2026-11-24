@@ -1,0 +1,506 @@
+{
+  "repo": "https://github.com/withastro/docs",
+  "head": "6304b44b4",
+  "lang": "en",
+  "commitsReplayed": 3189,
+  "seconds": 46,
+  "urlsEverPublished": 528,
+  "urlsLiveAtHead": 430,
+  "urlsVanished": 98,
+  "automaticRedirects": 32,
+  "automaticByReason": {
+    "same-content": 29,
+    "similar": 3
+  },
+  "checkedAgainstHumanRules": {
+    "agree": 31,
+    "disagree": 0,
+    "noHumanRule": 1
+  },
+  "orphans": 67,
+  "orphansWithHumanRedirect": 40,
+  "orphansWithoutAnyRedirect": 27,
+  "disagreements": [],
+  "orphanList": [
+    {
+      "url": "/en/quick-start/",
+      "commit": "ceb2bc898",
+      "date": "2022-02-28"
+    },
+    {
+      "url": "/en/guides/manual-setup/",
+      "commit": "009911280",
+      "date": "2022-03-25",
+      "suggestion": {
+        "to": "/en/install/manual/",
+        "score": 0.94,
+        "basis": "content"
+      }
+    },
+    {
+      "url": "/en/installation/",
+      "commit": "009911280",
+      "date": "2022-03-25",
+      "suggestion": {
+        "to": "/en/install/auto/",
+        "score": 0.81,
+        "basis": "content"
+      }
+    },
+    {
+      "url": "/en/reference/builtin-components/",
+      "commit": "009911280",
+      "date": "2022-03-25"
+    },
+    {
+      "url": "/en/reference/renderer-reference/",
+      "commit": "009911280",
+      "date": "2022-03-25"
+    },
+    {
+      "url": "/en/guides/slots/",
+      "commit": "03738d61e",
+      "date": "2022-03-26"
+    },
+    {
+      "url": "/en/guides/pagination/",
+      "commit": "6167e761d",
+      "date": "2022-03-28"
+    },
+    {
+      "url": "/en/themes/",
+      "commit": "1aaa6aed5",
+      "date": "2022-03-28"
+    },
+    {
+      "url": "/en/install/",
+      "commit": "b268cae6a",
+      "date": "2022-04-27"
+    },
+    {
+      "url": "/en/core-concepts/component-hydration/",
+      "commit": "c56acb1a6",
+      "date": "2022-04-27",
+      "human": "/en/concepts/islands/"
+    },
+    {
+      "url": "/en/guides/debugging/",
+      "commit": "ac1c4863b",
+      "date": "2022-06-04",
+      "human": "/en/guides/troubleshooting/"
+    },
+    {
+      "url": "/en/tutorial/1-setup/6/",
+      "commit": "42f86b840",
+      "date": "2022-10-21"
+    },
+    {
+      "url": "/en/guides/deploy/layer-zero/",
+      "commit": "738bdcd53",
+      "date": "2022-10-31"
+    },
+    {
+      "url": "/en/guides/cms/butter/",
+      "commit": "7d2190b94",
+      "date": "2022-11-01",
+      "suggestion": {
+        "to": "/en/guides/cms/buttercms/",
+        "score": 0.72,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/en/guides/cms/payloadcms/",
+      "commit": "7d2190b94",
+      "date": "2022-11-01",
+      "suggestion": {
+        "to": "/en/guides/cms/payload/",
+        "score": 0.74,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/en/tutorial/stackblitz/",
+      "commit": "8734a8623",
+      "date": "2022-11-02"
+    },
+    {
+      "url": "/en/core-concepts/partial-hydration/",
+      "commit": "e58d23c63",
+      "date": "2022-12-28",
+      "human": "/en/concepts/islands/"
+    },
+    {
+      "url": "/en/comparing-astro-vs-other-tools/",
+      "commit": "30d74c3fe",
+      "date": "2023-01-10",
+      "human": "/en/guides/migrate-to-astro/"
+    },
+    {
+      "url": "/en/migration/0.21.0/",
+      "commit": "b2f828216",
+      "date": "2023-01-24",
+      "human": "/en/guides/upgrade-to/v1/"
+    },
+    {
+      "url": "/en/guides/client-side-routing/",
+      "commit": "d4410668b",
+      "date": "2023-07-20",
+      "suggestion": {
+        "to": "/en/guides/view-transitions/",
+        "score": 0.81,
+        "basis": "content"
+      },
+      "human": "/en/guides/view-transitions/"
+    },
+    {
+      "url": "/en/guides/assets/",
+      "commit": "a4fe77693",
+      "date": "2023-08-30",
+      "human": "/en/guides/images/"
+    },
+    {
+      "url": "/en/guides/integrations-guide/image/",
+      "commit": "a4fe77693",
+      "date": "2023-08-30",
+      "suggestion": {
+        "to": "/en/guides/images/",
+        "score": 0.72,
+        "basis": "path"
+      },
+      "human": "/en/guides/images/"
+    },
+    {
+      "url": "/en/concepts/mpa-vs-spa/",
+      "commit": "9d110640f",
+      "date": "2023-08-30",
+      "human": "/en/concepts/why-astro/"
+    },
+    {
+      "url": "/en/reference/dev-overlay-plugin-reference/",
+      "commit": "896b8c9e3",
+      "date": "2023-12-05",
+      "human": "/en/reference/dev-toolbar-app-reference/"
+    },
+    {
+      "url": "/en/guides/backend/tigris/",
+      "commit": "e7d7fd0b7",
+      "date": "2024-02-19"
+    },
+    {
+      "url": "/en/integrations/integrations/",
+      "commit": "51efdae7a",
+      "date": "2024-05-30",
+      "suggestion": {
+        "to": "/en/guides/integrations-guide/",
+        "score": 0.7,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/en/recipes/studio/",
+      "commit": "79ca1a676",
+      "date": "2024-06-07",
+      "human": "/en/guides/astro-db/"
+    },
+    {
+      "url": "/en/guides/aliases/",
+      "commit": "17772be7d",
+      "date": "2024-06-14",
+      "human": "/en/guides/imports/"
+    },
+    {
+      "url": "/en/install/auto/",
+      "commit": "17772be7d",
+      "date": "2024-06-14",
+      "human": "/en/install-and-setup/"
+    },
+    {
+      "url": "/en/install/manual/",
+      "commit": "17772be7d",
+      "date": "2024-06-14",
+      "human": "/en/install-and-setup/"
+    },
+    {
+      "url": "/en/guides/deploy/space/",
+      "commit": "5a9a2473a",
+      "date": "2024-09-08"
+    },
+    {
+      "url": "/en/community-resources/talks/",
+      "commit": "e547a3216",
+      "date": "2024-11-05",
+      "human": "/en/recipes/"
+    },
+    {
+      "url": "/en/reference/components-reference/",
+      "commit": "0b1c3b42a",
+      "date": "2024-11-05",
+      "suggestion": {
+        "to": "/en/reference/container-reference/",
+        "score": 0.64,
+        "basis": "path"
+      },
+      "human": "/en/guides/syntax-highlighting/"
+    },
+    {
+      "url": "/en/basics/astro-syntax/",
+      "commit": "45a117052",
+      "date": "2024-12-03",
+      "suggestion": {
+        "to": "/en/reference/astro-syntax/",
+        "score": 0.81,
+        "basis": "content"
+      },
+      "human": "/en/reference/astro-syntax/"
+    },
+    {
+      "url": "/en/basics/rendering-modes/",
+      "commit": "45a117052",
+      "date": "2024-12-03",
+      "human": "/en/guides/on-demand-rendering/"
+    },
+    {
+      "url": "/en/community-resources/content/",
+      "commit": "45a117052",
+      "date": "2024-12-03",
+      "suggestion": {
+        "to": "/en/guides/cms/contentful/",
+        "score": 0.6,
+        "basis": "path"
+      },
+      "human": "/en/recipes/"
+    },
+    {
+      "url": "/en/guides/content/",
+      "commit": "45a117052",
+      "date": "2024-12-03",
+      "suggestion": {
+        "to": "/en/guides/cms/contentful/",
+        "score": 0.68,
+        "basis": "path"
+      },
+      "human": "/en/guides/markdown-content/"
+    },
+    {
+      "url": "/en/guides/server-side-rendering/",
+      "commit": "45a117052",
+      "date": "2024-12-03",
+      "human": "/en/guides/on-demand-rendering/"
+    },
+    {
+      "url": "/en/tutorials/add-content-collections/",
+      "commit": "45a117052",
+      "date": "2024-12-03",
+      "suggestion": {
+        "to": "/en/guides/content-collections/",
+        "score": 0.78,
+        "basis": "path"
+      },
+      "human": "/en/tutorial/6-islands/4/"
+    },
+    {
+      "url": "/en/tutorials/add-view-transitions/",
+      "commit": "45a117052",
+      "date": "2024-12-03",
+      "suggestion": {
+        "to": "/en/guides/view-transitions/",
+        "score": 0.77,
+        "basis": "path"
+      },
+      "human": "/en/guides/view-transitions/"
+    },
+    {
+      "url": "/en/reference/experimental-flags/serialized-configuration/",
+      "commit": "1c5815d60",
+      "date": "2025-04-15",
+      "human": "/en/reference/modules/astro-config/"
+    },
+    {
+      "url": "/en/reference/experimental-flags/sessions/",
+      "commit": "1c5815d60",
+      "date": "2025-04-15",
+      "suggestion": {
+        "to": "/en/guides/sessions/",
+        "score": 0.8,
+        "basis": "path"
+      },
+      "human": "/en/guides/sessions/"
+    },
+    {
+      "url": "/en/reference/experimental-flags/svg/",
+      "commit": "1c5815d60",
+      "date": "2025-04-15",
+      "human": "/en/guides/images/"
+    },
+    {
+      "url": "/en/guides/deploy/edgio/",
+      "commit": "8baaae92c",
+      "date": "2025-05-28"
+    },
+    {
+      "url": "/en/reference/experimental-flags/responsive-images/",
+      "commit": "66a2b268d",
+      "date": "2025-06-19",
+      "human": "/en/guides/images/"
+    },
+    {
+      "url": "/en/reference/experimental-flags/raw-env-values/",
+      "commit": "40bf5d44c",
+      "date": "2025-08-14"
+    },
+    {
+      "url": "/en/guides/backend/appwriteio/",
+      "commit": "2be9b6005",
+      "date": "2025-11-24",
+      "suggestion": {
+        "to": "/en/guides/backend/appwrite/",
+        "score": 0.79,
+        "basis": "path"
+      },
+      "human": "/en/guides/backend/appwrite/"
+    },
+    {
+      "url": "/en/reference/errors/font-buffer-not-found/",
+      "commit": "dbf99fd6f",
+      "date": "2026-01-29",
+      "suggestion": {
+        "to": "/en/reference/errors/font-family-not-found/",
+        "score": 0.68,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/en/guides/deploy/kinsta/",
+      "commit": "cf2d2f80c",
+      "date": "2026-02-20"
+    },
+    {
+      "url": "/en/reference/errors/cannot-load-font-provider/",
+      "commit": "35e6c4313",
+      "date": "2026-03-10"
+    },
+    {
+      "url": "/en/reference/errors/experimental-fonts-not-enabled/",
+      "commit": "35e6c4313",
+      "date": "2026-03-10"
+    },
+    {
+      "url": "/en/reference/experimental-flags/csp/",
+      "commit": "35e6c4313",
+      "date": "2026-03-10",
+      "human": "/en/reference/configuration-reference/"
+    },
+    {
+      "url": "/en/reference/experimental-flags/fail-on-prerender-conflict/",
+      "commit": "35e6c4313",
+      "date": "2026-03-10",
+      "suggestion": {
+        "to": "/en/reference/errors/prerender-route-conflict/",
+        "score": 0.62,
+        "basis": "path"
+      },
+      "human": "/en/reference/configuration-reference/"
+    },
+    {
+      "url": "/en/reference/experimental-flags/fonts/",
+      "commit": "35e6c4313",
+      "date": "2026-03-10",
+      "suggestion": {
+        "to": "/en/guides/fonts/",
+        "score": 0.8,
+        "basis": "path"
+      },
+      "human": "/en/guides/fonts/"
+    },
+    {
+      "url": "/en/reference/experimental-flags/heading-id-compat/",
+      "commit": "35e6c4313",
+      "date": "2026-03-10",
+      "human": "/en/guides/markdown-content/"
+    },
+    {
+      "url": "/en/reference/experimental-flags/live-content-collections/",
+      "commit": "35e6c4313",
+      "date": "2026-03-10",
+      "suggestion": {
+        "to": "/en/guides/content-collections/",
+        "score": 0.73,
+        "basis": "path"
+      },
+      "human": "/en/guides/content-collections/"
+    },
+    {
+      "url": "/en/reference/experimental-flags/preserve-scripts-order/",
+      "commit": "35e6c4313",
+      "date": "2026-03-10",
+      "human": "/en/guides/client-side-scripts/"
+    },
+    {
+      "url": "/en/reference/experimental-flags/static-import-meta-env/",
+      "commit": "35e6c4313",
+      "date": "2026-03-10",
+      "human": "/en/guides/environment-variables/"
+    },
+    {
+      "url": "/en/guides/integrations-guide/",
+      "commit": "68f6f4f35",
+      "date": "2026-03-25",
+      "suggestion": {
+        "to": "/en/guides/integrations/",
+        "score": 0.77,
+        "basis": "path"
+      },
+      "human": "/en/guides/integrations/"
+    },
+    {
+      "url": "/en/reference/publish-to-npm/",
+      "commit": "68f6f4f35",
+      "date": "2026-03-25",
+      "human": "/en/guides/integrations/"
+    },
+    {
+      "url": "/en/guides/astro-db/",
+      "commit": "8c13e0240",
+      "date": "2026-06-22",
+      "human": "/en/guides/integrations-guide/db/"
+    },
+    {
+      "url": "/en/reference/experimental-flags/advanced-routing/",
+      "commit": "8c13e0240",
+      "date": "2026-06-22",
+      "human": "/en/guides/routing/"
+    },
+    {
+      "url": "/en/reference/experimental-flags/logger/",
+      "commit": "8c13e0240",
+      "date": "2026-06-22",
+      "suggestion": {
+        "to": "/en/reference/logger-reference/",
+        "score": 0.84,
+        "basis": "content"
+      }
+    },
+    {
+      "url": "/en/reference/experimental-flags/queued-rendering/",
+      "commit": "8c13e0240",
+      "date": "2026-06-22"
+    },
+    {
+      "url": "/en/reference/experimental-flags/route-caching/",
+      "commit": "8c13e0240",
+      "date": "2026-06-22",
+      "human": "/en/guides/caching/"
+    },
+    {
+      "url": "/en/reference/experimental-flags/rust-compiler/",
+      "commit": "8c13e0240",
+      "date": "2026-06-22"
+    },
+    {
+      "url": "/en/guides/deploy/juno/",
+      "commit": "e6591d85b",
+      "date": "2026-06-22"
+    }
+  ]
+}
