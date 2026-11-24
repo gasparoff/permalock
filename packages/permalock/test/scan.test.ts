@@ -10,6 +10,10 @@ describe('scan', () => {
     expect(fileToUrl('about.html')).toBe('/about');
     expect(fileToUrl('about.html', { htmlExtension: 'keep' })).toBe('/about.html');
     expect(fileToUrl(path.join('caffè', 'index.html'), { base: '/docs/' })).toBe('/docs/caff%C3%A8/');
+    expect(fileToUrl('index.html', { base: '/docs', trailingSlash: 'never' })).toBe('/docs');
+    expect(fileToUrl('index.html', { trailingSlash: 'never' })).toBe('/');
+    expect(fileToUrl(path.join('a', 'index.html'), { trailingSlash: 'never' })).toBe('/a');
+    expect(fileToUrl('a.html', { trailingSlash: 'always' })).toBe('/a/');
   });
 
   it('globs', () => {

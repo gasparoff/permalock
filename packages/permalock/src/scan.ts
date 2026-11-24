@@ -1,6 +1,6 @@
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
-import { fingerprint, metaContent, metaRefreshTarget, sourceMarkers } from './text.js';
+import { fingerprintText, metaContent, metaRefreshTarget, normalizedText, sourceMarkers, words } from './text.js';
 import type { BuiltPage, ScanResult } from './types.js';
 
 export interface ScanOptions {
@@ -8,10 +8,22 @@ export interface ScanOptions {
   base?: string;
   /** How `about.html` is served: "strip" -> /about (default), "keep" -> /about.html */
   htmlExtension?: 'strip' | 'keep';
+  /**
+   * Trailing-slash convention of the URLs the site links to and serves.
+   * "ignore" (default) follows the file layout: about/index.html -> /about/,
+   * about.html -> /about.
+   */
+  trailingSlash?: 'always' | 'never' | 'ignore';
   /** Glob patterns (matched against URL paths) to ignore. */
   exclude?: string[];
   /** Identity per URL provided by a framework integration (overrides markers). */
   sources?: Map<string, string>;
+  /**
+   * Identity hook for framework integrations, called for pages without an
+   * explicit id or a known source: receives the URL and the normalised words
+   * of the page's main text.
+   */
+  identify?: (url: string, words: string[]) => string | undefined;
   /** Files read in parallel. Default 32 */
   concurrency?: number;
 }
@@ -40,14 +52,19 @@ export function normalizeBase(base?: string): string {
 }
 
 /** Map a file path relative to the build directory to the URL it is served at. */
-export function fileToUrl(rel: string, opts: Pick<ScanOptions, 'base' | 'htmlExtension'> = {}): string {
+export function fileToUrl(rel: string, opts: Pick<ScanOptions, 'base' | 'htmlExtension' | 'trailingSlash'> = {}): string {
   const parts = rel.split(path.sep).join('/');
   let url: string;
   if (parts === 'index.html') url = '/';
   else if (parts.endsWith('/index.html')) url = '/' + parts.slice(0, -'index.html'.length);
   else if (opts.htmlExtension === 'keep') url = '/' + parts;
   else url = '/' + parts.slice(0, -'.html'.length);
-  return encodeURI(normalizeBase(opts.base) + url);
+  const base = normalizeBase(opts.base);
+  let full = base + url;
+  const keepsExtension = opts.htmlExtension === 'keep' && full.endsWith('.html');
+  if (opts.trailingSlash === 'never' && full.length > 1 && full.endsWith('/')) full = full.slice(0, -1);
+  else if (opts.trailingSlash === 'always' && !full.endsWith('/') && !keepsExtension) full += '/';
+  return encodeURI(full);
 }
 
 async function* walk(dir: string, rel = ''): AsyncGenerator<string> {
@@ -103,13 +120,16 @@ export async function scanBuild(dir: string, opts: ScanOptions = {}): Promise<Sc
         results[idx] = { redirect: [url, resolveRefresh(refresh, url)] };
         continue;
       }
-      const fp = fingerprint(html);
+      const text = normalizedText(html);
+      const ws = words(text);
+      const fp = fingerprintText(text, ws);
       let source = opts.sources?.get(url);
       const explicit = metaContent(html, 'permalock:id');
       if (explicit) source = `id:${explicit}`;
       else if (!source) {
         const markers = sourceMarkers(html);
         if (markers.length === 1) source = markers[0];
+        else if (opts.identify) source = opts.identify(url, ws);
       }
       const page: BuiltPage = { url, file, words: fp.words };
       if (source) page.source = source;

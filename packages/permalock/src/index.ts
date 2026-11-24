@@ -25,6 +25,7 @@ export { formatResolution, summaryLine, reasonLabel } from './report.js';
 export {
   normalizedText,
   fingerprint,
+  fingerprintText,
   simhash,
   simSimilarity,
   contentHash,

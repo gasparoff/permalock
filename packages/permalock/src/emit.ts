@@ -74,8 +74,10 @@ export function emit(lock: Lockfile, format: EmitFormat, opts: EmitOptions): Emi
   switch (format) {
     case 'netlify':
     case 'cloudflare': {
-      const lines = redirects.map(([f, t]) => `${f} ${t} 301`);
-      if (format === 'netlify') lines.push(...gone.map((g) => `${g} /404.html 410!`));
+      // Netlify serves an existing file before a rule unless the rule is forced
+      // (frameworks often leave an HTML redirect page at the old path).
+      const lines = redirects.map(([f, t]) => `${f} ${t} ${format === 'netlify' ? '301!' : '301'}`);
+      if (format === 'netlify') lines.push(...gone.map((g) => `${g} ${(opts.base ?? '').replace(/\/+$/, '')}/404.html 410!`));
       else if (gone.length) {
         warnings.push(`Cloudflare _redirects cannot answer 410: ${gone.length} removed URL(s) will answer 404, which permalock accepts as a declared removal.`);
         goneCount = 0;

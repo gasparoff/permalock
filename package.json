@@ -2,7 +2,10 @@
   "name": "permalock-monorepo",
   "private": true,
   "type": "module",
-  "workspaces": ["packages/*"],
+  "workspaces": [
+    "packages/*",
+    "examples/*"
+  ],
   "scripts": {
     "build": "npm run build -w permalock",
     "test": "vitest run",
@@ -13,5 +16,7 @@
     "typescript": "^5.7.0",
     "vitest": "^3.2.0"
   },
-  "engines": { "node": ">=20" }
+  "engines": {
+    "node": ">=20"
+  }
 }

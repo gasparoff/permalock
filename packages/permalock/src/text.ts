@@ -143,7 +143,10 @@ export interface Fingerprint {
 /** hash and sim are omitted for pages too short to compare. */
 export function fingerprint(html: string): Fingerprint {
   const text = normalizedText(html);
-  const ws = words(text);
+  return fingerprintText(text, words(text));
+}
+
+export function fingerprintText(text: string, ws: string[]): Fingerprint {
   if (ws.length < MIN_WORDS) return { words: ws.length };
   return { hash: contentHash(text), sim: simhash(ws), words: ws.length };
 }
@@ -181,5 +184,5 @@ export function sourceMarkers(html: string): string[] {
 }
 
 export function stripSourceMarkers(html: string): string {
-  return html.replace(/<span hidden data-permalock-source="[^"]*"><\/span>/g, '');
+  return html.replace(/<span\b[^>]*\bdata-permalock-source="[^"]*"[^>]*><\/span>/g, '');
 }

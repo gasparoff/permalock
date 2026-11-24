@@ -1,0 +1,57 @@
+{
+  "name": "@permalock/astro",
+  "version": "0.1.0",
+  "description": "Astro integration for Permalock: every URL your site ever published keeps working. Automatic redirects when pages move, and a build that fails on orphan URLs.",
+  "keywords": [
+    "astro-integration",
+    "withastro",
+    "astro",
+    "redirects",
+    "urls",
+    "seo",
+    "permalinks",
+    "lockfile"
+  ],
+  "license": "MIT",
+  "author": "Manuel Gasparini",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gasparoff/permalock.git",
+    "directory": "packages/astro"
+  },
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./middleware": {
+      "types": "./dist/middleware.d.ts",
+      "default": "./dist/middleware.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p .",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "permalock": "^0.1.0",
+    "devalue": "^5.1.0 || ^6.0.0"
+  },
+  "peerDependencies": {
+    "astro": ">=5.0.0"
+  },
+  "devDependencies": {
+    "astro": "7.4.13"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

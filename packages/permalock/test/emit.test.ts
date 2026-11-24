@@ -23,7 +23,7 @@ describe('emit', () => {
     const r = emit(lock, 'netlify', { out: dir });
     await writeEmitted(r);
     const text = readFileSync(path.join(dir, '_redirects'), 'utf8');
-    expect(text.indexOf('/old/ /new/ 301')).toBeLessThan(text.indexOf('/*  /index.html'));
+    expect(text.indexOf('/old/ /new/ 301!')).toBeLessThan(text.indexOf('/*  /index.html'));
     expect(text).toContain('/promo/ /404.html 410!');
     // idempotent
     await writeEmitted(emit(lock, 'netlify', { out: dir }));

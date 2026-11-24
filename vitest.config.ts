@@ -1,2 +1,9 @@
 import { defineConfig } from 'vitest/config';
-export default defineConfig({ test: { include: ['packages/*/test/**/*.test.ts'], testTimeout: 30000 } });
+export default defineConfig({
+  test: {
+    include: ['packages/*/test/**/*.test.ts'],
+    testTimeout: 60000,
+    // Astro builds share process-wide state: run test files one at a time
+    fileParallelism: false,
+  },
+});
