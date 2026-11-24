@@ -70,7 +70,7 @@ describe('@permalock/astro', () => {
     writeFileSync(hello, readFileSync(hello, 'utf8').replace('title: Hello, world', 'title: Hello, world\nslug: hello'));
     rmSync(md(dir, 'summer-sale.md'));
     const r = await astroBuild(dir);
-    expect(r.error?.message).toMatch(/1 URL\(s\) would break/);
+    expect(r.error?.message).toMatch(/1 URL would break/);
     let lock = lockOf(dir);
     expect(lock.urls['/blog/hello-world/']).toEqual({ type: 'redirect', to: '/blog/hello/', reason: 'same-source' });
     expect(lock.urls['/blog/summer-sale/'].type).toBe('page');

@@ -2,6 +2,7 @@ import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { AstroConfig, AstroIntegration, IntegrationResolvedRoute } from 'astro';
+import { AstroError } from 'astro/errors';
 import {
   checkProject,
   emit,
@@ -99,6 +100,9 @@ export async function staticPagePaths(pagesDir: string): Promise<Set<string>> {
   await walk(pagesDir, '');
   return out;
 }
+
+/** A decision for the user, not a crash: no stack trace in the build output. */
+const quiet = (e: Error) => Object.assign(e, { stack: '' });
 
 const bare = (p: string) => (p.length > 1 ? p.replace(/\/+$/, '') : p);
 
@@ -293,15 +297,16 @@ export default function permalock(options: PermalockOptions = {}): AstroIntegrat
           if (result.written) logger.info(`updated ${path.relative(root, result.lockfilePath)}: commit it with this change.`);
           if (!write && res.changed) {
             const msg = `${path.basename(result.lockfilePath)} is out of date: run "astro build" locally and commit it.`;
-            if (ci && options.frozen) throw new Error(`[permalock] ${msg}`);
+            if (ci && options.frozen) throw quiet(new AstroError(msg));
             logger.warn(msg);
           }
         }
         if (!passes(res) && (options.failOn ?? 'orphans') === 'orphans') {
           const n = res.orphans.length + res.errors.length;
-          throw new Error(
-            `[permalock] ${n} URL(s) would break. For each one, add a redirect (npx permalock redirect <old> <new>) or declare it removed (npx permalock retire <old>), then build again.`,
-          );
+          throw quiet(new AstroError(
+            `${n} URL${n === 1 ? '' : 's'} would break.`,
+            'For each one, add a redirect (npx permalock redirect <old> <new>) or declare it removed (npx permalock retire <old>), then build again.',
+          ));
         }
       },
     },

@@ -1,0 +1,67 @@
+{
+  "repo": "withastro/starlight",
+  "site": "starlight.astro.build",
+  "head": "80f30551",
+  "firstCommit": "2023-03-16",
+  "humanRules": 6,
+  "commitsReplayed": 2504,
+  "seconds": 21,
+  "urlsEverPublished": 42,
+  "urlsLiveAtHead": 36,
+  "urlsVanished": 6,
+  "automaticRedirects": 0,
+  "automaticByReason": {},
+  "checkedAgainstHumanRules": {
+    "agree": 0,
+    "disagree": 0,
+    "noHumanRule": 0
+  },
+  "orphans": 6,
+  "orphansWithHumanRedirect": 2,
+  "orphansWithoutAnyRedirect": 4,
+  "disagreements": [],
+  "orphanList": [
+    {
+      "url": "/reference/api/",
+      "commit": "34b782b4d",
+      "date": "2023-03-29"
+    },
+    {
+      "url": "/reference/components/",
+      "commit": "34b782b4d",
+      "date": "2023-03-29"
+    },
+    {
+      "url": "/reference/markdown-syntax/",
+      "commit": "c892603a5",
+      "date": "2023-06-05"
+    },
+    {
+      "url": "/showcase/",
+      "commit": "73219c393",
+      "date": "2024-01-22",
+      "suggestion": {
+        "to": "/resources/showcase/",
+        "score": 0.85,
+        "basis": "path"
+      },
+      "human": "/resources/showcase/"
+    },
+    {
+      "url": "/guides/tables-test/",
+      "commit": "48ce12579",
+      "date": "2024-07-05"
+    },
+    {
+      "url": "/guides/components/",
+      "commit": "41ed4faf1",
+      "date": "2024-09-18",
+      "suggestion": {
+        "to": "/guides/overriding-components/",
+        "score": 0.63,
+        "basis": "path"
+      },
+      "human": "/components/using-components/"
+    }
+  ]
+}
