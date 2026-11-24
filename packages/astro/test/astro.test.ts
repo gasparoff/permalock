@@ -2,7 +2,7 @@ import { cpSync, existsSync, mkdtempSync, readFileSync, rmSync, symlinkSync, wri
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { build } from 'astro';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 const repo = path.resolve(__dirname, '../../..');
 const example = path.join(repo, 'examples/astro-blog');
@@ -36,9 +36,15 @@ async function astroBuild(root: string) {
 const lockOf = (dir: string) => JSON.parse(readFileSync(path.join(dir, 'permalock.json'), 'utf8'));
 const md = (dir: string, name: string) => path.join(dir, 'src/content/blog', name);
 
+const CI_VARS = ['CI', 'GITHUB_ACTIONS', 'GITLAB_CI', 'BUILDKITE', 'CIRCLECI', 'NETLIFY', 'VERCEL', 'CF_PAGES'];
+const saved = Object.fromEntries(CI_VARS.map((k) => [k, process.env[k]]));
 const dirs: string[] = [];
+beforeEach(() => {
+  for (const k of CI_VARS) delete process.env[k];
+});
 afterEach(() => {
-  delete process.env.CI;
+  for (const k of CI_VARS) if (saved[k] === undefined) delete process.env[k];
+  else process.env[k] = saved[k];
 });
 
 describe('@permalock/astro', () => {
@@ -140,6 +146,7 @@ export default { site: 'https://example.com', base: '/docs', trailingSlash: 'nev
     renameSync(md(dir, 'pasta.md'), md(dir, 'perfect-pasta.md'));
     process.env.CI = 'true';
     expect((await astroBuild(dir)).error).toBeUndefined();
+    delete process.env.CI;
     expect(readFileSync(path.join(dir, 'permalock.json'), 'utf8')).toBe(before);
     // the redirect still works in this deploy
     expect(existsSync(path.join(dir, 'dist/blog/pasta/index.html'))).toBe(true);

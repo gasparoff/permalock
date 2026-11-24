@@ -252,6 +252,12 @@ export default function permalock(options: PermalockOptions = {}): AstroIntegrat
         }
 
         const ms = Date.now() - t0;
+        if (result.created && !result.written) {
+          logger.warn(
+            `no ${path.basename(result.lockfilePath)} yet, so no URL is protected. Run "astro build" locally and commit the file it creates.`,
+          );
+          return;
+        }
         if (result.created) {
           logger.info(
             `created ${path.relative(root, result.lockfilePath)} with ${res.added.length} URLs (${ms} ms). Commit it: from the next build these URLs are protected.`,
