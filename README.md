@@ -110,7 +110,8 @@ example.com has published 1,284 URLs since 2014. 212 of them are broken today.
   ✗     212  are broken (404 or 410)  16.5%
 ```
 
-(Numbers above are an illustration.) `scan` reads the Wayback Machine and the
+(Numbers above are an illustration.) No install needed: the same scan runs
+in the browser at **[permalock.dev](https://permalock.dev)**. `scan` reads the Wayback Machine and the
 site's current and archived sitemaps, then checks every URL on the live site.
 Add `--html report.html` for a shareable page. `permalock import <domain>`
 adds those historic URLs to your lockfile, so you can decide where each one
