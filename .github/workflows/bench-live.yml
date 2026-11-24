@@ -33,7 +33,7 @@ jobs:
           mkdir -p scan
           for d in ${{ inputs.domains }}; do
             node packages/permalock/dist/cli.js scan "$d" --max 1500 --json > "scan/$d.json" || true
-            node -e "const s=require('./scan/$d.json');console.log('### '+s.domain+'\n\n'+s.published+' URLs published, '+s.checked+' checked: '+JSON.stringify(s.counts)+'\n\nSources: '+JSON.stringify(s.sources)+(s.errors.length?'\n\nErrors: '+s.errors.join('; '):''))" >> "$GITHUB_STEP_SUMMARY" || true
+            node -e "const s=require('./scan/$d.json');console.log('### '+s.domain+'\n\n'+s.published+' URLs published, '+s.checked+' checked: '+JSON.stringify(s.counts)+'\n\nSources: '+JSON.stringify(s.sources)+(s.errors.length?'\n\nErrors: '+s.errors.join('; '):''))" | tee -a "$GITHUB_STEP_SUMMARY" || true
           done
       - uses: actions/upload-artifact@v4
         with:

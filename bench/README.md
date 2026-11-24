@@ -49,10 +49,13 @@ What this says:
 
 - About four in ten of the URL moves the maintainers handled by hand would
   have been handled automatically, with no wrong redirect.
-- 27 URLs that were once published have no redirect rule today. Some may
-  still answer through another route, so this is a list to verify on the live
-  site (`permalock verify`), not yet a count of broken links. Permalock would
-  have stopped each of them at the pull request that removed it.
+- 27 URLs that were once published have no redirect rule today. We checked
+  all 67 orphans on the live site on 24 November 2026: 39 answer one
+  redirect, 2 answer 200, 1 takes two redirects, and **25 answer 404**. Some of these
+  removals were surely intended (retired hosting guides, experimental flags
+  that became stable), but a visitor can't tell a decision from a mistake.
+  Permalock would have stopped each of them at the pull request that removed
+  it, and asked for a redirect or an explicit `410 Gone`.
 
 The full list of decisions and orphans is in
 [`results/withastro-docs.json`](results/withastro-docs.json).

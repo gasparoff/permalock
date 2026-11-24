@@ -26,8 +26,9 @@ Pages that move get their redirect automatically. A URL that would vanish fails 
 
 We replayed **3,189 commits** of the Astro documentation (2022–2026) as if
 Permalock had run on every merge. It would have written **32** of the
-redirects the maintainers wrote by hand, with **zero wrong redirects**, and it
-would have stopped every URL that was removed without one.
+redirects the maintainers wrote by hand, with **zero wrong redirects**. And it
+would have stopped the **25 URLs that answer 404 on docs.astro.build today**,
+each at the pull request that removed it.
 [Method and data](bench/README.md).
 
 > **Status: pre-release (0.1).** The lockfile format is a
