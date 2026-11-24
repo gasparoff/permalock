@@ -1,0 +1,20 @@
+{
+  "withastro/docs": {
+    "site": "docs.astro.build",
+    "content": [
+      { "dir": "src/pages/en/", "url": "/en/" },
+      { "dir": "src/content/docs/en/", "url": "/en/" }
+    ],
+    "rules": ["worker.js", "public/_redirects", "astro.config.ts", "astro.config.mjs"]
+  },
+  "tauri-apps/tauri-docs": {
+    "site": "tauri.app",
+    "content": [{ "dir": "src/content/docs/", "url": "/", "skip": ["fr/", "es/", "zh-cn/", "ja/", "de/", "ko/", "it/", "pt-br/", "ru/"] }],
+    "rules": ["astro.config.mjs", "public/_redirects", "netlify.toml"]
+  },
+  "biomejs/website": {
+    "site": "biomejs.dev",
+    "content": [{ "dir": "src/content/docs/en/", "url": "/" }],
+    "rules": ["redirects.js", "manual-redirects.ts", "public/_redirects", "netlify.toml"]
+  }
+}

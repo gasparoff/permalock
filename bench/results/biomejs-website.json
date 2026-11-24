@@ -1,0 +1,444 @@
+{
+  "repo": "biomejs/website",
+  "site": "biomejs.dev",
+  "head": "1f77ed1f",
+  "firstCommit": "2026-08-24",
+  "humanRules": 1741,
+  "commitsReplayed": 58,
+  "seconds": 4,
+  "urlsEverPublished": 1035,
+  "urlsLiveAtHead": 1018,
+  "urlsVanished": 17,
+  "automaticRedirects": 5,
+  "automaticByReason": {
+    "same-content": 5
+  },
+  "checkedAgainstHumanRules": {
+    "agree": 5,
+    "disagree": 0,
+    "noHumanRule": 0
+  },
+  "orphans": 43,
+  "orphansWithHumanRedirect": 7,
+  "orphansWithoutAnyRedirect": 36,
+  "disagreements": [],
+  "orphanList": [
+    {
+      "url": "/editors/first-party-extensions/",
+      "commit": "570c82786",
+      "date": "2026-10-05",
+      "human": "/configuration/editors/"
+    },
+    {
+      "url": "/editors/third-party-extensions/",
+      "commit": "570c82786",
+      "date": "2026-10-05",
+      "human": "/configuration/editors/"
+    },
+    {
+      "url": "/guides/getting-started/",
+      "commit": "570c82786",
+      "date": "2026-10-05",
+      "human": "/installation/quick-start/"
+    },
+    {
+      "url": "/guides/manual-installation/",
+      "commit": "570c82786",
+      "date": "2026-10-05",
+      "human": "/installation/install-biome/"
+    },
+    {
+      "url": "/guides/migrate-eslint-prettier/",
+      "commit": "570c82786",
+      "date": "2026-10-05",
+      "suggestion": {
+        "to": "/installation/migrate-eslint-prettier/",
+        "score": 0.88,
+        "basis": "path"
+      },
+      "human": "/installation/migrate-from-other-tools/"
+    },
+    {
+      "url": "/internals/language-support/",
+      "commit": "570c82786",
+      "date": "2026-10-05",
+      "suggestion": {
+        "to": "/introduction/language-support/",
+        "score": 0.94,
+        "basis": "content"
+      },
+      "human": "/introduction/language-support/"
+    },
+    {
+      "url": "/linter/rules/no-iterator-property/javascript/",
+      "commit": "1ec121c84",
+      "date": "2026-10-07",
+      "suggestion": {
+        "to": "/linter/rules/no-then-property/javascript/",
+        "score": 0.91,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/linter/rules/use-sorted-classes/html/",
+      "commit": "c9717917c",
+      "date": "2026-10-17",
+      "suggestion": {
+        "to": "/linter/rules/use-tailwind-sorted-classes/html/",
+        "score": 0.89,
+        "basis": "content"
+      }
+    },
+    {
+      "url": "/linter/rules/use-sorted-classes/javascript/",
+      "commit": "c9717917c",
+      "date": "2026-10-17",
+      "suggestion": {
+        "to": "/linter/rules/use-tailwind-sorted-classes/javascript/",
+        "score": 0.96,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/linter/rules/no-accidental-bitwise-operators/javascript/",
+      "commit": "715d10b2b",
+      "date": "2026-10-18",
+      "suggestion": {
+        "to": "/linter/rules/no-bitwise-operators/javascript/",
+        "score": 0.96,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/linter/rules/no-arguments-caller-or-callee/javascript/",
+      "commit": "715d10b2b",
+      "date": "2026-10-18",
+      "suggestion": {
+        "to": "/linter/rules/no-arguments/javascript/",
+        "score": 0.89,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/linter/rules/no-double-comparison/javascript/",
+      "commit": "715d10b2b",
+      "date": "2026-10-18",
+      "suggestion": {
+        "to": "/linter/rules/no-double-equals/javascript/",
+        "score": 0.91,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/linter/rules/no-empty-source/markdown/",
+      "commit": "715d10b2b",
+      "date": "2026-10-18",
+      "suggestion": {
+        "to": "/linter/rules/no-empty-source/css/",
+        "score": 0.86,
+        "basis": "content"
+      }
+    },
+    {
+      "url": "/linter/rules/no-excessive-statements-per-function/javascript/",
+      "commit": "715d10b2b",
+      "date": "2026-10-18",
+      "suggestion": {
+        "to": "/linter/rules/no-excessive-lines-per-function/javascript/",
+        "score": 0.93,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/linter/rules/no-nested-template-literals/javascript/",
+      "commit": "715d10b2b",
+      "date": "2026-10-18",
+      "suggestion": {
+        "to": "/linter/rules/no-jsx-literals/javascript/",
+        "score": 0.89,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/linter/rules/no-object-constructor/javascript/",
+      "commit": "715d10b2b",
+      "date": "2026-10-18",
+      "suggestion": {
+        "to": "/linter/rules/no-constructor-return/javascript/",
+        "score": 0.91,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/linter/rules/no-octal/javascript/",
+      "commit": "715d10b2b",
+      "date": "2026-10-18",
+      "suggestion": {
+        "to": "/linter/rules/no-octal-escape/javascript/",
+        "score": 0.95,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/linter/rules/no-promise-executor-return/javascript/",
+      "commit": "715d10b2b",
+      "date": "2026-10-18",
+      "suggestion": {
+        "to": "/linter/rules/no-async-promise-executor/javascript/",
+        "score": 0.93,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/linter/rules/no-svelte-object-in-text-mustaches/javascript/",
+      "commit": "715d10b2b",
+      "date": "2026-10-18",
+      "suggestion": {
+        "to": "/linter/rules/no-comment-text/javascript/",
+        "score": 0.85,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/linter/rules/no-svelte-useless-derived-by/javascript/",
+      "commit": "715d10b2b",
+      "date": "2026-10-18",
+      "suggestion": {
+        "to": "/linter/rules/no-useless-catch/javascript/",
+        "score": 0.87,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/linter/rules/no-tailwind-legacy-utilities/html/",
+      "commit": "715d10b2b",
+      "date": "2026-10-18",
+      "suggestion": {
+        "to": "/linter/rules/no-svelte-legacy-const/html/",
+        "score": 0.85,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/linter/rules/no-tailwind-legacy-utilities/javascript/",
+      "commit": "715d10b2b",
+      "date": "2026-10-18",
+      "suggestion": {
+        "to": "/linter/rules/no-tailwind-arbitrary-value/javascript/",
+        "score": 0.87,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/linter/rules/no-unsafe-unary-minus/javascript/",
+      "commit": "715d10b2b",
+      "date": "2026-10-18",
+      "suggestion": {
+        "to": "/linter/rules/no-unsafe-finally/javascript/",
+        "score": 0.89,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/linter/rules/no-useless-assignment/javascript/",
+      "commit": "715d10b2b",
+      "date": "2026-10-18",
+      "suggestion": {
+        "to": "/linter/rules/no-useless-catch/javascript/",
+        "score": 0.91,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/linter/rules/no-useless-date-get-time/javascript/",
+      "commit": "715d10b2b",
+      "date": "2026-10-18",
+      "suggestion": {
+        "to": "/linter/rules/no-useless-catch/javascript/",
+        "score": 0.87,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/linter/rules/no-vue-required-prop-with-default/javascript/",
+      "commit": "715d10b2b",
+      "date": "2026-10-18",
+      "suggestion": {
+        "to": "/linter/rules/no-vue-boolean-default/javascript/",
+        "score": 0.88,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/linter/rules/no-vue-root-v-if/html/",
+      "commit": "715d10b2b",
+      "date": "2026-10-18",
+      "suggestion": {
+        "to": "/linter/rules/no-vue-v-if-with-v-for/html/",
+        "score": 0.9,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/linter/rules/no-vue-v-html/html/",
+      "commit": "715d10b2b",
+      "date": "2026-10-18",
+      "suggestion": {
+        "to": "/linter/rules/no-vue-v-if-with-v-for/html/",
+        "score": 0.89,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/linter/rules/no-vue-v-text/html/",
+      "commit": "715d10b2b",
+      "date": "2026-10-18",
+      "suggestion": {
+        "to": "/linter/rules/use-vue-valid-v-text/html/",
+        "score": 0.89,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/linter/rules/use-capitalized-constructors/javascript/",
+      "commit": "715d10b2b",
+      "date": "2026-10-18",
+      "suggestion": {
+        "to": "/linter/rules/use-at-index/javascript/",
+        "score": 0.87,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/linter/rules/use-consistent-block-lang/html/",
+      "commit": "715d10b2b",
+      "date": "2026-10-18",
+      "suggestion": {
+        "to": "/linter/rules/use-html-lang/html/",
+        "score": 0.9,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/linter/rules/use-consistent-json-file-read/javascript/",
+      "commit": "715d10b2b",
+      "date": "2026-10-18",
+      "suggestion": {
+        "to": "/linter/rules/use-consistent-array-type/javascript/",
+        "score": 0.85,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/linter/rules/use-matching-function-name/javascript/",
+      "commit": "715d10b2b",
+      "date": "2026-10-18",
+      "suggestion": {
+        "to": "/linter/rules/use-arrow-function/javascript/",
+        "score": 0.89,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/linter/rules/use-named-function/javascript/",
+      "commit": "715d10b2b",
+      "date": "2026-10-18",
+      "suggestion": {
+        "to": "/linter/rules/use-arrow-function/javascript/",
+        "score": 0.91,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/linter/rules/use-svelte-kit-resolve/html/",
+      "commit": "715d10b2b",
+      "date": "2026-10-18",
+      "suggestion": {
+        "to": "/linter/rules/use-svelte-require-each-key/html/",
+        "score": 0.83,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/linter/rules/use-svelte-kit-resolve/javascript/",
+      "commit": "715d10b2b",
+      "date": "2026-10-18",
+      "suggestion": {
+        "to": "/linter/rules/use-svelte-kit-rune-imports/javascript/",
+        "score": 0.9,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/linter/rules/use-tailwind-sorted-classes/html/",
+      "commit": "715d10b2b",
+      "date": "2026-10-18",
+      "suggestion": {
+        "to": "/linter/rules/use-sorted-classes/html/",
+        "score": 0.89,
+        "basis": "content"
+      }
+    },
+    {
+      "url": "/linter/rules/use-tailwind-sorted-classes/javascript/",
+      "commit": "715d10b2b",
+      "date": "2026-10-18",
+      "suggestion": {
+        "to": "/linter/rules/use-sorted-classes/javascript/",
+        "score": 0.96,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/linter/rules/use-unary-minus/javascript/",
+      "commit": "715d10b2b",
+      "date": "2026-10-18",
+      "suggestion": {
+        "to": "/linter/rules/use-at-index/javascript/",
+        "score": 0.87,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/linter/rules/use-vue-consistent-event-hyphenation/html/",
+      "commit": "715d10b2b",
+      "date": "2026-10-18",
+      "suggestion": {
+        "to": "/linter/rules/use-vue-consistent-v-bind-style/html/",
+        "score": 0.85,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/installation/migrate-eslint-prettier/",
+      "commit": "5db801f6c",
+      "date": "2026-10-21",
+      "suggestion": {
+        "to": "/installation/migrate-from-other-tools/",
+        "score": 0.84,
+        "basis": "content"
+      },
+      "human": "/installation/migrate-from-other-tools/"
+    },
+    {
+      "url": "/linter/rules/no-disabled-button/html/",
+      "commit": "02ad2efff",
+      "date": "2026-11-11",
+      "suggestion": {
+        "to": "/linter/rules/no-disabled-attribute/html/",
+        "score": 0.9,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/linter/rules/no-disabled-button/javascript/",
+      "commit": "02ad2efff",
+      "date": "2026-11-11",
+      "suggestion": {
+        "to": "/linter/rules/no-disabled-attribute/javascript/",
+        "score": 0.91,
+        "basis": "path"
+      }
+    }
+  ]
+}

@@ -3,36 +3,48 @@
 // Permalock had run in CI on every merge, and compares its automatic redirects
 // with the redirects the maintainers wrote by hand.
 //
-// Usage: node bench/git-history.mjs <repo-dir> [--lang en] [--rules worker.js]
+// Usage: node bench/history.mjs <owner/repo> <repo-dir> [--json out.json]
+// Sites are configured in bench/sites.json (content folders, URL prefixes,
+// files that hold the maintainers' redirect rules).
 //
 // Approximations (stated in the report):
-// - pages come from content files, not from a build: src/pages/<lang>/** and
-//   src/content/docs/<lang>/** (.md, .mdx, .astro), URL = /<lang>/<path>/;
+// - pages come from content files, not from a build (.md, .mdx, .mdoc, .astro),
+//   URL = prefix + path with "index" folded and Starlight-style lowercasing;
 // - text is the source with front matter, imports and code fences removed;
 // - identity is the file path, which on these sites is the URL itself, so only
 //   the content rules (identical content, similar content) can fire.
 import { execFileSync, spawn } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 import { parseArgs } from 'node:util';
 import { contentHash, resolve, simhash, words } from '../packages/permalock/dist/index.js';
 
-const { values, positionals } = parseArgs({
-  allowPositionals: true,
-  options: { lang: { type: 'string', default: 'en' }, rules: { type: 'string', default: 'worker.js' }, json: { type: 'string' } },
-});
-const repo = positionals[0];
-if (!repo) throw new Error('usage: node bench/git-history.mjs <repo-dir>');
-const lang = values.lang;
+const { values, positionals } = parseArgs({ allowPositionals: true, options: { json: { type: 'string' } } });
+const [name, repo] = positionals;
+const sites = JSON.parse(readFileSync(new URL('./sites.json', import.meta.url), 'utf8'));
+const cfg = sites[name];
+if (!cfg || !repo) throw new Error(`usage: node bench/history.mjs <${Object.keys(sites).join('|')}> <repo-dir>`);
 const git = (...args) => execFileSync('git', ['-C', repo, ...args], { encoding: 'utf8', maxBuffer: 1 << 30 });
 
-const PATH_RE = new RegExp(`^src/(?:pages|content/docs)/${lang}/(.+)\\.(md|mdx|astro)$`);
+const EXT_RE = /\.(md|mdx|mdoc|astro)$/;
 function urlFor(file) {
-  const m = PATH_RE.exec(file);
-  if (!m || m[1].includes('[') || m[1].split('/').some((s) => s.startsWith('_'))) return undefined;
-  let p = m[1];
-  if (p === 'index') return `/${lang}/`;
-  if (p.endsWith('/index')) p = p.slice(0, -6);
-  return `/${lang}/${p}/`;
+  for (const c of cfg.content) {
+    if (!file.startsWith(c.dir)) continue;
+    let p = file.slice(c.dir.length);
+    if (!EXT_RE.test(p) || (c.skip ?? []).some((s) => p.startsWith(s))) return undefined;
+    p = p.replace(EXT_RE, '');
+    if (p.includes('[') || p.split('/').some((s) => s.startsWith('_'))) return undefined;
+    // Starlight slugs: github-slugger per segment (lowercase, drop punctuation, spaces to "-")
+    p = p
+      .split('/')
+      .map((seg) => seg.toLowerCase().replace(/[^\p{L}\p{N}\s_-]/gu, '').replace(/\s/g, '-'))
+      .join('/');
+    if (p === 'index') return c.url;
+    if (p.endsWith('/index')) p = p.slice(0, -6);
+    return `${c.url}${p}/`;
+  }
+  return undefined;
 }
+const contentDirs = cfg.content.map((c) => c.dir.replace(/\/$/, ''));
 
 // --- blob reader with cache -------------------------------------------------
 const textCache = new Map();
@@ -80,18 +92,25 @@ async function fingerprintBlob(sha) {
 
 // --- human ground truth: redirect rules at HEAD -----------------------------
 function loadRules() {
-  let src = '';
-  try {
-    src = git('show', `HEAD:${values.rules}`);
-  } catch {
-    return [];
-  }
   const rules = [];
-  for (const m of src.matchAll(/\[\s*'([^']+)',\s*'([^']+)'/g)) rules.push([m[1], m[2]]);
+  for (const f of cfg.rules) {
+    let src;
+    try {
+      src = git('show', `HEAD:${f}`);
+    } catch {
+      continue;
+    }
+    // quoted pairs: '/from': '/to'  or  ['/from', '/to']  or  i18nRedirect('/from', '/to')
+    for (const m of src.matchAll(/(['"`])(\/[^'"`\s]*)\1\s*[:,]\s*(['"`])((?:\/|https?:)[^'"`\s]*)\3/g)) rules.push([m[2], m[4]]);
+    // _redirects lines: /from /to [status]
+    for (const m of src.matchAll(/^\s*(\/\S*)\s+(\/\S*|https?:\/\/\S+)(?:\s+(\d{3}!?))?\s*$/gm)) if (!m[3]?.startsWith('404')) rules.push([m[1], m[2]]);
+    // netlify.toml [[redirects]] from = "..." to = "..."
+    for (const m of src.matchAll(/from\s*=\s*"([^"]+)"\s*\n\s*to\s*=\s*"([^"]+)"/g)) rules.push([m[1], m[2]]);
+  }
   return rules;
 }
 const rules = loadRules();
-const norm = (p) => p.replace(/#.*$/, '').replace(/\/?$/, '/');
+const norm = (p) => p.replace(/^https?:\/\/[^/]+/, '').replace(/[#?].*$/, '').toLowerCase().replace(/\/?$/, '/');
 function humanTarget(url) {
   for (const [from, to] of rules) {
     const names = [];
@@ -103,6 +122,7 @@ function humanTarget(url) {
           .replace(/:([a-z]+)/g, (_, n) => (names.push(n), '([^/]+)'))
           .replace(/\*/g, () => (names.push('splat'), '(.*)')) +
         '/?$',
+      'i',
     );
     const m = re.exec(url);
     if (!m) continue;
@@ -114,7 +134,7 @@ function humanTarget(url) {
 }
 
 // --- replay -----------------------------------------------------------------
-const commits = git('rev-list', '--first-parent', '--reverse', 'HEAD', '--', `src/pages/${lang}`, `src/content/docs/${lang}`)
+const commits = git('rev-list', '--first-parent', '--reverse', 'HEAD', '--', ...contentDirs)
   .trim()
   .split('\n');
 const files = new Map(); // path -> blob
@@ -125,7 +145,7 @@ const orphanEvents = new Map(); // url -> first commit where it became an orphan
 const everPage = new Set();
 let prev = '4b825dc642cb6eb9a060e54bf8d69288fbee4904'; // empty tree
 for (const [i, c] of commits.entries()) {
-  const raw = git('diff-tree', '-r', '--no-renames', '--raw', prev, c, '--', `src/pages/${lang}`, `src/content/docs/${lang}`);
+  const raw = git('diff-tree', '-r', '--no-renames', '--raw', prev, c, '--', ...contentDirs);
   for (const line of raw.split('\n')) {
     const m = /^:\d+ \d+ [0-9a-f]+ ([0-9a-f]+) ([AMDT])\t(.+)$/.exec(line);
     if (!m) continue;
@@ -194,9 +214,11 @@ for (const [from, d] of autoFrom) {
 const orphans = [...orphanEvents.keys()];
 const orphanCovered = orphans.filter((u) => humanTarget(u.replace(/\/$/, ''))).length;
 const report = {
-  repo: git('config', '--get', 'remote.origin.url').trim(),
+  repo: name,
+  site: cfg.site,
   head: git('rev-parse', '--short', 'HEAD').trim(),
-  lang,
+  firstCommit: commits.length ? git('show', '-s', '--format=%as', commits[0]).trim() : undefined,
+  humanRules: rules.length,
   commitsReplayed: commits.length,
   seconds: Math.round((Date.now() - t0) / 1000),
   urlsEverPublished: everPage.size,

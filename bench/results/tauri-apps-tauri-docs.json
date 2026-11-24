@@ -1,0 +1,2310 @@
+{
+  "repo": "tauri-apps/tauri-docs",
+  "site": "tauri.app",
+  "head": "7789fe69",
+  "firstCommit": "2023-07-21",
+  "humanRules": 110,
+  "commitsReplayed": 1044,
+  "seconds": 20,
+  "urlsEverPublished": 719,
+  "urlsLiveAtHead": 158,
+  "urlsVanished": 561,
+  "automaticRedirects": 271,
+  "automaticByReason": {
+    "same-content": 264,
+    "similar": 7
+  },
+  "checkedAgainstHumanRules": {
+    "agree": 10,
+    "disagree": 2,
+    "noHumanRule": 259
+  },
+  "orphans": 293,
+  "orphansWithHumanRedirect": 22,
+  "orphansWithoutAnyRedirect": 271,
+  "disagreements": [
+    {
+      "from": "/guides/upgrade-migrate/from-tauri-1/",
+      "ours": "/start/migrate/from-tauri-1/",
+      "human": "/start/upgrade--migrate/from-tauri-1/",
+      "reason": "same-content",
+      "date": "2024-04-22"
+    },
+    {
+      "from": "/references/v2/acl/",
+      "ours": "/security/capabilities/",
+      "human": "/references/acl/capability/",
+      "reason": "same-content",
+      "date": "2024-04-22"
+    }
+  ],
+  "orphanList": [
+    {
+      "url": "/reference/example/",
+      "commit": "ae6fb6927",
+      "date": "2023-07-23",
+      "suggestion": {
+        "to": "/guides/example/",
+        "score": 0.8,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/getting-started/create-a-project/",
+      "commit": "bdaaf2020",
+      "date": "2023-07-23",
+      "suggestion": {
+        "to": "/getting-started/create-project/",
+        "score": 0.89,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/getting-started/",
+      "commit": "89d136236",
+      "date": "2023-07-24"
+    },
+    {
+      "url": "/getting-started/create-project/existing-project/",
+      "commit": "89d136236",
+      "date": "2023-07-24",
+      "suggestion": {
+        "to": "/v2/tutorials/create-project/existing-project/",
+        "score": 0.83,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/guides/build/",
+      "commit": "89d136236",
+      "date": "2023-07-24",
+      "suggestion": {
+        "to": "/v2/guides/build/",
+        "score": 0.9,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/guides/customize/",
+      "commit": "89d136236",
+      "date": "2023-07-24",
+      "suggestion": {
+        "to": "/v2/guides/customize/",
+        "score": 0.9,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/reference/cli/",
+      "commit": "89d136236",
+      "date": "2023-07-24",
+      "suggestion": {
+        "to": "/v2/reference/cli/",
+        "score": 0.9,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/reference/config/",
+      "commit": "89d136236",
+      "date": "2023-07-24",
+      "suggestion": {
+        "to": "/v2/reference/config/",
+        "score": 0.9,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/reference/js/",
+      "commit": "89d136236",
+      "date": "2023-07-24",
+      "suggestion": {
+        "to": "/v2/reference/js/",
+        "score": 0.9,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/reference/rust/",
+      "commit": "89d136236",
+      "date": "2023-07-24",
+      "suggestion": {
+        "to": "/v2/reference/rust/",
+        "score": 0.9,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/v2/guides/build/",
+      "commit": "eae1c401d",
+      "date": "2023-07-24"
+    },
+    {
+      "url": "/v2/guides/example/",
+      "commit": "eae1c401d",
+      "date": "2023-07-24"
+    },
+    {
+      "url": "/v2/guides/build-distribute/",
+      "commit": "97890f9cd",
+      "date": "2023-07-24",
+      "suggestion": {
+        "to": "/2/guides/build-distribute/",
+        "score": 0.88,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/v2/guides/troubleshoot/",
+      "commit": "97890f9cd",
+      "date": "2023-07-24",
+      "suggestion": {
+        "to": "/2/guides/troubleshoot/",
+        "score": 0.85,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/v2/plugins/authenticator/",
+      "commit": "97890f9cd",
+      "date": "2023-07-24",
+      "suggestion": {
+        "to": "/2/plugins/authenticator/",
+        "score": 0.85,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/v2/reference/cli/",
+      "commit": "97890f9cd",
+      "date": "2023-07-24",
+      "suggestion": {
+        "to": "/2/reference/cli/",
+        "score": 0.85,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/v2/reference/config/",
+      "commit": "97890f9cd",
+      "date": "2023-07-24",
+      "suggestion": {
+        "to": "/2/reference/config/",
+        "score": 0.85,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/v2/reference/errors/",
+      "commit": "97890f9cd",
+      "date": "2023-07-24",
+      "suggestion": {
+        "to": "/2/reference/errors/",
+        "score": 0.85,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/v2/reference/js/",
+      "commit": "97890f9cd",
+      "date": "2023-07-24",
+      "suggestion": {
+        "to": "/2/reference/js/",
+        "score": 0.85,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/v2/reference/rust/",
+      "commit": "97890f9cd",
+      "date": "2023-07-24",
+      "suggestion": {
+        "to": "/2/reference/rust/",
+        "score": 0.85,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/v2/reference/structure/",
+      "commit": "97890f9cd",
+      "date": "2023-07-24",
+      "suggestion": {
+        "to": "/2/reference/structure/",
+        "score": 0.85,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/v2/todo/api/js/readme/",
+      "commit": "97890f9cd",
+      "date": "2023-07-24",
+      "suggestion": {
+        "to": "/2/todo/api/js/readme/",
+        "score": 0.9,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/v2/todo/guides/features/readme/",
+      "commit": "97890f9cd",
+      "date": "2023-07-24",
+      "suggestion": {
+        "to": "/2/todo/guides/features/readme/",
+        "score": 0.9,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/v2/tutorials/",
+      "commit": "97890f9cd",
+      "date": "2023-07-24",
+      "suggestion": {
+        "to": "/2/tutorials/",
+        "score": 0.8,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/v2/tutorials/create-project/existing-project/",
+      "commit": "97890f9cd",
+      "date": "2023-07-24",
+      "suggestion": {
+        "to": "/2/tutorials/create-project/existing-project/",
+        "score": 0.9,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/v2/tutorials/troubleshoot/",
+      "commit": "97890f9cd",
+      "date": "2023-07-24",
+      "suggestion": {
+        "to": "/2/tutorials/troubleshoot/",
+        "score": 0.85,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/todo/.templates/cli/",
+      "commit": "66a690d51",
+      "date": "2023-07-25",
+      "suggestion": {
+        "to": "/2/todo/api/cli/",
+        "score": 0.94,
+        "basis": "content"
+      }
+    },
+    {
+      "url": "/2/guides/build-distribute/",
+      "commit": "9776e5008",
+      "date": "2023-07-25",
+      "suggestion": {
+        "to": "/2/guide/build-distribute/",
+        "score": 0.88,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guides/troubleshoot/",
+      "commit": "9776e5008",
+      "date": "2023-07-25",
+      "suggestion": {
+        "to": "/2/guide/troubleshoot/",
+        "score": 0.85,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/plugins/authenticator/",
+      "commit": "9776e5008",
+      "date": "2023-07-25",
+      "suggestion": {
+        "to": "/2/plugin/authenticator/",
+        "score": 0.85,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/tutorials/",
+      "commit": "9776e5008",
+      "date": "2023-07-25"
+    },
+    {
+      "url": "/2/tutorials/create-project/existing-project/",
+      "commit": "9776e5008",
+      "date": "2023-07-25",
+      "suggestion": {
+        "to": "/2/guide/create-project/existing-project/",
+        "score": 0.9,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/tutorials/troubleshoot/",
+      "commit": "9776e5008",
+      "date": "2023-07-25",
+      "suggestion": {
+        "to": "/2/guide/troubleshoot/",
+        "score": 0.85,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/create-project/existing-project/",
+      "commit": "6dac39e2f",
+      "date": "2023-07-26",
+      "suggestion": {
+        "to": "/2/guide/create/existing-project/",
+        "score": 1,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/create/existing-project/",
+      "commit": "2348bdc5c",
+      "date": "2023-07-26"
+    },
+    {
+      "url": "/2/plugin/authenticator/",
+      "commit": "2348bdc5c",
+      "date": "2023-07-26"
+    },
+    {
+      "url": "/2/todo/api/js/readme/",
+      "commit": "46d19c860",
+      "date": "2023-07-27",
+      "suggestion": {
+        "to": "/1/api/js/readme/",
+        "score": 0.85,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/todo/guides/features/readme/",
+      "commit": "46d19c860",
+      "date": "2023-07-27",
+      "suggestion": {
+        "to": "/1/guides/features/readme/",
+        "score": 0.85,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/plugin/",
+      "commit": "0c1a1576b",
+      "date": "2023-07-27",
+      "suggestion": {
+        "to": "/1/guides/features/plugin/",
+        "score": 0.76,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/reference/errors/",
+      "commit": "0c1a1576b",
+      "date": "2023-07-27"
+    },
+    {
+      "url": "/2/reference/structure/",
+      "commit": "0c1a1576b",
+      "date": "2023-07-27"
+    },
+    {
+      "url": "/blog/",
+      "commit": "0c1a1576b",
+      "date": "2023-07-27",
+      "human": "/blog/*/"
+    },
+    {
+      "url": "/2/reference/js/",
+      "commit": "567a16028",
+      "date": "2023-07-27"
+    },
+    {
+      "url": "/2/reference/config/",
+      "commit": "62bd4abb0",
+      "date": "2023-07-30",
+      "suggestion": {
+        "to": "/1/api/config/",
+        "score": 0.81,
+        "basis": "content"
+      }
+    },
+    {
+      "url": "/1/api/cli/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/api/config/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/api/js/app/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/api/js/cli/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/api/js/clipboard/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/api/js/dialog/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/api/js/event/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/api/js/fs/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/api/js/globalshortcut/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/api/js/http/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/api/js/mocks/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/api/js/notification/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/api/js/os/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/api/js/path/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/api/js/process/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/api/js/readme/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/api/js/shell/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/api/js/tauri/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/api/js/updater/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/api/js/window/",
+      "commit": "18df23efe",
+      "date": "2023-07-31",
+      "suggestion": {
+        "to": "/2/guide/build-distribute/windows/",
+        "score": 0.64,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/1/guides/building/app-size/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/guides/building/cross-platform/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/guides/building/linux/",
+      "commit": "18df23efe",
+      "date": "2023-07-31",
+      "suggestion": {
+        "to": "/2/guide/build-distribute/linux/",
+        "score": 0.74,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/1/guides/building/macos/",
+      "commit": "18df23efe",
+      "date": "2023-07-31",
+      "suggestion": {
+        "to": "/2/guide/build-distribute/macos/",
+        "score": 0.74,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/1/guides/building/readme/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/guides/building/resources/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/guides/building/sidecar/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/guides/building/windows/",
+      "commit": "18df23efe",
+      "date": "2023-07-31",
+      "suggestion": {
+        "to": "/2/guide/build-distribute/windows/",
+        "score": 0.74,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/1/guides/debugging/application/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/guides/debugging/clion/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/guides/debugging/vs-code/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/guides/development/development-cycle/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/guides/development/updating-dependencies/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/guides/distribution/publishing/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/guides/distribution/sign-linux/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/guides/distribution/sign-macos/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/guides/distribution/sign-windows/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/guides/distribution/updater/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/guides/faq/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/guides/features/cli/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/guides/features/command/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/guides/features/events/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/guides/features/icons/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/guides/features/menu/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/guides/features/multiwindow/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/guides/features/plugin/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/guides/features/readme/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/guides/features/splashscreen/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/guides/features/system-tray/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/guides/features/window-customization/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/guides/getting-started/prerequisites/",
+      "commit": "18df23efe",
+      "date": "2023-07-31",
+      "suggestion": {
+        "to": "/2/guide/prerequisites/",
+        "score": 0.74,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/1/guides/getting-started/setup/html-css-js/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/guides/getting-started/setup/integrate/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/guides/getting-started/setup/next-js/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/guides/getting-started/setup/qwik/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/guides/getting-started/setup/readme/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/guides/getting-started/setup/sveltekit/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/guides/getting-started/setup/vite/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/guides/readme/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/guides/testing/mocking/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/guides/testing/webdriver/ci/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/guides/testing/webdriver/example/selenium/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/guides/testing/webdriver/example/setup/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/guides/testing/webdriver/example/webdriverio/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/guides/testing/webdriver/introduction/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/references/architecture/inter-process-communication/brownfield/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/references/architecture/inter-process-communication/isolation/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/references/architecture/inter-process-communication/readme/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/references/architecture/process-model/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/references/architecture/readme/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/references/architecture/recipes/about-recipes/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/references/architecture/recipes/bridge/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/references/architecture/recipes/cloudbridge/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/references/architecture/recipes/cloudish/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/references/architecture/recipes/glui/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/references/architecture/recipes/hermit/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/references/architecture/recipes/lockdown/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/references/architecture/recipes/multiwin/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/references/architecture/security/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/references/benchmarks/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/references/configuration-files/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/references/readme/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/references/security/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/1/references/webview-versions/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/2/reference/cli/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/2/reference/rust/",
+      "commit": "18df23efe",
+      "date": "2023-07-31"
+    },
+    {
+      "url": "/2/guide/build-distribute/android/",
+      "commit": "cf56ff08b",
+      "date": "2023-08-01"
+    },
+    {
+      "url": "/2/guide/build-distribute/ios/",
+      "commit": "cf56ff08b",
+      "date": "2023-08-01"
+    },
+    {
+      "url": "/2/guide/build-distribute/linux/",
+      "commit": "cf56ff08b",
+      "date": "2023-08-01"
+    },
+    {
+      "url": "/2/guide/build-distribute/macos/",
+      "commit": "cf56ff08b",
+      "date": "2023-08-01"
+    },
+    {
+      "url": "/2/guide/build-distribute/windows/",
+      "commit": "cf56ff08b",
+      "date": "2023-08-01"
+    },
+    {
+      "url": "/2/guide/customize/",
+      "commit": "cf56ff08b",
+      "date": "2023-08-01"
+    },
+    {
+      "url": "/2/guide/list/",
+      "commit": "cf56ff08b",
+      "date": "2023-08-01"
+    },
+    {
+      "url": "/2/guide/plugin-authenticator/",
+      "commit": "cf56ff08b",
+      "date": "2023-08-01"
+    },
+    {
+      "url": "/contribute/",
+      "commit": "e53d77dc8",
+      "date": "2023-08-05"
+    },
+    {
+      "url": "/2/guide/build-distribute/",
+      "commit": "20b6524fe",
+      "date": "2023-08-15",
+      "suggestion": {
+        "to": "/2/guide/distribute/",
+        "score": 0.75,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/recipe/",
+      "commit": "aacd114b5",
+      "date": "2023-08-15"
+    },
+    {
+      "url": "/2/recipe/template/",
+      "commit": "aacd114b5",
+      "date": "2023-08-15",
+      "suggestion": {
+        "to": "/2/guide/template/",
+        "score": 0.85,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/reference/core/",
+      "commit": "aacd114b5",
+      "date": "2023-08-15"
+    },
+    {
+      "url": "/2/reference/plugin/",
+      "commit": "aacd114b5",
+      "date": "2023-08-15",
+      "suggestion": {
+        "to": "/2/guide/plugins/",
+        "score": 0.7,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/log/",
+      "commit": "c0e4a997b",
+      "date": "2023-08-25"
+    },
+    {
+      "url": "/blog/template/",
+      "commit": "720e7edc8",
+      "date": "2023-08-27",
+      "suggestion": {
+        "to": "/2/guide/template/",
+        "score": 0.77,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/plugins/develop-plugin/",
+      "commit": "de38fe4ef",
+      "date": "2023-09-07",
+      "suggestion": {
+        "to": "/2/guide/develop/",
+        "score": 0.62,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/authenticator/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/features/authenticator/",
+        "score": 0.77,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/autostart/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/features/autostart/",
+        "score": 0.77,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/build/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/guides/build/",
+        "score": 0.77,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/cli/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/2/reference/cli/",
+        "score": 0.85,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/clipboard/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/features/clipboard/",
+        "score": 0.77,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/commands/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/features/commands/",
+        "score": 0.77,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/core-concepts/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/guides/core-concepts/",
+        "score": 0.82,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/debug/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/guides/debug/",
+        "score": 0.77,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/develop/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/guides/develop/",
+        "score": 0.77,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/dialog/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/features/dialog/",
+        "score": 0.77,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/distribute/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/guides/distribute/",
+        "score": 0.77,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/file-system/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/features/file-system/",
+        "score": 0.82,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/frontend/leptos/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/guides/frontend/leptos/",
+        "score": 0.82,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/frontend/qwik/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/guides/frontend/qwik/",
+        "score": 0.82,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/frontend/svelte/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/guides/frontend/svelte/",
+        "score": 0.82,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/frontend/sycamore/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/guides/frontend/sycamore/",
+        "score": 0.82,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/frontend/vite/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/guides/frontend/vite/",
+        "score": 0.82,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/frontend/webpack/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/guides/frontend/webpack/",
+        "score": 0.82,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/frontend/yew/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/guides/frontend/yew/",
+        "score": 0.82,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/global-shortcut/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/features/global-shortcut/",
+        "score": 0.82,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/http-client/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/features/http-client/",
+        "score": 0.82,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/localhost/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/features/localhost/",
+        "score": 0.77,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/logging/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/features/logging/",
+        "score": 0.77,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/os-info/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/features/os-info/",
+        "score": 0.82,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/persisted-scope/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/features/persisted-scope/",
+        "score": 0.82,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/positioner/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/features/positioner/",
+        "score": 0.77,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/process/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/features/process/",
+        "score": 0.77,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/recipe/stub/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12"
+    },
+    {
+      "url": "/2/guide/shell/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/features/shell/",
+        "score": 0.77,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/single-instance/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/features/single-instance/",
+        "score": 0.82,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/sql/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/features/sql/",
+        "score": 0.77,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/state-management/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/guides/state-management/",
+        "score": 0.82,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/store/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/features/store/",
+        "score": 0.77,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/stronghold/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/features/stronghold/",
+        "score": 0.77,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/template/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/guides/template/",
+        "score": 0.77,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/test/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/guides/test/",
+        "score": 0.77,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/troubleshoot/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/guides/troubleshoot/",
+        "score": 0.77,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/updater/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/features/updater/",
+        "score": 0.77,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/upgrade-migrate/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/guides/upgrade-migrate/",
+        "score": 0.82,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/upgrade-migrate/from-electron/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/guides/upgrade-migrate/from-electron/",
+        "score": 0.87,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/upgrade-migrate/from-flutter/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/guides/upgrade-migrate/from-flutter/",
+        "score": 0.87,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/upload/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/features/upload/",
+        "score": 0.77,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/websocket/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/features/websocket/",
+        "score": 0.77,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/window-customization/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/features/window-customization/",
+        "score": 0.82,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/guide/window-state/",
+      "commit": "ffb89b070",
+      "date": "2023-09-12",
+      "suggestion": {
+        "to": "/features/window-state/",
+        "score": 0.82,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/guides/core-concepts/",
+      "commit": "5ea553de9",
+      "date": "2023-11-05",
+      "suggestion": {
+        "to": "/concepts/",
+        "score": 0.62,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/zh-cn/",
+      "commit": "3f102c46c",
+      "date": "2023-12-11"
+    },
+    {
+      "url": "/zh-cn/features/",
+      "commit": "3f102c46c",
+      "date": "2023-12-11",
+      "suggestion": {
+        "to": "/features/",
+        "score": 0.8,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/zh-cn/features/notification/",
+      "commit": "3f102c46c",
+      "date": "2023-12-11",
+      "suggestion": {
+        "to": "/features/notification/",
+        "score": 0.85,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/zh-cn/guides/develop/",
+      "commit": "3f102c46c",
+      "date": "2023-12-11",
+      "suggestion": {
+        "to": "/guides/develop/",
+        "score": 0.85,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/zh-cn/guides/develop/development-cycle/",
+      "commit": "3f102c46c",
+      "date": "2023-12-11",
+      "suggestion": {
+        "to": "/guides/develop/development-cycle/",
+        "score": 0.9,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/zh-cn/guides/develop/updating-dependencies/",
+      "commit": "3f102c46c",
+      "date": "2023-12-11",
+      "suggestion": {
+        "to": "/guides/develop/updating-dependencies/",
+        "score": 0.9,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/zh-cn/guides/frontend/",
+      "commit": "3f102c46c",
+      "date": "2023-12-11",
+      "suggestion": {
+        "to": "/guides/frontend/",
+        "score": 0.85,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/zh-cn/guides/frontend/nextjs/",
+      "commit": "3f102c46c",
+      "date": "2023-12-11",
+      "suggestion": {
+        "to": "/guides/frontend/nextjs/",
+        "score": 0.88,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/zh-cn/guides/frontend/nuxt/",
+      "commit": "3f102c46c",
+      "date": "2023-12-11",
+      "suggestion": {
+        "to": "/guides/frontend/nuxt/",
+        "score": 0.88,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/zh-cn/guides/frontend/trunk/",
+      "commit": "3f102c46c",
+      "date": "2023-12-11",
+      "suggestion": {
+        "to": "/guides/frontend/trunk/",
+        "score": 0.88,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/zh-cn/guides/plugins/",
+      "commit": "3f102c46c",
+      "date": "2023-12-11",
+      "suggestion": {
+        "to": "/guides/plugins/",
+        "score": 0.85,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/zh-cn/guides/plugins/develop-mobile/",
+      "commit": "3f102c46c",
+      "date": "2023-12-11",
+      "suggestion": {
+        "to": "/guides/plugins/develop-mobile/",
+        "score": 0.9,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/zh-cn/guides/prerequisites/",
+      "commit": "3f102c46c",
+      "date": "2023-12-11",
+      "suggestion": {
+        "to": "/guides/prerequisites/",
+        "score": 0.85,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/zh-cn/guides/",
+      "commit": "1b606e5bb",
+      "date": "2023-12-11",
+      "suggestion": {
+        "to": "/guides/",
+        "score": 0.8,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/zh-cn/guides/debug/",
+      "commit": "1b606e5bb",
+      "date": "2023-12-11",
+      "suggestion": {
+        "to": "/guides/debug/",
+        "score": 0.85,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/zh-cn/guides/debug/application/",
+      "commit": "1b606e5bb",
+      "date": "2023-12-11",
+      "suggestion": {
+        "to": "/guides/debug/application/",
+        "score": 0.88,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/zh-cn/guides/debug/vs-code/",
+      "commit": "1b606e5bb",
+      "date": "2023-12-11",
+      "suggestion": {
+        "to": "/guides/debug/vs-code/",
+        "score": 0.9,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/2/reference/",
+      "commit": "488a2d97e",
+      "date": "2023-12-21",
+      "suggestion": {
+        "to": "/references/",
+        "score": 0.66,
+        "basis": "path"
+      },
+      "human": "/references/"
+    },
+    {
+      "url": "/2/reference/environment-variables/",
+      "commit": "488a2d97e",
+      "date": "2023-12-21",
+      "suggestion": {
+        "to": "/references/environment-variables/",
+        "score": 0.82,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/features/authenticator/",
+      "commit": "12d14181e",
+      "date": "2024-03-04"
+    },
+    {
+      "url": "/concepts/development-security/",
+      "commit": "ee850bb7e",
+      "date": "2024-03-25",
+      "suggestion": {
+        "to": "/concepts/security/development/",
+        "score": 0.78,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/concepts/tauri-security/",
+      "commit": "ee850bb7e",
+      "date": "2024-03-25",
+      "suggestion": {
+        "to": "/concepts/security/",
+        "score": 0.69,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/guides/create/",
+      "commit": "b7b34558f",
+      "date": "2024-04-22",
+      "human": "/start/create-project/"
+    },
+    {
+      "url": "/guides/create/existing-project/",
+      "commit": "b7b34558f",
+      "date": "2024-04-22"
+    },
+    {
+      "url": "/guides/create/mobile/",
+      "commit": "b7b34558f",
+      "date": "2024-04-22"
+    },
+    {
+      "url": "/guides/debug/",
+      "commit": "b7b34558f",
+      "date": "2024-04-22",
+      "suggestion": {
+        "to": "/develop/debug/",
+        "score": 0.8,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/guides/develop/",
+      "commit": "b7b34558f",
+      "date": "2024-04-22",
+      "suggestion": {
+        "to": "/develop/",
+        "score": 0.85,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/guides/distribute/",
+      "commit": "b7b34558f",
+      "date": "2024-04-22",
+      "suggestion": {
+        "to": "/distribute/",
+        "score": 0.85,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/guides/frontend/",
+      "commit": "b7b34558f",
+      "date": "2024-04-22",
+      "suggestion": {
+        "to": "/start/frontend-configuration/",
+        "score": 0.91,
+        "basis": "content"
+      },
+      "human": "/start/frontend-configuration/"
+    },
+    {
+      "url": "/guides/frontend/leptos/",
+      "commit": "b7b34558f",
+      "date": "2024-04-22",
+      "suggestion": {
+        "to": "/start/frontend-configuration/leptos/",
+        "score": 0.82,
+        "basis": "path"
+      },
+      "human": "/start/frontend-configuration/leptos/"
+    },
+    {
+      "url": "/guides/frontend/qwik/",
+      "commit": "b7b34558f",
+      "date": "2024-04-22",
+      "suggestion": {
+        "to": "/start/frontend-configuration/qwik/",
+        "score": 0.82,
+        "basis": "path"
+      },
+      "human": "/start/frontend-configuration/qwik/"
+    },
+    {
+      "url": "/guides/frontend/svelte/",
+      "commit": "b7b34558f",
+      "date": "2024-04-22",
+      "suggestion": {
+        "to": "/start/frontend-configuration/svelte/",
+        "score": 0.82,
+        "basis": "path"
+      },
+      "human": "/start/frontend-configuration/svelte/"
+    },
+    {
+      "url": "/guides/frontend/sycamore/",
+      "commit": "b7b34558f",
+      "date": "2024-04-22",
+      "suggestion": {
+        "to": "/start/frontend-configuration/sycamore/",
+        "score": 0.82,
+        "basis": "path"
+      },
+      "human": "/start/frontend-configuration/sycamore/"
+    },
+    {
+      "url": "/guides/frontend/vite/",
+      "commit": "b7b34558f",
+      "date": "2024-04-22",
+      "suggestion": {
+        "to": "/start/frontend-configuration/vite/",
+        "score": 0.82,
+        "basis": "path"
+      },
+      "human": "/start/frontend-configuration/vite/"
+    },
+    {
+      "url": "/guides/frontend/webpack/",
+      "commit": "b7b34558f",
+      "date": "2024-04-22",
+      "suggestion": {
+        "to": "/start/frontend-configuration/webpack/",
+        "score": 0.82,
+        "basis": "path"
+      },
+      "human": "/start/frontend-configuration/webpack/"
+    },
+    {
+      "url": "/guides/frontend/yew/",
+      "commit": "b7b34558f",
+      "date": "2024-04-22",
+      "suggestion": {
+        "to": "/start/frontend-configuration/yew/",
+        "score": 0.82,
+        "basis": "path"
+      },
+      "human": "/start/frontend-configuration/yew/"
+    },
+    {
+      "url": "/guides/state-management/",
+      "commit": "b7b34558f",
+      "date": "2024-04-22",
+      "suggestion": {
+        "to": "/develop/state-management/",
+        "score": 0.85,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/guides/template/",
+      "commit": "b7b34558f",
+      "date": "2024-04-22"
+    },
+    {
+      "url": "/guides/test/",
+      "commit": "b7b34558f",
+      "date": "2024-04-22",
+      "suggestion": {
+        "to": "/test/",
+        "score": 0.85,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/guides/test/webdriver/ci/",
+      "commit": "b7b34558f",
+      "date": "2024-04-22",
+      "suggestion": {
+        "to": "/test/webdriver/ci/",
+        "score": 0.92,
+        "basis": "content"
+      }
+    },
+    {
+      "url": "/guides/test/webdriver/example/selenium/",
+      "commit": "b7b34558f",
+      "date": "2024-04-22",
+      "suggestion": {
+        "to": "/test/webdriver/example/selenium/",
+        "score": 0.94,
+        "basis": "content"
+      }
+    },
+    {
+      "url": "/guides/troubleshoot/",
+      "commit": "b7b34558f",
+      "date": "2024-04-22"
+    },
+    {
+      "url": "/guides/upgrade-migrate/",
+      "commit": "b7b34558f",
+      "date": "2024-04-22",
+      "suggestion": {
+        "to": "/start/upgrade-&-migrate/",
+        "score": 0.8,
+        "basis": "path"
+      },
+      "human": "/start/upgrade--migrate/"
+    },
+    {
+      "url": "/guides/upgrade-migrate/from-electron/",
+      "commit": "b7b34558f",
+      "date": "2024-04-22",
+      "suggestion": {
+        "to": "/start/upgrade-&-migrate/from-electron/",
+        "score": 0.9,
+        "basis": "path"
+      },
+      "human": "/start/upgrade--migrate/from-electron/"
+    },
+    {
+      "url": "/guides/upgrade-migrate/from-flutter/",
+      "commit": "b7b34558f",
+      "date": "2024-04-22",
+      "suggestion": {
+        "to": "/start/upgrade-&-migrate/from-flutter/",
+        "score": 0.9,
+        "basis": "path"
+      },
+      "human": "/start/upgrade--migrate/from-flutter/"
+    },
+    {
+      "url": "/references/configuration-files/",
+      "commit": "b7b34558f",
+      "date": "2024-04-22",
+      "suggestion": {
+        "to": "/develop/configuration-files/",
+        "score": 0.91,
+        "basis": "content"
+      },
+      "human": "/develop/configuration-files/"
+    },
+    {
+      "url": "/references/v1/cli/",
+      "commit": "b7b34558f",
+      "date": "2024-04-22",
+      "suggestion": {
+        "to": "/references/cli/",
+        "score": 0.9,
+        "basis": "path"
+      },
+      "human": "/references/v1/cli/"
+    },
+    {
+      "url": "/references/v2/js/",
+      "commit": "b7b34558f",
+      "date": "2024-04-22",
+      "human": "/references/javascript/api/"
+    },
+    {
+      "url": "/start/frontend-configuration/svelte/",
+      "commit": "a0d950219",
+      "date": "2024-05-08",
+      "suggestion": {
+        "to": "/start/frontend-configuration/sveltekit/",
+        "score": 0.72,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/develop/debug/intellij/",
+      "commit": "b3ed285ce",
+      "date": "2024-05-15"
+    },
+    {
+      "url": "/concepts/",
+      "commit": "ff83cb211",
+      "date": "2024-05-21",
+      "suggestion": {
+        "to": "/concept/",
+        "score": 0.65,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/concepts/rendering/",
+      "commit": "ff83cb211",
+      "date": "2024-05-21",
+      "suggestion": {
+        "to": "/concept/rendering/",
+        "score": 0.8,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/concepts/size/",
+      "commit": "ff83cb211",
+      "date": "2024-05-21",
+      "suggestion": {
+        "to": "/concept/size/",
+        "score": 0.8,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/features/",
+      "commit": "ff83cb211",
+      "date": "2024-05-21",
+      "human": "/plugin/"
+    },
+    {
+      "url": "/features/biometric/",
+      "commit": "ff83cb211",
+      "date": "2024-05-21",
+      "suggestion": {
+        "to": "/plugin/biometric/",
+        "score": 0.8,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/features/nfc/",
+      "commit": "ff83cb211",
+      "date": "2024-05-21",
+      "suggestion": {
+        "to": "/plugin/nfc/",
+        "score": 0.8,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/features/updater/",
+      "commit": "ff83cb211",
+      "date": "2024-05-21",
+      "suggestion": {
+        "to": "/plugin/updater/",
+        "score": 0.8,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/references/",
+      "commit": "ff83cb211",
+      "date": "2024-05-21"
+    },
+    {
+      "url": "/references/environment-variables/",
+      "commit": "ff83cb211",
+      "date": "2024-05-21",
+      "suggestion": {
+        "to": "/reference/environment-variables/",
+        "score": 0.85,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/start/frontend-configuration/leptos/",
+      "commit": "ff83cb211",
+      "date": "2024-05-21",
+      "suggestion": {
+        "to": "/start/frontend/leptos/",
+        "score": 0.93,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/start/frontend-configuration/qwik/",
+      "commit": "ff83cb211",
+      "date": "2024-05-21",
+      "suggestion": {
+        "to": "/start/frontend/qwik/",
+        "score": 0.93,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/start/frontend-configuration/sycamore/",
+      "commit": "ff83cb211",
+      "date": "2024-05-21",
+      "suggestion": {
+        "to": "/start/frontend/sycamore/",
+        "score": 0.93,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/start/frontend-configuration/vite/",
+      "commit": "ff83cb211",
+      "date": "2024-05-21",
+      "suggestion": {
+        "to": "/start/frontend/vite/",
+        "score": 0.93,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/start/frontend-configuration/webpack/",
+      "commit": "ff83cb211",
+      "date": "2024-05-21",
+      "suggestion": {
+        "to": "/start/frontend/webpack/",
+        "score": 0.93,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/start/frontend-configuration/yew/",
+      "commit": "ff83cb211",
+      "date": "2024-05-21",
+      "suggestion": {
+        "to": "/start/frontend/yew/",
+        "score": 0.93,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/start/upgrade-&-migrate/",
+      "commit": "ff83cb211",
+      "date": "2024-05-21"
+    },
+    {
+      "url": "/start/upgrade-&-migrate/from-electron/",
+      "commit": "ff83cb211",
+      "date": "2024-05-21",
+      "suggestion": {
+        "to": "/start/migrate/from-electron/",
+        "score": 0.94,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/start/upgrade-&-migrate/from-existing/",
+      "commit": "ff83cb211",
+      "date": "2024-05-21",
+      "suggestion": {
+        "to": "/start/migrate/from-existing/",
+        "score": 0.94,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/start/upgrade-&-migrate/from-flutter/",
+      "commit": "ff83cb211",
+      "date": "2024-05-21",
+      "suggestion": {
+        "to": "/start/migrate/from-flutter/",
+        "score": 0.94,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/test/",
+      "commit": "ff83cb211",
+      "date": "2024-05-21",
+      "suggestion": {
+        "to": "/develop/tests/",
+        "score": 0.6,
+        "basis": "path"
+      },
+      "human": "/develop/tests/"
+    },
+    {
+      "url": "/test/pipelines/",
+      "commit": "ff83cb211",
+      "date": "2024-05-21",
+      "suggestion": {
+        "to": "/distribute/pipelines/",
+        "score": 0.8,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/test/pipelines/github/",
+      "commit": "ff83cb211",
+      "date": "2024-05-21",
+      "suggestion": {
+        "to": "/distribute/pipelines/github/",
+        "score": 0.85,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/test/pipelines/gitlab/",
+      "commit": "ff83cb211",
+      "date": "2024-05-21",
+      "suggestion": {
+        "to": "/distribute/pipelines/gitlab/",
+        "score": 0.85,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/test/webdriver/ci/",
+      "commit": "ff83cb211",
+      "date": "2024-05-21",
+      "suggestion": {
+        "to": "/develop/tests/webdriver/ci/",
+        "score": 0.92,
+        "basis": "content"
+      }
+    },
+    {
+      "url": "/develop/debug/crabnebula-cloud/",
+      "commit": "26597a515",
+      "date": "2024-05-22",
+      "suggestion": {
+        "to": "/develop/debug/crabnebula-devtools/",
+        "score": 0.6,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/develop/debug/application/",
+      "commit": "6369cf009",
+      "date": "2024-05-24",
+      "suggestion": {
+        "to": "/develop/debug/",
+        "score": 0.89,
+        "basis": "content"
+      },
+      "human": "/develop/debug/"
+    },
+    {
+      "url": "/reference/acl/",
+      "commit": "7ec1939ce",
+      "date": "2024-05-31",
+      "human": "/security/capabilities/"
+    },
+    {
+      "url": "/security/best-practices/",
+      "commit": "7ec1939ce",
+      "date": "2024-05-31"
+    },
+    {
+      "url": "/security/development/",
+      "commit": "7ec1939ce",
+      "date": "2024-05-31",
+      "suggestion": {
+        "to": "/develop/development-cycle/",
+        "score": 0.61,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/develop/development-cycle/",
+      "commit": "4b91cd09b",
+      "date": "2024-06-12"
+    },
+    {
+      "url": "/start/migrate/from-existing/",
+      "commit": "4b91cd09b",
+      "date": "2024-06-12"
+    },
+    {
+      "url": "/start/migrate/from-flutter/",
+      "commit": "4b91cd09b",
+      "date": "2024-06-12"
+    },
+    {
+      "url": "/distribute/apk-sign/",
+      "commit": "2149ba447",
+      "date": "2024-08-27"
+    },
+    {
+      "url": "/distribute/play-store/",
+      "commit": "14a4ff166",
+      "date": "2024-08-28"
+    },
+    {
+      "url": "/concept/rendering/",
+      "commit": "fef8100e5",
+      "date": "2024-10-01"
+    },
+    {
+      "url": "/develop/tests/pipelines/",
+      "commit": "fef8100e5",
+      "date": "2024-10-01"
+    },
+    {
+      "url": "/develop/tests/pipelines/github/",
+      "commit": "fef8100e5",
+      "date": "2024-10-01",
+      "suggestion": {
+        "to": "/distribute/pipelines/github/",
+        "score": 0.82,
+        "basis": "path"
+      }
+    },
+    {
+      "url": "/develop/tests/pipelines/gitlab/",
+      "commit": "fef8100e5",
+      "date": "2024-10-01"
+    },
+    {
+      "url": "/distribute/pipelines/",
+      "commit": "fef8100e5",
+      "date": "2024-10-01"
+    },
+    {
+      "url": "/distribute/pipelines/gitlab/",
+      "commit": "fef8100e5",
+      "date": "2024-10-01"
+    },
+    {
+      "url": "/distribute/steam/",
+      "commit": "fef8100e5",
+      "date": "2024-10-01"
+    },
+    {
+      "url": "/learn/sidecar-python/",
+      "commit": "fef8100e5",
+      "date": "2024-10-01"
+    },
+    {
+      "url": "/learn/tokio-runtime/",
+      "commit": "fef8100e5",
+      "date": "2024-10-01"
+    },
+    {
+      "url": "/start/frontend/sycamore/",
+      "commit": "fef8100e5",
+      "date": "2024-10-01"
+    },
+    {
+      "url": "/start/frontend/webpack/",
+      "commit": "fef8100e5",
+      "date": "2024-10-01"
+    },
+    {
+      "url": "/start/frontend/yew/",
+      "commit": "fef8100e5",
+      "date": "2024-10-01"
+    },
+    {
+      "url": "/start/migrate/from-electron/",
+      "commit": "fef8100e5",
+      "date": "2024-10-01"
+    },
+    {
+      "url": "/blog/tauri-verso-integration/",
+      "commit": "cf21ed3a2",
+      "date": "2025-03-30"
+    },
+    {
+      "url": "/develop/tests/webdriver/example/",
+      "commit": "037b32b6f",
+      "date": "2025-07-02",
+      "human": "/develop/tests/webdriver/"
+    },
+    {
+      "url": "/reference/acl/core-permissions/",
+      "commit": "d7cfaaacd",
+      "date": "2026-07-22",
+      "suggestion": {
+        "to": "/security/permissions/",
+        "score": 0.62,
+        "basis": "path"
+      }
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+name: Live checks
+
+# Network checks that need the open internet: verify benchmark orphans on the
+# live sites and run the history scanner on a few domains.
+on:
+  workflow_dispatch:
+    inputs:
+      domains:
+        description: Domains to scan (space separated)
+        default: docs.astro.build tauri.app biomejs.dev
+        required: false
+
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build -w permalock
+      - name: Verify benchmark orphans on the live sites
+        run: |
+          for f in bench/results/*.json; do
+            node bench/verify-orphans.mjs "$f" | tee -a "$GITHUB_STEP_SUMMARY"
+            echo >> "$GITHUB_STEP_SUMMARY"
+          done
+      - name: Scan domain history
+        run: |
+          mkdir -p scan
+          for d in ${{ inputs.domains }}; do
+            node packages/permalock/dist/cli.js scan "$d" --max 1500 --json > "scan/$d.json" || true
+            node -e "const s=require('./scan/$d.json');console.log('### '+s.domain+'\n\n'+s.published+' URLs published, '+s.checked+' checked: '+JSON.stringify(s.counts)+'\n\nSources: '+JSON.stringify(s.sources)+(s.errors.length?'\n\nErrors: '+s.errors.join('; '):''))" >> "$GITHUB_STEP_SUMMARY" || true
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: live-checks
+          path: scan/
