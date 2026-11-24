@@ -58,7 +58,7 @@ export interface ScanResult {
 export interface Suggestion {
   to: string;
   score: number;
-  basis: 'content' | 'path';
+  basis: 'content' | 'path' | 'redirect';
 }
 
 export interface Orphan {

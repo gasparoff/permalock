@@ -195,10 +195,22 @@ export function resolve(input: ResolveInput): Resolution {
     res.orphans.push(orphan);
   }
 
-  // Redirects the site serves from its own config are public URLs too: lock them.
-  for (const [from, to] of input.knownRedirects ?? []) {
-    if (urls[from] || from === to || validateUrlKey(from)) continue;
-    setRedirect(from, to, 'config');
+  // Redirects the site serves from its own configuration (framework config,
+  // generator aliases, i18n fallbacks) are public URLs too: lock them, and
+  // follow the configuration when it changes their target.
+  const known = input.knownRedirects ?? new Map<string, string>();
+  for (const [from, to] of known) {
+    if (from === to || validateUrlKey(from)) continue;
+    const prev = urls[from];
+    if (!prev) setRedirect(from, to, 'config');
+    else if (prev.type === 'redirect' && prev.reason === 'config' && prev.to !== to) prev.to = to;
+  }
+  // A configuration redirect that the site stopped serving, with no page in
+  // its place, would break: it needs a decision like any orphan.
+  for (const u of Object.keys(urls).sort()) {
+    const e = urls[u];
+    if (e.type !== 'redirect' || e.reason !== 'config' || known.has(u) || built.has(u)) continue;
+    res.orphans.push({ url: u, suggestion: { to: e.to, score: 1, basis: 'redirect' } });
   }
 
   // Step 3: redirect hygiene

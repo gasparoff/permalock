@@ -10,7 +10,12 @@ describe('conformance: resolve', () => {
   for (const f of readdirSync(dir).filter((f) => f.endsWith('.json')).sort()) {
     const c = JSON.parse(readFileSync(path.join(dir, f), 'utf8'));
     it(`${f}: ${c.description}`, () => {
-      const r = resolve({ lock: parseLockfile(JSON.stringify(c.lock)), pages: c.build, options: c.options });
+      const r = resolve({
+        lock: parseLockfile(JSON.stringify(c.lock)),
+        pages: c.build,
+        knownRedirects: c.knownRedirects ? new Map(Object.entries(c.knownRedirects)) : undefined,
+        options: c.options,
+      });
       expect(serializeLockfile(r.lock)).toBe(serializeLockfile(parseLockfile(JSON.stringify(c.expect.lock))));
       expect(r.orphans.map((o) => o.url).sort()).toEqual([...c.expect.orphans].sort());
       for (const [url, to] of Object.entries(c.expect.suggestions ?? {}))

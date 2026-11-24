@@ -12,6 +12,7 @@ Each file is one case:
   "description": "what the case proves",
   "lock": { "permalock": 1, "urls": { } },
   "build": [ { "url": "/a/", "source": "…", "hash": "…", "sim": "…" } ],
+  "knownRedirects": { "/alias/": "/target/" },
   "options": { "autoThreshold": 0.94 },
   "expect": {
     "lock": { "permalock": 1, "urls": { } },
@@ -22,8 +23,9 @@ Each file is one case:
 }
 ```
 
-Run resolution (spec section 3) with `lock` as the previous lockfile and
-`build` as the built pages, then compare:
+Run resolution (spec section 3) with `lock` as the previous lockfile,
+`build` as the built pages and `knownRedirects` (optional) as the redirects
+the site serves from its own configuration, then compare:
 
 - `expect.lock`: the resulting lockfile, compared after serialisation
   (spec 2.7), so it must be byte-identical;

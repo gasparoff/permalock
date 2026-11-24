@@ -58,7 +58,13 @@ export function formatResolution(r: Resolution, opts: FormatOptions = {}): strin
   for (const o of r.orphans) {
     lines.push(`  ${c.red('✗')} ${pad(o.url)}${c.red('orphan')}${o.origin ? c.dim(` (from ${o.origin})`) : ''}`);
     if (o.suggestion) {
-      lines.push(c.dim(`      suggestion: ${o.suggestion.to}  (${o.suggestion.basis} ${o.suggestion.score.toFixed(2)})`));
+      lines.push(
+        c.dim(
+          o.suggestion.basis === 'redirect'
+            ? `      this redirect is no longer in your site's configuration (it went to ${o.suggestion.to})`
+            : `      suggestion: ${o.suggestion.to}  (${o.suggestion.basis} ${o.suggestion.score.toFixed(2)})`,
+        ),
+      );
       lines.push(c.dim(`      fix: ${cmd} redirect ${o.url} ${o.suggestion.to}   or   ${cmd} retire ${o.url}`));
     } else lines.push(c.dim(`      fix: ${cmd} redirect ${o.url} <new-url>   or   ${cmd} retire ${o.url}`));
   }

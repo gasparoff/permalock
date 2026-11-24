@@ -1,0 +1,22 @@
+{
+  "description": "Redirects served by the site's own configuration are locked, follow the configuration, and become orphans when the site stops serving them.",
+  "lock": { "permalock": 1, "urls": {
+    "/": { "type": "page" },
+    "/old/": { "type": "redirect", "to": "/", "reason": "config" },
+    "/moved/": { "type": "redirect", "to": "/a/", "reason": "config" }
+  } },
+  "build": [ { "url": "/" }, { "url": "/b/" } ],
+  "knownRedirects": { "/new-alias/": "/", "/moved/": "/b/" },
+  "expect": {
+    "lock": { "permalock": 1, "urls": {
+      "/": { "type": "page" },
+      "/b/": { "type": "page" },
+      "/moved/": { "type": "redirect", "to": "/b/", "reason": "config" },
+      "/new-alias/": { "type": "redirect", "to": "/", "reason": "config" },
+      "/old/": { "type": "redirect", "to": "/", "reason": "config" }
+    } },
+    "orphans": ["/old/"],
+    "suggestions": { "/old/": "/" },
+    "errors": []
+  }
+}

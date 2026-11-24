@@ -106,7 +106,9 @@ const bare = (p: string) => (p.length > 1 ? p.replace(/\/+$/, '') : p);
 export function lockRedirects(lock: Lockfile, base: string): Record<string, string> {
   const out: Record<string, string> = {};
   for (const [url, e] of Object.entries(lock.urls)) {
-    if (e.type !== 'redirect') continue;
+    // redirects served by the site's own configuration stay there: injecting
+    // them could hide a page that later replaces them (i18n fallbacks)
+    if (e.type !== 'redirect' || e.reason === 'config') continue;
     const from = decodeURI(stripBase(url, base));
     if (/[[\]]/.test(from)) continue;
     out[from] = /^https?:\/\//.test(e.to) ? e.to : withBase(stripBase(e.to, base), base);
