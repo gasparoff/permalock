@@ -16,6 +16,7 @@ import {
   type ResolveOptions,
 } from 'permalock';
 import { createMatcher, loadEntries } from './content.js';
+import { setupDev } from './dev.js';
 
 export interface PermalockOptions {
   /** Lockfile path, relative to the project root. Default "permalock.json" */
@@ -43,6 +44,8 @@ export interface PermalockOptions {
    * Static hosts: "netlify", "cloudflare", "apache" (.htaccess), "nginx", "json".
    */
   emit?: EmitTarget | EmitTarget[];
+  /** Show the Permalock app in the dev toolbar and warn when a locked page's file disappears. Default true */
+  devToolbar?: boolean;
   /** Split the lockfile into shards (large sites). */
   shard?: boolean | number;
 }
@@ -132,7 +135,7 @@ export default function permalock(options: PermalockOptions = {}): AstroIntegrat
   return {
     name: 'permalock',
     hooks: {
-      'astro:config:setup': async ({ config: cfg, command, updateConfig, addMiddleware, logger }) => {
+      'astro:config:setup': async ({ config: cfg, command, updateConfig, addMiddleware, addDevToolbarApp, logger }) => {
         const root = fileURLToPath(cfg.root);
         lockfilePath = path.resolve(root, options.lockfile ?? LOCKFILE_NAME);
         let lock: Lockfile | undefined;
@@ -173,6 +176,14 @@ export default function permalock(options: PermalockOptions = {}): AstroIntegrat
           ],
         };
         updateConfig(update);
+        if (command === 'dev' && options.devToolbar !== false) {
+          addDevToolbarApp({
+            id: 'permalock',
+            name: 'Permalock',
+            icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>',
+            entrypoint: new URL('./toolbar-app.js', import.meta.url),
+          });
+        }
         if (goneList.length) addMiddleware({ entrypoint: new URL('./middleware.js', import.meta.url), order: 'pre' });
         if (command === 'build' && lock)
           logger.debug(`${Object.keys(injected).length} redirect(s) from ${path.basename(lockfilePath)}`);
@@ -180,6 +191,11 @@ export default function permalock(options: PermalockOptions = {}): AstroIntegrat
 
       'astro:config:done': ({ config: cfg }) => {
         config = cfg;
+      },
+
+      'astro:server:setup': ({ server, toolbar, logger }) => {
+        if (options.devToolbar === false) return;
+        setupDev({ root: fileURLToPath(config.root), lockfilePath, base: config.base, server, toolbar, logger });
       },
 
       'astro:routes:resolved': ({ routes: r }) => {

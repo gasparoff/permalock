@@ -77,6 +77,13 @@ permalock({
 with `emit: 'netlify'` or `emit: 'cloudflare'` the host answers a real `301`
 instead (and `410` for removed URLs on Netlify).
 
+## In `astro dev`
+
+The Permalock app in the dev toolbar shows, for the page you are on, whether
+its URL is locked, which old URLs redirect to it, and what will happen at the
+next build. When you delete or move a file that produced a locked URL, the dev
+server warns you right away instead of at build time.
+
 ## Decisions
 
 Use the `permalock` CLI that comes with the integration:
