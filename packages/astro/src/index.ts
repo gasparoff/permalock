@@ -1,3 +1,4 @@
+import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { AstroConfig, AstroIntegration, IntegrationResolvedRoute } from 'astro';
@@ -67,6 +68,37 @@ export function stripBase(p: string, base: string): string {
   return p.slice(b.length) || '/';
 }
 
+const PAGE_EXT = /\.(astro|md|mdx|markdown|html|js|ts)$/;
+
+/**
+ * URL paths (without base, without trailing slash) of the static page files in
+ * src/pages. A lockfile redirect must never shadow one of them: in Astro a
+ * redirect silently replaces a page with the same path.
+ */
+export async function staticPagePaths(pagesDir: string): Promise<Set<string>> {
+  const out = new Set<string>();
+  async function walk(dir: string, rel: string) {
+    let entries;
+    try {
+      entries = await fs.readdir(dir, { withFileTypes: true });
+    } catch {
+      return;
+    }
+    for (const e of entries) {
+      if (e.name.startsWith('_') || e.name.startsWith('.') || e.name.includes('[')) continue;
+      if (e.isDirectory()) await walk(path.join(dir, e.name), `${rel}/${e.name}`);
+      else if (PAGE_EXT.test(e.name) && !/\.d\.ts$/.test(e.name)) {
+        const name = e.name.replace(PAGE_EXT, '');
+        out.add(name === 'index' ? rel || '/' : `${rel}/${name}`);
+      }
+    }
+  }
+  await walk(pagesDir, '');
+  return out;
+}
+
+const bare = (p: string) => (p.length > 1 ? p.replace(/\/+$/, '') : p);
+
 /** Redirects to inject into the Astro config: lockfile redirects, keys without base. */
 export function lockRedirects(lock: Lockfile, base: string): Record<string, string> {
   const out: Record<string, string> = {};
@@ -113,9 +145,18 @@ export default function permalock(options: PermalockOptions = {}): AstroIntegrat
         const update: Record<string, any> = {};
         if (lock) {
           const fromLock = lockRedirects(lock, cfg.base);
-          // redirects written by hand in astro.config win over the lockfile
+          const pages = await staticPagePaths(fileURLToPath(new URL('pages/', cfg.srcDir)));
+          // redirects written by hand in astro.config win over the lockfile, and
+          // a page that exists again wins over a redirect (it is revived after the build)
           injected = {};
-          for (const [k, v] of Object.entries(fromLock)) if (!(k in (cfg.redirects ?? {}))) injected[k] = v;
+          for (const [k, v] of Object.entries(fromLock)) {
+            if (k in (cfg.redirects ?? {})) continue;
+            if (pages.has(bare(k))) {
+              logger.info(`${k} is a page again: its redirect in ${path.basename(lockfilePath)} is no longer applied`);
+              continue;
+            }
+            injected[k] = v;
+          }
           if (Object.keys(injected).length) update.redirects = injected;
           goneList = Object.entries(lock.urls)
             .filter(([, e]) => e.type === 'gone')

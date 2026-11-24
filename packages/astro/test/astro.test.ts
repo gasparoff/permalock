@@ -122,6 +122,17 @@ export default { site: 'https://example.com', base: '/docs', trailingSlash: 'nev
     expect(rules).toContain('/docs/blog/summer-sale /docs/404.html 410!');
   });
 
+  it('a page that exists again wins over a lockfile redirect', async () => {
+    const dir = fixture();
+    expect((await astroBuild(dir)).error).toBeUndefined();
+    const lock = lockOf(dir);
+    lock.urls['/about/'] = { type: 'redirect', to: '/blog/', reason: 'manual' };
+    writeFileSync(path.join(dir, 'permalock.json'), JSON.stringify(lock));
+    expect((await astroBuild(dir)).error).toBeUndefined();
+    expect(lockOf(dir).urls['/about/'].type).toBe('page');
+    expect(readFileSync(path.join(dir, 'dist/about/index.html'), 'utf8')).not.toContain('http-equiv="refresh"');
+  });
+
   it('in CI it does not write the lockfile and reports when it is stale', async () => {
     const dir = fixture();
     expect((await astroBuild(dir)).error).toBeUndefined();
