@@ -1,0 +1,65 @@
+<!doctype html>
+<!-- Source of the launch video. Outputs are real, from examples/astro-blog. -->
+<html lang="en"><head><meta charset="utf-8"><title>Permalock demo</title>
+<style>
+html,body{margin:0;height:100%;background:#0b0d10;color:#e6e6e6;font:22px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.win{position:absolute;inset:40px 56px;background:#0d1117;border-radius:14px;box-shadow:0 0 0 1px #21262d;overflow:hidden}
+.bar{height:44px;background:#161b22;display:flex;align-items:center;gap:9px;padding:0 18px;color:#8b949e;font-size:15px}
+.bar i{width:13px;height:13px;border-radius:50%;display:inline-block}.bar span{margin-left:auto;margin-right:auto}
+#t{padding:20px 28px;white-space:pre}
+.p{color:#3fb950}.d{color:#8b949e}.g{color:#3fb950}.c{color:#58a6ff}.r{color:#f85149}.y{color:#d29922}.b{font-weight:700}
+.cap{position:absolute;left:0;right:0;bottom:64px;text-align:center;font:600 30px/1.3 system-ui,sans-serif;color:#fff;opacity:0;transition:opacity .4s}
+.cap.on{opacity:1}
+#end{position:absolute;inset:0;background:#0b0d10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;opacity:0;transition:opacity .6s;font-family:system-ui,sans-serif}
+#end.on{opacity:1}#end h1{font-size:64px;margin:0}#end p{font-size:28px;margin:0;color:#c9d1d9}#end code{font:26px ui-monospace,monospace;color:#3fb950}
+</style></head><body>
+<div class="win"><div class="bar"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><span>my-astro-blog</span></div><div id="t"></div></div>
+<div class="cap" id="cap"></div>
+<div id="end"><h1>Permalock</h1><p>URLs are a public API. permalock.json is their lockfile.</p><code>npx astro add @permalock/astro</code><p class="d">permalock.dev · github.com/gasparoff/permalock</p></div>
+<script>
+const P = '<span class="p">$ </span>', L = '<span class="c">[permalock]</span> ';
+const steps = [
+  ['cap', 'I rename a blog post.'],
+  ['cmd', 'mv src/content/blog/hello-world.md src/content/blog/hello.md'],
+  ['cmd', 'astro build'],
+  ['out', '<span class="d">  generating static routes …</span>', 500],
+  ['out', L + '7 URLs locked · 1 new · <span class="b">1 redirect created</span>'],
+  ['out', L + '  <span class="g">+</span> /blog/hello/                       <span class="d">new page</span>'],
+  ['out', L + '  <span class="c">→</span> /blog/hello-world/ → /blog/hello/  <span class="d">identical content</span>', 2200],
+  ['cap', 'The old URL keeps working. Nobody wrote that redirect.', 2600],
+  ['clear'],
+  ['cap', 'Now I delete a page.'],
+  ['cmd', 'rm src/content/blog/summer-sale.md'],
+  ['cmd', 'astro build'],
+  ['out', '<span class="d">  generating static routes …</span>', 500],
+  ['out', L + '7 URLs locked · <span class="r">1 orphan</span>'],
+  ['out', L + '  <span class="r">✗</span> /blog/summer-sale/ <span class="r">orphan</span>'],
+  ['out', '<span class="r b">[AstroUserError] 1 URL would break.</span>'],
+  ['out', '<span class="d">  Hint: add a redirect or declare it removed, then build again.</span>', 2200],
+  ['cap', 'The build stops, like a type error. I decide.', 2600],
+  ['clear'],
+  ['cmd', 'npx permalock retire /blog/summer-sale/ --reason "campaign ended"'],
+  ['out', '<span class="g">✓</span> /blog/summer-sale/ declared removed (410 Gone where the host supports it)'],
+  ['cmd', 'astro build'],
+  ['out', L + '7 URLs locked'],
+  ['out', '<span class="g">✓</span> Complete!', 1800],
+  ['cap', 'Every URL you ever published: 200, one 301, or a removal you chose.', 3000],
+  ['end'],
+];
+const t = document.getElementById('t'), cap = document.getElementById('cap');
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+(async () => {
+  await sleep(600);
+  for (const [k, v, wait] of steps) {
+    if (k === 'cap') { cap.textContent = v; cap.classList.add('on'); await sleep(wait ?? 1400); cap.classList.remove('on'); }
+    else if (k === 'clear') { t.innerHTML = ''; await sleep(300); }
+    else if (k === 'cmd') {
+      const line = document.createElement('div'); line.innerHTML = P; t.append(line);
+      for (const ch of v) { line.append(ch); await sleep(28); }
+      await sleep(450);
+    } else if (k === 'out') { const line = document.createElement('div'); line.innerHTML = v; t.append(line); await sleep(wait ?? 220); }
+    else if (k === 'end') { document.getElementById('end').classList.add('on'); await sleep(3500); }
+  }
+  document.title = 'done';
+})();
+</script></body></html>

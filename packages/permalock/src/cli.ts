@@ -125,7 +125,7 @@ async function main(argv: string[]): Promise<number> {
       const lock = await mustRead(lockfilePath);
       const pointing = retire(lock, args[0], values.reason);
       await writeLockfile(lockfilePath, lock);
-      console.log(`${c.dim('✝')} ${toUrlKey(args[0], lock.site)} declared removed`);
+      console.log(`${c.green('✓')} ${toUrlKey(args[0], lock.site)} declared removed (410 Gone where the host supports it)`);
       if (pointing.length)
         console.log(c.yellow(`! ${pointing.length} redirect(s) pointed here and now lead nowhere: ${pointing.join(', ')}`));
       return 0;

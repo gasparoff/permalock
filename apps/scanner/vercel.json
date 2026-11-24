@@ -1,4 +1,5 @@
 {
+  "installCommand": "npm ci --prefix ../.. --include=dev",
   "buildCommand": "npm run build -w permalock --prefix ../..",
   "outputDirectory": "public"
 }
