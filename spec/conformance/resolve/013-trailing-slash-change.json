@@ -1,0 +1,21 @@
+{
+  "description": "Changing the trailing-slash policy moves every URL; identity makes each move certain.",
+  "lock": { "permalock": 1, "urls": {
+    "/about": { "type": "page", "source": "src/pages/about.astro" },
+    "/blog/post": { "type": "page", "source": "src/content/blog/post.md" }
+  } },
+  "build": [
+    { "url": "/about/", "source": "src/pages/about.astro" },
+    { "url": "/blog/post/", "source": "src/content/blog/post.md" }
+  ],
+  "expect": {
+    "lock": { "permalock": 1, "urls": {
+      "/about": { "type": "redirect", "to": "/about/", "reason": "same-source" },
+      "/about/": { "type": "page", "source": "src/pages/about.astro" },
+      "/blog/post": { "type": "redirect", "to": "/blog/post/", "reason": "same-source" },
+      "/blog/post/": { "type": "page", "source": "src/content/blog/post.md" }
+    } },
+    "orphans": [],
+    "errors": []
+  }
+}

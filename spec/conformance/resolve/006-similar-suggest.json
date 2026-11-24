@@ -1,0 +1,18 @@
+{
+  "description": "Rewritten page: similarity between thresholds is only a suggestion (8 bits differ = 0.875).",
+  "lock": { "permalock": 1, "urls": {
+    "/pricing/": { "type": "page", "hash": "1111111111111111", "sim": "f0f0f0f0f0f0f0f0" }
+  } },
+  "build": [
+    { "url": "/plans/", "hash": "2222222222222222", "sim": "f0f0f0f0f0f0f0ff" }
+  ],
+  "expect": {
+    "lock": { "permalock": 1, "urls": {
+      "/plans/": { "type": "page", "hash": "2222222222222222", "sim": "f0f0f0f0f0f0f0ff" },
+      "/pricing/": { "type": "page", "hash": "1111111111111111", "sim": "f0f0f0f0f0f0f0f0" }
+    } },
+    "orphans": ["/pricing/"],
+    "suggestions": { "/pricing/": "/plans/" },
+    "errors": []
+  }
+}

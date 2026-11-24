@@ -1,0 +1,19 @@
+{
+  "description": "Identical content on two new pages is not unique: no automatic redirect.",
+  "lock": { "permalock": 1, "urls": {
+    "/a/": { "type": "page", "hash": "abcdefabcdefabcd" }
+  } },
+  "build": [
+    { "url": "/b/", "hash": "abcdefabcdefabcd" },
+    { "url": "/c/", "hash": "abcdefabcdefabcd" }
+  ],
+  "expect": {
+    "lock": { "permalock": 1, "urls": {
+      "/a/": { "type": "page", "hash": "abcdefabcdefabcd" },
+      "/b/": { "type": "page", "hash": "abcdefabcdefabcd" },
+      "/c/": { "type": "page", "hash": "abcdefabcdefabcd" }
+    } },
+    "orphans": ["/a/"],
+    "errors": []
+  }
+}

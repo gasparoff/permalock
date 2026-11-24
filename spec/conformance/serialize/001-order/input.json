@@ -1,0 +1,1 @@
+{"urls":{"/b/":{"sim":"0000000000000000","type":"page","hash":"1111111111111111","source":"x.md","custom":1},"/a/":{"reason":"manual","to":"/b/","type":"redirect"},"/%C3%A8/":{"type":"gone"},"/B/":{"type":"page"}},"generator":"test","permalock":1,"site":"https://example.com"}

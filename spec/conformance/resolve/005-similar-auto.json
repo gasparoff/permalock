@@ -1,0 +1,19 @@
+{
+  "description": "Moved and lightly edited: estimated redirect above the auto threshold (2 bits differ = 0.97).",
+  "lock": { "permalock": 1, "urls": {
+    "/old-post/": { "type": "page", "hash": "1111111111111111", "sim": "f0f0f0f0f0f0f0f0" }
+  } },
+  "build": [
+    { "url": "/new-post/", "hash": "2222222222222222", "sim": "f0f0f0f0f0f0f0f3" },
+    { "url": "/other/", "hash": "3333333333333333", "sim": "0f0f0f0f0f0f0f0f" }
+  ],
+  "expect": {
+    "lock": { "permalock": 1, "urls": {
+      "/new-post/": { "type": "page", "hash": "2222222222222222", "sim": "f0f0f0f0f0f0f0f3" },
+      "/old-post/": { "type": "redirect", "to": "/new-post/", "reason": "similar:0.97" },
+      "/other/": { "type": "page", "hash": "3333333333333333", "sim": "0f0f0f0f0f0f0f0f" }
+    } },
+    "orphans": [],
+    "errors": []
+  }
+}

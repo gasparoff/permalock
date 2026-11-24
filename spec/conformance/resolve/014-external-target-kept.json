@@ -1,0 +1,16 @@
+{
+  "description": "Absolute targets recorded by people are kept and never followed.",
+  "lock": { "permalock": 1, "urls": {
+    "/": { "type": "page" },
+    "/docs/": { "type": "redirect", "to": "https://docs.example.org/", "reason": "manual" }
+  } },
+  "build": [ { "url": "/" } ],
+  "expect": {
+    "lock": { "permalock": 1, "urls": {
+      "/": { "type": "page" },
+      "/docs/": { "type": "redirect", "to": "https://docs.example.org/", "reason": "manual" }
+    } },
+    "orphans": [],
+    "errors": []
+  }
+}

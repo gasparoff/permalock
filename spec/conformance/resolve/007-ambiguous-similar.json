@@ -1,0 +1,19 @@
+{
+  "description": "Two near-identical candidates: the margin rule blocks the automatic redirect.",
+  "lock": { "permalock": 1, "urls": {
+    "/x/": { "type": "page", "sim": "f0f0f0f0f0f0f0f0" }
+  } },
+  "build": [
+    { "url": "/y/", "sim": "f0f0f0f0f0f0f0f1" },
+    { "url": "/z/", "sim": "f0f0f0f0f0f0f0f2" }
+  ],
+  "expect": {
+    "lock": { "permalock": 1, "urls": {
+      "/x/": { "type": "page", "sim": "f0f0f0f0f0f0f0f0" },
+      "/y/": { "type": "page", "sim": "f0f0f0f0f0f0f0f1" },
+      "/z/": { "type": "page", "sim": "f0f0f0f0f0f0f0f2" }
+    } },
+    "orphans": ["/x/"],
+    "errors": []
+  }
+}

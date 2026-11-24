@@ -1,0 +1,19 @@
+{
+  "description": "A page that already received a redirect moves again: the chain collapses to one hop.",
+  "lock": { "permalock": 1, "urls": {
+    "/v1/": { "type": "redirect", "to": "/v2/", "reason": "manual" },
+    "/v2/": { "type": "page", "source": "id:intro" }
+  } },
+  "build": [
+    { "url": "/v3/", "source": "id:intro" }
+  ],
+  "expect": {
+    "lock": { "permalock": 1, "urls": {
+      "/v1/": { "type": "redirect", "to": "/v3/", "reason": "manual" },
+      "/v2/": { "type": "redirect", "to": "/v3/", "reason": "same-source" },
+      "/v3/": { "type": "page", "source": "id:intro" }
+    } },
+    "orphans": [],
+    "errors": []
+  }
+}

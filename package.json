@@ -1,0 +1,17 @@
+{
+  "name": "permalock-monorepo",
+  "private": true,
+  "type": "module",
+  "workspaces": ["packages/*"],
+  "scripts": {
+    "build": "npm run build -w permalock",
+    "test": "vitest run",
+    "typecheck": "tsc -p packages/permalock --noEmit && tsc -p packages/astro --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.2.0"
+  },
+  "engines": { "node": ">=20" }
+}

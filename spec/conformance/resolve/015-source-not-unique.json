@@ -1,0 +1,19 @@
+{
+  "description": "A source that now produces two URLs is not a certain match; content decides.",
+  "lock": { "permalock": 1, "urls": {
+    "/post/": { "type": "page", "source": "src/content/post.md", "hash": "aaaaaaaaaaaaaaaa" }
+  } },
+  "build": [
+    { "url": "/en/post/", "source": "src/content/post.md", "hash": "aaaaaaaaaaaaaaaa" },
+    { "url": "/it/post/", "source": "src/content/post.md", "hash": "bbbbbbbbbbbbbbbb" }
+  ],
+  "expect": {
+    "lock": { "permalock": 1, "urls": {
+      "/en/post/": { "type": "page", "source": "src/content/post.md", "hash": "aaaaaaaaaaaaaaaa" },
+      "/it/post/": { "type": "page", "source": "src/content/post.md", "hash": "bbbbbbbbbbbbbbbb" },
+      "/post/": { "type": "redirect", "to": "/en/post/", "reason": "same-content" }
+    } },
+    "orphans": [],
+    "errors": []
+  }
+}

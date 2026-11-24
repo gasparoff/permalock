@@ -1,0 +1,16 @@
+{
+  "description": "A first build locks every page.",
+  "lock": { "permalock": 1, "urls": {} },
+  "build": [
+    { "url": "/", "source": "src/pages/index.astro" },
+    { "url": "/about/", "source": "src/pages/about.astro" }
+  ],
+  "expect": {
+    "lock": { "permalock": 1, "urls": {
+      "/": { "type": "page", "source": "src/pages/index.astro" },
+      "/about/": { "type": "page", "source": "src/pages/about.astro" }
+    } },
+    "orphans": [],
+    "errors": []
+  }
+}

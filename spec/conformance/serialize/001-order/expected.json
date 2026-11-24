@@ -1,0 +1,11 @@
+{
+  "permalock": 1,
+  "site": "https://example.com",
+  "generator": "test",
+  "urls": {
+    "/%C3%A8/": { "type": "gone" },
+    "/B/": { "type": "page" },
+    "/a/": { "type": "redirect", "to": "/b/", "reason": "manual" },
+    "/b/": { "type": "page", "source": "x.md", "hash": "1111111111111111", "sim": "0000000000000000", "custom": 1 }
+  }
+}

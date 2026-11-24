@@ -1,0 +1,18 @@
+{
+  "description": "A redirect to a removed URL is an error.",
+  "lock": { "permalock": 1, "urls": {
+    "/": { "type": "page" },
+    "/a/": { "type": "redirect", "to": "/b/" },
+    "/b/": { "type": "gone" }
+  } },
+  "build": [ { "url": "/" } ],
+  "expect": {
+    "lock": { "permalock": 1, "urls": {
+      "/": { "type": "page" },
+      "/a/": { "type": "redirect", "to": "/b/" },
+      "/b/": { "type": "gone" }
+    } },
+    "orphans": [],
+    "errors": [ { "url": "/a/", "kind": "redirect-to-gone" } ]
+  }
+}

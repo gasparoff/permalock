@@ -1,0 +1,22 @@
+{
+  "description": "A URL that was redirected or removed is built again: it is a page again.",
+  "lock": { "permalock": 1, "urls": {
+    "/back/": { "type": "gone", "reason": "temporarily removed" },
+    "/home/": { "type": "redirect", "to": "/", "reason": "manual" },
+    "/": { "type": "page" }
+  } },
+  "build": [
+    { "url": "/" },
+    { "url": "/back/" },
+    { "url": "/home/" }
+  ],
+  "expect": {
+    "lock": { "permalock": 1, "urls": {
+      "/": { "type": "page" },
+      "/back/": { "type": "page" },
+      "/home/": { "type": "page" }
+    } },
+    "orphans": [],
+    "errors": []
+  }
+}

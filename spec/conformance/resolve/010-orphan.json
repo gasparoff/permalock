@@ -1,0 +1,16 @@
+{
+  "description": "A deleted page with no match is an orphan; the lockfile keeps it.",
+  "lock": { "permalock": 1, "urls": {
+    "/": { "type": "page" },
+    "/summer-sale/": { "type": "page" }
+  } },
+  "build": [ { "url": "/" } ],
+  "expect": {
+    "lock": { "permalock": 1, "urls": {
+      "/": { "type": "page" },
+      "/summer-sale/": { "type": "page" }
+    } },
+    "orphans": ["/summer-sale/"],
+    "errors": []
+  }
+}

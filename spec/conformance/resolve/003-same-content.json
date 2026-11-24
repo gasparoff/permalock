@@ -1,0 +1,17 @@
+{
+  "description": "A renamed file with identical content: certain redirect.",
+  "lock": { "permalock": 1, "urls": {
+    "/guide/setup/": { "type": "page", "source": "src/content/docs/setup.md", "hash": "abcdefabcdefabcd", "sim": "0123456789abcdef" }
+  } },
+  "build": [
+    { "url": "/guide/install/", "source": "src/content/docs/install.md", "hash": "abcdefabcdefabcd", "sim": "0123456789abcdef" }
+  ],
+  "expect": {
+    "lock": { "permalock": 1, "urls": {
+      "/guide/install/": { "type": "page", "source": "src/content/docs/install.md", "hash": "abcdefabcdefabcd", "sim": "0123456789abcdef" },
+      "/guide/setup/": { "type": "redirect", "to": "/guide/install/", "reason": "same-content" }
+    } },
+    "orphans": [],
+    "errors": []
+  }
+}

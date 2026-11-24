@@ -1,0 +1,16 @@
+{
+  "description": "Redirect loops are errors.",
+  "lock": { "permalock": 1, "urls": {
+    "/a/": { "type": "redirect", "to": "/b/" },
+    "/b/": { "type": "redirect", "to": "/a/" }
+  } },
+  "build": [],
+  "expect": {
+    "lock": { "permalock": 1, "urls": {
+      "/a/": { "type": "redirect", "to": "/b/" },
+      "/b/": { "type": "redirect", "to": "/a/" }
+    } },
+    "orphans": [],
+    "errors": [ { "url": "/a/", "kind": "cycle" }, { "url": "/b/", "kind": "cycle" } ]
+  }
+}

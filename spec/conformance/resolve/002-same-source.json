@@ -1,0 +1,17 @@
+{
+  "description": "A slug change keeps the source: certain redirect.",
+  "lock": { "permalock": 1, "urls": {
+    "/blog/hello-world/": { "type": "page", "source": "src/content/blog/hello.md", "hash": "1111111111111111", "sim": "ffffffff00000000" }
+  } },
+  "build": [
+    { "url": "/blog/hello/", "source": "src/content/blog/hello.md", "hash": "2222222222222222", "sim": "ffffffff00000001" }
+  ],
+  "expect": {
+    "lock": { "permalock": 1, "urls": {
+      "/blog/hello-world/": { "type": "redirect", "to": "/blog/hello/", "reason": "same-source" },
+      "/blog/hello/": { "type": "page", "source": "src/content/blog/hello.md", "hash": "2222222222222222", "sim": "ffffffff00000001" }
+    } },
+    "orphans": [],
+    "errors": []
+  }
+}
