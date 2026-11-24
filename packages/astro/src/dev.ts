@@ -43,7 +43,7 @@ export function setupDev(opts: { root: string; lockfilePath: string; base: strin
     const inbound = key
       ? Object.entries(lock!.urls)
           .filter(([, e]) => e.type === 'redirect' && e.to === key)
-          .map(([from, e]) => ({ from, reason: (e as any).reason }))
+          .map(([from, e]) => ({ from, reason: e.reason }))
       : [];
     toolbar.send('permalock:status', {
       path: p,
@@ -69,7 +69,7 @@ export function setupDev(opts: { root: string; lockfilePath: string; base: strin
     if (!lock) return;
     const rel = path.relative(root, file).split(path.sep).join('/');
     const urls = Object.entries(lock.urls)
-      .filter(([, e]) => e.type === 'page' && (e as any).source === rel)
+      .filter(([, e]) => e.type === 'page' && e.source === rel)
       .map(([u]) => u);
     if (!urls.length) return;
     const msg = `${rel} published ${urls.join(', ')}. If you moved it, Permalock will redirect the old URL at the next build; if you deleted it, the build will ask you to redirect or retire ${urls.length > 1 ? 'them' : 'it'}.`;

@@ -23,10 +23,10 @@ export function compareKeys(a: string, b: string): number {
 }
 
 export function serializeEntry(entry: Entry): string {
-  const keys = Object.keys(entry).filter((k) => (entry as any)[k] !== undefined);
+  const keys = Object.keys(entry).filter((k) => entry[k] !== undefined);
   const known = ENTRY_KEY_ORDER.filter((k) => keys.includes(k));
   const unknown = keys.filter((k) => !ENTRY_KEY_ORDER.includes(k)).sort(compareKeys);
-  const parts = [...known, ...unknown].map((k) => `${JSON.stringify(k)}: ${JSON.stringify((entry as any)[k])}`);
+  const parts = [...known, ...unknown].map((k) => `${JSON.stringify(k)}: ${JSON.stringify(entry[k])}`);
   return `{ ${parts.join(', ')} }`;
 }
 

@@ -127,6 +127,22 @@ function configRedirects(config: AstroConfig): Map<string, string> {
   return out;
 }
 
+/** Identity of static routes: URL -> the page file that produced it. */
+function routeSources(routes: IntegrationResolvedRoute[], assets: Map<string, URL[]>, outDir: string, config: AstroConfig) {
+  const byPattern = new Map(routes.map((r) => [r.pattern, r]));
+  const sources = new Map<string, string>();
+  for (const [pattern, files] of assets) {
+    const route = byPattern.get(pattern);
+    if (route?.type !== 'page' || route.params.length > 0 || route.origin !== 'project') continue;
+    for (const f of files) {
+      const file = fileURLToPath(f);
+      if (file.endsWith('.html'))
+        sources.set(fileToUrl(path.relative(outDir, file), { base: config.base, trailingSlash: config.trailingSlash }), route.entrypoint);
+    }
+  }
+  return sources;
+}
+
 export default function permalock(options: PermalockOptions = {}): AstroIntegration {
   let config: AstroConfig;
   let lockfilePath = '';
@@ -210,19 +226,7 @@ export default function permalock(options: PermalockOptions = {}): AstroIntegrat
         const ci = isCI();
         const write = options.write ?? !ci;
 
-        // identity of static routes: the page file that produced the URL
-        const byPattern = new Map(routes.map((r) => [r.pattern, r]));
-        const sources = new Map<string, string>();
-        for (const [pattern, files] of assets) {
-          const route = byPattern.get(pattern);
-          if (!route || route.type !== 'page' || route.params.length > 0 || route.origin !== 'project') continue;
-          for (const f of files) {
-            const file = fileURLToPath(f);
-            if (!file.endsWith('.html')) continue;
-            const rel = path.relative(outDir, file);
-            sources.set(fileToUrl(rel, { base: config.base, trailingSlash: config.trailingSlash }), route.entrypoint);
-          }
-        }
+        const sources = routeSources(routes, assets, outDir, config);
 
         const knownRedirects = configRedirects(config);
         const resolve: ResolveOptions = {

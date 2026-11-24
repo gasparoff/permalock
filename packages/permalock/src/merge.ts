@@ -24,7 +24,7 @@ export function mergeLockfiles(base: Lockfile, ours: Lockfile, theirs: Lockfile)
     if (same(o, t)) pick = o;
     else if (same(b, o)) pick = t;
     else if (same(b, t)) pick = o;
-    else if (o && t && o.type === t.type && (o as any).to === (t as any).to) pick = o;
+    else if (o && t && o.type === t.type && o.to === t.to) pick = o;
     else {
       conflicts.push({ url: k, ours: o, theirs: t });
       pick = o ?? t; // keep something sensible; the conflict is reported

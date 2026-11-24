@@ -118,7 +118,7 @@ export function resolve(input: ResolveInput): Resolution {
     // keep unknown fields of an existing page entry
     if (prev && prev.type === 'page') {
       for (const [k, v] of Object.entries(prev)) {
-        if (!['type', 'source', 'hash', 'sim', 'origin', 'to', 'reason'].includes(k)) (entry as any)[k] = v;
+        if (!['type', 'source', 'hash', 'sim', 'origin', 'to', 'reason'].includes(k)) entry[k] = v;
       }
     }
     urls[p.url] = entry;

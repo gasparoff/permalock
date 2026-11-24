@@ -116,7 +116,7 @@ async function main(argv: string[]): Promise<number> {
       const errors = addRedirect(lock, args[0], args[1]);
       await writeLockfile(lockfilePath, lock);
       const from = toUrlKey(args[0], lock.site);
-      console.log(`${c.cyan('→')} ${from} → ${(lock.urls[from] as any).to}`);
+      console.log(`${c.cyan('→')} ${from} → ${lock.urls[from].to}`);
       for (const e of errors) console.log(`${c.yellow('!')} ${e.url}: ${e.message}`);
       return 0;
     }
