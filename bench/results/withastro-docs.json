@@ -1,7 +1,9 @@
 {
-  "repo": "https://github.com/withastro/docs",
+  "repo": "withastro/docs",
+  "site": "docs.astro.build",
   "head": "6304b44b4",
-  "lang": "en",
+  "firstCommit": "2022-01-03",
+  "humanRules": 71,
   "commitsReplayed": 3189,
   "seconds": 46,
   "urlsEverPublished": 528,

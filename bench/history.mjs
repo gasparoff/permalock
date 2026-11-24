@@ -33,11 +33,12 @@ function urlFor(file) {
     if (!EXT_RE.test(p) || (c.skip ?? []).some((s) => p.startsWith(s))) return undefined;
     p = p.replace(EXT_RE, '');
     if (p.includes('[') || p.split('/').some((s) => s.startsWith('_'))) return undefined;
-    // Starlight slugs: github-slugger per segment (lowercase, drop punctuation, spaces to "-")
-    p = p
-      .split('/')
-      .map((seg) => seg.toLowerCase().replace(/[^\p{L}\p{N}\s_-]/gu, '').replace(/\s/g, '-'))
-      .join('/');
+    // Content collections use github-slugger per segment; file routes keep the file name
+    if (!c.dir.startsWith('src/pages/'))
+      p = p
+        .split('/')
+        .map((seg) => seg.toLowerCase().replace(/[^\p{L}\p{N}\s_-]/gu, '').replace(/\s/g, '-'))
+        .join('/');
     if (p === 'index') return c.url;
     if (p.endsWith('/index')) p = p.slice(0, -6);
     return `${c.url}${p}/`;
