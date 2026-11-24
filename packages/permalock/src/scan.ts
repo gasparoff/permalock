@@ -149,13 +149,33 @@ export async function scanBuild(dir: string, opts: ScanOptions = {}): Promise<Sc
 
 const CANDIDATE_DIRS = ['dist', 'build', 'out', '_site', 'public'];
 
+async function hasHtml(dir: string, depth = 2): Promise<boolean> {
+  let entries;
+  try {
+    entries = await fs.readdir(dir, { withFileTypes: true });
+  } catch {
+    return false;
+  }
+  if (entries.some((e) => e.isFile() && e.name.endsWith('.html'))) return true;
+  if (depth === 0) return false;
+  for (const e of entries) if (e.isDirectory() && !e.name.startsWith('_') && !e.name.startsWith('.') && (await hasHtml(path.join(dir, e.name), depth - 1))) return true;
+  return false;
+}
+
 /** Guess the build directory of a project. */
 export async function detectBuildDir(cwd: string): Promise<string | undefined> {
   for (const d of CANDIDATE_DIRS) {
-    try {
-      await fs.access(path.join(cwd, d, 'index.html'));
-      return path.join(cwd, d);
-    } catch {}
+    const dir = path.join(cwd, d);
+    // "public" is a source folder in Vite/Astro projects: only take it when it holds a site
+    if (d === 'public') {
+      try {
+        await fs.access(path.join(dir, 'index.html'));
+        return dir;
+      } catch {
+        continue;
+      }
+    }
+    if (await hasHtml(dir)) return dir;
   }
   return undefined;
 }

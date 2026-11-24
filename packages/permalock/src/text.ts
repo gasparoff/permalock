@@ -73,23 +73,39 @@ export function contentHash(text: string): string {
   return createHash('sha256').update(text, 'utf8').digest('hex').slice(0, 16);
 }
 
-const encoder = new TextEncoder();
 const TWO32 = 4294967296;
 
 /** FNV-1a 64 over UTF-8 bytes, returned as [hi, lo] unsigned 32-bit halves. */
 export function fnv1a64(s: string): [number, number] {
   let hi = 0xcbf29ce4;
   let lo = 0x84222325;
-  const bytes = encoder.encode(s);
-  for (let i = 0; i < bytes.length; i++) {
-    lo = (lo ^ bytes[i]) >>> 0;
+  const step = (byte: number) => {
+    lo = (lo ^ byte) >>> 0;
     // multiply (hi, lo) by 0x100000001b3 = 2^40 + 0x1b3, mod 2^64
     const t = lo * 0x1b3;
     const carry = Math.floor(t / TWO32);
-    const newLo = t >>> 0;
-    const newHi = (hi * 0x1b3 + carry + ((lo << 8) >>> 0)) >>> 0;
-    hi = newHi;
-    lo = newLo;
+    hi = (hi * 0x1b3 + carry + ((lo << 8) >>> 0)) >>> 0;
+    lo = t >>> 0;
+  };
+  // inline UTF-8 encoding (no allocation)
+  for (let i = 0; i < s.length; i++) {
+    let c = s.charCodeAt(i);
+    if (c < 0x80) step(c);
+    else if (c < 0x800) {
+      step(0xc0 | (c >> 6));
+      step(0x80 | (c & 63));
+    } else if (c >= 0xd800 && c < 0xdc00 && i + 1 < s.length && (s.charCodeAt(i + 1) & 0xfc00) === 0xdc00) {
+      c = 0x10000 + ((c - 0xd800) << 10) + (s.charCodeAt(++i) - 0xdc00);
+      step(0xf0 | (c >> 18));
+      step(0x80 | ((c >> 12) & 63));
+      step(0x80 | ((c >> 6) & 63));
+      step(0x80 | (c & 63));
+    } else {
+      if (c >= 0xd800 && c < 0xe000) c = 0xfffd; // lone surrogate, as TextEncoder does
+      step(0xe0 | (c >> 12));
+      step(0x80 | ((c >> 6) & 63));
+      step(0x80 | (c & 63));
+    }
   }
   return [hi, lo];
 }

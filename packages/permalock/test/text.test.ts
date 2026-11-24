@@ -11,6 +11,16 @@ describe('text', () => {
     expect(hex(fnv1a64('foobar'))).toBe('85944171f73967e8');
   });
 
+  it('FNV-1a 64 hashes UTF-8 bytes', () => {
+    // reference: same bytes through TextEncoder
+    const ref = (str: string) => {
+      let h = 0xcbf29ce484222325n;
+      for (const b of new TextEncoder().encode(str)) h = ((h ^ BigInt(b)) * 0x100000001b3n) & 0xffffffffffffffffn;
+      return h.toString(16).padStart(16, '0');
+    };
+    for (const str of ['caffè', 'città più bella', '日本語のテキスト', 'emoji 🚀 ok', 'lone \ud800 x']) expect(hex(fnv1a64(str))).toBe(ref(str));
+  });
+
   it('extracts main text without chrome, scripts and entities', () => {
     const t = normalizedText(article('Hello &amp; welcome', 'Caf&eacute; &#8212; ok'));
     expect(t).toBe('hello & welcome café — ok');
