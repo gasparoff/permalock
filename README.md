@@ -1,23 +1,34 @@
-# Permalock
+<h1 align="center">Permalock</h1>
 
-**URLs are a public API. `permalock.json` is their lockfile.**
+<p align="center"><b>URLs are a public API. <code>permalock.json</code> is their lockfile.</b></p>
 
-Every URL your site ever published keeps working: it answers `200`, exactly
-one `301` to a page that does, or a removal you declared on purpose. When a
-page moves, Permalock writes the redirect for you. When a URL would vanish
-without a decision, your build fails, the same way it fails on a type error.
+<p align="center">
+Every URL your site ever published keeps working: <code>200</code>, exactly one <code>301</code>, or a removal you decided.<br>
+Pages that move get their redirect automatically. A URL that would vanish fails the build, like a type error.
+</p>
 
-```text
-$ astro build
-[permalock] 412 URLs locked · 2 new · 2 redirects created · 1 orphan
-[permalock]   + /blog/hello/                       new page
-[permalock]   + /blog/pasta-perfect/               new page
-[permalock]   → /blog/hello-world/ → /blog/hello/  same source file
-[permalock]   → /docs/setup/ → /docs/install/      identical content
-[permalock]   ✗ /blog/summer-sale/                 orphan
-[permalock]       fix: npx permalock redirect /blog/summer-sale/ <new-url>   or   npx permalock retire /blog/summer-sale/
-[ERROR] [permalock] 1 URL(s) would break.
-```
+<p align="center">
+<a href="https://github.com/gasparoff/permalock/actions/workflows/ci.yml"><img src="https://github.com/gasparoff/permalock/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+<img src="https://img.shields.io/badge/spec-v1%20draft-blue" alt="Spec v1 draft">
+<img src="https://img.shields.io/badge/license-MIT-green" alt="MIT">
+</p>
+
+<p align="center"><img src=".github/assets/demo.svg" width="860" alt="astro build with Permalock: two redirects created automatically, one orphan URL stops the build"></p>
+
+<p align="center">
+<a href="#quick-start">Quick start</a> ·
+<a href="#how-it-works">How it works</a> ·
+<a href="bench/README.md">Benchmark</a> ·
+<a href="spec/permalock-v1.md">Specification</a>
+</p>
+
+### Proof, not promises
+
+We replayed **3,189 commits** of the Astro documentation (2022–2026) as if
+Permalock had run on every merge. It would have written **32** of the
+redirects the maintainers wrote by hand, with **zero wrong redirects**, and it
+would have stopped every URL that was removed without one.
+[Method and data](bench/README.md).
 
 > **Status: pre-release (0.1).** The lockfile format is a
 > [draft specification](spec/permalock-v1.md). Feedback welcome.
