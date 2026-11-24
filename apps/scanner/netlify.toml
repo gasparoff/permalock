@@ -1,0 +1,5 @@
+[build]
+  base = "apps/scanner"
+  command = "npm run build -w permalock --prefix ../.."
+  publish = "public"
+  functions = "netlify/functions"

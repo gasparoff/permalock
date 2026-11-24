@@ -1,4 +1,4 @@
-import type { collectHistory, LiveCheck } from './history.js';
+import { checkLive, collectHistory, type HistoryOptions, type LiveCheck } from './history.js';
 import { c } from './report.js';
 
 type History = Awaited<ReturnType<typeof collectHistory>>;
@@ -34,15 +34,32 @@ export function summarizeScan(history: History, live: LiveCheck[], published: nu
   };
 }
 
+export interface ScanDomainOptions extends HistoryOptions {
+  /** Max URLs checked on the live site; a larger history is sampled evenly. Default 2000 */
+  max?: number;
+  concurrency?: number;
+  onProgress?: (done: number, total: number) => void;
+}
+
+/** Find every URL a domain published and check how each one answers today. */
+export async function scanDomain(domain: string, opts: ScanDomainOptions = {}): Promise<ScanSummary> {
+  const history = await collectHistory(domain, opts);
+  const paths = history.urls.map((u) => u.path);
+  const max = opts.max ?? 2000;
+  const sample = paths.length > max ? paths.filter((_, i) => i % Math.ceil(paths.length / max) === 0) : paths;
+  const live = await checkLive(history.domain, sample, { fetch: opts.fetch, concurrency: opts.concurrency, onProgress: opts.onProgress });
+  return summarizeScan(history, live, paths.length);
+}
+
 const n = (x: number) => x.toLocaleString('en-US');
 const pct = (a: number, b: number) => (b ? `${((a / b) * 100).toFixed(1)}%` : '0%');
 const SOURCE_NAMES: Record<string, string> = { wayback: 'Wayback Machine', sitemap: 'current sitemaps', 'archived-sitemap': 'archived sitemaps' };
 
 export function headline(s: ScanSummary): string {
   const since = s.firstSeen ? ` since ${s.firstSeen.slice(0, 4)}` : '';
-  const lost = s.checked < s.published ? `${pct(s.counts.broken, s.checked)} of a sample of ${n(s.checked)}` : n(s.counts.broken);
-  const verb = s.checked >= s.published && s.counts.broken === 1 ? 'is' : 'are';
-  return `${s.domain} has published ${n(s.published)} URLs${since}. ${lost} of them ${verb} broken today.`;
+  const head = `${s.domain} has published ${n(s.published)} URLs${since}.`;
+  if (s.checked < s.published) return `${head} In a sample of ${n(s.checked)}, ${pct(s.counts.broken, s.checked)} are broken today.`;
+  return `${head} ${n(s.counts.broken)} of them ${s.counts.broken === 1 ? 'is' : 'are'} broken today.`;
 }
 
 export function renderScanText(s: ScanSummary): string {

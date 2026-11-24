@@ -1,0 +1,4 @@
+{
+  "buildCommand": "npm run build -w permalock --prefix ../..",
+  "outputDirectory": "public"
+}

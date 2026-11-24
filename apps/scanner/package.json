@@ -1,0 +1,12 @@
+{
+  "name": "@permalock/scanner",
+  "private": true,
+  "type": "module",
+  "description": "Public web scanner: how many URLs has a site lost?",
+  "scripts": {
+    "start": "node server.mjs"
+  },
+  "dependencies": {
+    "permalock": "*"
+  }
+}

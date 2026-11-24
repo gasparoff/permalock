@@ -19,7 +19,7 @@ export { mergeLockfiles, type MergeResult } from './merge.js';
 export { emit, writeEmitted, redirectHtml, htmlFileFor, EMIT_FORMATS, type EmitFormat, type EmitResult } from './emit.js';
 export { verify, type VerifyOptions, type VerifyResult, type VerifyItem } from './verify.js';
 export { collectHistory, waybackUrls, sitemapUrls, checkLive, parseSitemap, toSitePath, domainOf } from './history.js';
-export { summarizeScan, renderScanText, renderScanHtml, type ScanSummary } from './scanreport.js';
+export { scanDomain, summarizeScan, renderScanText, renderScanHtml, headline, type ScanSummary, type ScanDomainOptions } from './scanreport.js';
 export { checkProject, type CheckProjectOptions, type CheckProjectResult } from './project.js';
 export { formatResolution, summaryLine, reasonLabel } from './report.js';
 export {

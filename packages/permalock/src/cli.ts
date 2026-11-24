@@ -13,7 +13,7 @@ import { checkProject } from './project.js';
 import { c, formatResolution, reasonLabel, summaryLine } from './report.js';
 import { passes, pathSimilarity } from './resolve.js';
 import { detectBuildDir } from './scan.js';
-import { renderScanHtml, renderScanText, summarizeScan } from './scanreport.js';
+import { renderScanHtml, renderScanText, scanDomain } from './scanreport.js';
 import { verify } from './verify.js';
 import type { Lockfile, Orphan } from './types.js';
 
@@ -384,16 +384,14 @@ async function runScan(domainArg: string | undefined, values: Values): Promise<n
   const progress = !values.json && process.stderr.isTTY;
   const step = (m: string) => progress && process.stderr.write(`\r\x1b[K${c.dim(m)}`);
   step(`collecting the history of ${domain}…`);
-  const history = await collectHistory(domain, { wayback: !values['no-wayback'], onStep: step });
-  const max = values.max ? Number(values.max) : 2000;
-  const paths = history.urls.map((u) => u.path);
-  const sample = paths.length > max ? paths.filter((_, i) => i % Math.ceil(paths.length / max) === 0) : paths;
-  const live = await checkLive(domain, sample, {
-    concurrency: values.concurrency ? Number(values.concurrency) : 8,
+  const summary = await scanDomain(domain, {
+    wayback: !values['no-wayback'],
+    max: values.max ? Number(values.max) : undefined,
+    concurrency: values.concurrency ? Number(values.concurrency) : undefined,
+    onStep: step,
     onProgress: (d, t) => step(`checking ${d}/${t} URLs on https://${domain}…`),
   });
   if (progress) process.stderr.write('\r\x1b[K');
-  const summary = summarizeScan(history, live, paths.length);
   if (values.html) {
     await fs.writeFile(values.html, renderScanHtml(summary));
     if (!values.json) console.log(c.dim(`report written to ${values.html}`));

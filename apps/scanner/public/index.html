@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>How many URLs has your site lost? · Permalock</title>
+<meta name="description" content="Find every URL a site ever published (Wayback Machine and sitemaps) and see how many are broken today.">
+<meta property="og:title" content="How many URLs has your site lost?">
+<meta property="og:description" content="Every URL a site ever published, checked on the live site. Free, no signup.">
+<style>
+:root{--bg:#fbfaf7;--fg:#1c1b19;--muted:#6b675f;--line:#e4e0d6;--card:#fff;--ok:#2f7d4f;--info:#2b6cb0;--warn:#b7791f;--bad:#c0392b;--accent:#1c1b19;--on-accent:#fbfaf7}
+@media (prefers-color-scheme:dark){:root{--bg:#161513;--fg:#ecebe6;--muted:#a19d93;--line:#2e2c28;--card:#1e1d1a;--ok:#5fbf86;--info:#6ea8e8;--warn:#e0a84a;--bad:#ef6f61;--accent:#ecebe6;--on-accent:#161513}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 ui-sans-serif,system-ui,sans-serif}
+main{max-width:760px;margin:0 auto;padding:56px 16px 72px}
+h1{font-size:clamp(1.8rem,5vw,2.6rem);line-height:1.15;letter-spacing:-.02em;margin:0 0 12px}
+.lead{color:var(--muted);margin:0 0 28px;max-width:36em}
+form{display:flex;gap:8px;flex-wrap:wrap}
+input{flex:1 1 260px;font:inherit;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--fg)}
+button{font:inherit;font-weight:600;padding:12px 20px;border:0;border-radius:10px;background:var(--accent);color:var(--on-accent);cursor:pointer}
+button:disabled{opacity:.5;cursor:wait}
+#status{color:var(--muted);min-height:1.6em;margin:16px 0 0;font-variant-numeric:tabular-nums}
+#result[hidden]{display:none}
+#result h2{font-size:clamp(1.3rem,3.6vw,1.75rem);line-height:1.25;letter-spacing:-.01em;margin:32px 0 6px}
+.src{color:var(--muted);font-size:14px;margin:0 0 20px}
+.bar{display:grid;grid-template-columns:170px 1fr 64px;gap:12px;align-items:center;margin:10px 0}
+.track{background:var(--line);height:12px;border-radius:6px;overflow:hidden}
+.fill{height:100%;width:0;transition:width .6s ease}
+.n{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+.ok{background:var(--ok)}.redirect{background:var(--info)}.chain{background:var(--warn)}.bad{background:var(--bad)}
+.cta{margin:28px 0;padding:18px;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+.cta p{margin:0 0 8px}
+code{font:14px ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--line);padding:2px 6px;border-radius:5px}
+.share{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.share a,.share button{font-size:14px;padding:8px 14px;border-radius:8px;border:1px solid var(--line);background:none;color:var(--fg);text-decoration:none;font-weight:500}
+ul{list-style:none;padding:0;margin:8px 0;font-size:14px}
+li{padding:6px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px}
+li a{color:inherit;word-break:break-all}
+li span{color:var(--muted);white-space:nowrap}
+footer{color:var(--muted);font-size:14px;margin-top:48px}
+footer a{color:inherit}
+@media (max-width:560px){.bar{grid-template-columns:1fr 56px}.track{grid-column:1/-1;grid-row:2}}
+</style>
+</head>
+<body>
+<main>
+  <h1>How many URLs has your site lost?</h1>
+  <p class="lead">Every page you ever published was a link someone shared, bookmarked or cited. We find them all in the Wayback Machine and your sitemaps, then check each one on your site today.</p>
+  <form id="f">
+    <input id="d" name="d" placeholder="example.com" autocomplete="off" autocapitalize="off" spellcheck="false" required aria-label="Domain">
+    <button id="go">Scan</button>
+  </form>
+  <p id="status" aria-live="polite"></p>
+
+  <section id="result" hidden>
+    <h2 id="headline"></h2>
+    <p class="src" id="sources"></p>
+    <div id="bars"></div>
+    <div class="cta">
+      <p><b>Never lose another one.</b> Permalock locks every URL your site publishes: moved pages get a redirect, deleted ones stop the build.</p>
+      <p><code>npx permalock init</code> &nbsp;·&nbsp; Astro: <code>npx astro add @permalock/astro</code></p>
+      <div class="share">
+        <button type="button" id="copy">Copy link to this result</button>
+        <a id="post" target="_blank" rel="noopener">Share on X</a>
+        <a id="bsky" target="_blank" rel="noopener">Share on Bluesky</a>
+      </div>
+    </div>
+    <div id="broken"></div>
+  </section>
+
+  <footer><a href="https://github.com/gasparoff/permalock">Permalock</a> is open source. Scans read public data only; results are cached for a day.</footer>
+</main>
+<script>
+const $ = (id) => document.getElementById(id);
+const fmt = (n) => n.toLocaleString('en-US');
+const SOURCES = { wayback: 'Wayback Machine', sitemap: 'current sitemaps', 'archived-sitemap': 'archived sitemaps' };
+
+function el(tag, attrs = {}, ...kids) {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) k === 'class' ? (e.className = v) : e.setAttribute(k, v);
+  e.append(...kids);
+  return e;
+}
+
+function render(s, headline) {
+  $('headline').textContent = headline;
+  $('sources').textContent = 'Sources: ' + Object.entries(s.sources).map(([k, v]) => `${SOURCES[k] ?? k} ${fmt(v)}`).join(' · ') +
+    (s.checked < s.published ? ` · ${fmt(s.checked)} checked` : '');
+  const rows = [['Answer 200', s.counts.ok, 'ok'], ['One redirect', s.counts.redirect, 'redirect'], ['Redirect chains', s.counts.chain, 'chain'], ['Broken (404/410)', s.counts.broken, 'bad']];
+  $('bars').replaceChildren(...rows.map(([label, v, cls]) => {
+    const fill = el('div', { class: `fill ${cls}` });
+    requestAnimationFrame(() => (fill.style.width = `${s.checked ? (v / s.checked) * 100 : 0}%`));
+    return el('div', { class: 'bar' }, el('span', {}, label), el('div', { class: 'track' }, fill), el('span', { class: 'n' }, fmt(v)));
+  }));
+  const list = s.broken.slice(0, 100).map((b) =>
+    el('li', {}, el('a', { href: `https://${s.domain}${b.path}`, rel: 'nofollow noopener', target: '_blank' }, b.path), el('span', {}, b.firstSeen ? `first seen ${b.firstSeen}` : String(b.status ?? ''))));
+  $('broken').replaceChildren(...(list.length ? [el('h3', {}, `Broken URLs${s.broken.length > 100 ? ` (100 of ${fmt(s.broken.length)})` : ''}`), el('ul', {}, ...list)] : []));
+  const link = `${location.origin}${location.pathname}?d=${encodeURIComponent(s.domain)}`;
+  const text = `${headline} Checked with Permalock:`;
+  $('post').href = `https://x.com/intent/post?text=${encodeURIComponent(text)}&url=${encodeURIComponent(link)}`;
+  $('bsky').href = `https://bsky.app/intent/compose?text=${encodeURIComponent(`${text} ${link}`)}`;
+  $('copy').onclick = () => navigator.clipboard?.writeText(link).then(() => ($('copy').textContent = 'Link copied'));
+  $('result').hidden = false;
+}
+
+async function scan(domain) {
+  $('go').disabled = true;
+  $('result').hidden = true;
+  $('status').textContent = 'Starting…';
+  history.replaceState(null, '', `?d=${encodeURIComponent(domain)}`);
+  try {
+    const res = await fetch(`/api/scan?d=${encodeURIComponent(domain)}`);
+    if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error ?? `HTTP ${res.status}`);
+    const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
+    let buf = '';
+    for (;;) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      buf += value;
+      let i;
+      while ((i = buf.indexOf('\n')) >= 0) {
+        const msg = JSON.parse(buf.slice(0, i));
+        buf = buf.slice(i + 1);
+        if (msg.step) $('status').textContent = msg.step;
+        if (msg.progress) $('status').textContent = `Checking ${fmt(msg.progress[0])} of ${fmt(msg.progress[1])} URLs on the live site…`;
+        if (msg.error) throw new Error(msg.error);
+        if (msg.done) {
+          $('status').textContent = msg.done.errors.length ? `Partial result: ${msg.done.errors.join('; ')}` : '';
+          render(msg.done, msg.headline);
+        }
+      }
+    }
+  } catch (e) {
+    $('status').textContent = `Could not scan: ${e.message}`;
+  } finally {
+    $('go').disabled = false;
+  }
+}
+
+$('f').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const d = $('d').value.trim();
+  if (d) scan(d);
+});
+const initial = new URLSearchParams(location.search).get('d');
+if (initial) ($('d').value = initial), scan(initial);
+</script>
+</body>
+</html>
