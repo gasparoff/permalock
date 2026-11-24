@@ -1,0 +1,99 @@
+# @permalock/astro
+
+Every URL your Astro site ever published keeps working. Part of
+[Permalock](https://github.com/gasparoff/permalock): URLs are a public API,
+and `permalock.json` is their lockfile.
+
+```sh
+npx astro add @permalock/astro
+```
+
+```js
+// astro.config.mjs
+import { defineConfig } from 'astro/config';
+import permalock from '@permalock/astro';
+
+export default defineConfig({
+  site: 'https://example.com',
+  integrations: [permalock()],
+});
+```
+
+## What happens on each build
+
+1. **First build:** `permalock.json` is created with every prerendered page.
+   Commit it.
+2. **Every build after that:** the pages of this build are compared with the
+   lockfile.
+   - A page whose URL changed gets a redirect from the old URL. The redirect
+     works in the same build (as an HTML redirect page) and, from the next
+     build, natively: Permalock adds it to Astro's `redirects`, so every
+     adapter serves a real `301`.
+   - A URL that disappeared without a match is an **orphan**: the build
+     fails and tells you the two ways out, with a suggestion when there is a
+     likely target.
+3. **In CI** (detected from the usual environment variables), the lockfile
+   is checked but not rewritten. A stale lockfile is a warning, or an error
+   with `frozen: true`.
+
+## How pages are recognised
+
+- Static routes (`src/pages/about.astro`) by their page file.
+- Pages rendered from content collections by their entry's source file, read
+  from Astro's content store after the build. This works with any Markdown
+  processor (Sätteri or unified) and leaves your HTML untouched.
+- Anything else by a content hash, then by text similarity.
+
+So changing a `slug` in front matter, switching `trailingSlash`, adding a
+`base` or renaming a content file are all recognised with certainty. To pin a
+page's identity for good, add a stable id to its front matter:
+
+```md
+---
+title: Cooking pasta
+permalock: pasta-guide
+---
+```
+
+(Add `permalock: z.string().optional()` to the collection schema if it is strict.)
+
+## Options
+
+```js
+permalock({
+  lockfile: 'permalock.json',  // path from the project root
+  exclude: ['/drafts/**'],     // URL globs to ignore
+  failOn: 'orphans',           // or 'never' to only report
+  write: undefined,            // default: true locally, false in CI
+  frozen: false,               // in CI, fail when permalock.json is stale
+  similar: true,               // allow redirects from estimated similarity
+  emit: 'netlify',             // also write host rules into dist (netlify, cloudflare, apache, nginx, json)
+  contentIdentity: true,       // identify collection pages by their entry
+  shard: false,                // split the lockfile for very large sites
+})
+```
+
+`emit` matters on static hosts: Astro's static redirects are HTML pages, so
+with `emit: 'netlify'` or `emit: 'cloudflare'` the host answers a real `301`
+instead (and `410` for removed URLs on Netlify).
+
+## Decisions
+
+Use the `permalock` CLI that comes with the integration:
+
+```sh
+npx permalock redirect /blog/old/ /blog/new/
+npx permalock retire /summer-sale/ --reason "campaign ended"
+npx permalock resolve        # interactive, with suggestions
+npx permalock verify --against https://preview.example.com
+```
+
+## Limits
+
+- Pages rendered on demand (`prerender = false`) are not in the build output,
+  so they are not locked automatically yet.
+- Removed URLs answer `410` only where the host can (Netlify, nginx, Apache,
+  adapters with on-demand rendering). Elsewhere they answer `404`, which
+  Permalock accepts as a declared removal.
+
+MIT

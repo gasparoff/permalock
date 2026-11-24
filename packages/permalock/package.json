@@ -2,23 +2,50 @@
   "name": "permalock",
   "version": "0.1.0",
   "description": "URLs are a public API. permalock.json is their lockfile and contract test: every URL you ever published answers 200, one 301, or a declared removal.",
-  "keywords": ["urls", "redirects", "lockfile", "seo", "link-rot", "permalinks", "static-site", "contract-testing", "astro", "hugo", "eleventy"],
+  "keywords": [
+    "urls",
+    "redirects",
+    "lockfile",
+    "seo",
+    "link-rot",
+    "permalinks",
+    "static-site",
+    "contract-testing",
+    "astro",
+    "hugo",
+    "eleventy"
+  ],
   "license": "MIT",
   "author": "Manuel Gasparini",
-  "repository": { "type": "git", "url": "git+https://github.com/gasparoff/permalock.git", "directory": "packages/permalock" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gasparoff/permalock.git",
+    "directory": "packages/permalock"
+  },
   "type": "module",
-  "bin": { "permalock": "./dist/cli.js" },
+  "bin": {
+    "permalock": "./dist/cli.js"
+  },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
-    ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" },
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
     "./package.json": "./package.json"
   },
-  "files": ["dist", "schema", "README.md"],
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "build": "tsc -p . && node -e \"require('fs').chmodSync('dist/cli.js',0o755)\"",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "prepack": "node -e \"require('fs').copyFileSync('../../README.md','README.md')\""
   },
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "sideEffects": false
 }
