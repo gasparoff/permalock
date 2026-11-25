@@ -115,6 +115,17 @@ describe('cli', () => {
     expect(run(cwd, '--help').out).toContain('Usage: permalock');
   });
 
+  it('resolve outside a terminal lists the orphans and says what to run', () => {
+    const cwd = tmp();
+    writeTree(cwd, { 'dist/index.html': article('Home', TEXT.b), 'dist/old/index.html': article('Old', TEXT.a) });
+    expect(run(cwd, 'update').code).toBe(0);
+    rmSync(path.join(cwd, 'dist/old'), { recursive: true });
+    const r = run(cwd, 'resolve');
+    expect(r.code).toBe(1);
+    expect(r.out).toContain('/old/');
+    expect(r.out).toContain('resolve is interactive');
+  });
+
   it('merge driver resolves concurrent additions', () => {
     const cwd = tmp();
     const base = '{"permalock":1,"urls":{"/":{"type":"page"}}}';

@@ -43,3 +43,4 @@ export {
   sourceMarkers,
   stripSourceMarkers,
 } from './text.js';
+export { importHistory, applyAnswer, type ImportOptions, type ImportResult } from './importer.js';

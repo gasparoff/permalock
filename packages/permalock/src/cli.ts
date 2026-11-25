@@ -6,7 +6,8 @@ import { createInterface } from 'node:readline/promises';
 import { parseArgs } from 'node:util';
 import { addRedirect, DecisionError, forget, retire, toUrlKey } from './decide.js';
 import { emit, EMIT_FORMATS, writeEmitted, type EmitFormat } from './emit.js';
-import { checkLive, collectHistory, domainOf } from './history.js';
+import { domainOf } from './history.js';
+import { applyAnswer, importHistory } from './importer.js';
 import { emptyLockfile, LOCKFILE_NAME, LockfileError, parseLockfile, readLockfile, serializeLockfile, writeLockfile } from './lockfile.js';
 import { mergeLockfiles } from './merge.js';
 import { checkProject } from './project.js';
@@ -332,12 +333,8 @@ async function runResolve(dirArg: string | undefined, values: Values, lockfilePa
       const a = (await rl.question('> ')).trim();
       if (a === 'q') break;
       if (a === '' || a === 's') continue;
-      if (a === 'g') {
-        const reason = (await rl.question('reason (optional): ')).trim();
-        retire(lock, o.url, reason || undefined);
-      } else if (/^\d+$/.test(a) && options[Number(a) - 1]) addRedirect(lock, o.url, options[Number(a) - 1]);
-      else if (a.startsWith('/') || /^https:\/\//.test(a)) addRedirect(lock, o.url, a);
-      else {
+      const reason = a === 'g' ? (await rl.question('reason (optional): ')).trim() : undefined;
+      if (!applyAnswer(lock, o, options, a, reason)) {
         console.log(c.yellow('not understood, skipped'));
         continue;
       }
@@ -428,50 +425,19 @@ async function runScan(domainArg: string | undefined, values: Values): Promise<n
 async function runImport(domainArg: string | undefined, values: Values, lockfilePath: string): Promise<number> {
   if (!domainArg) throw new UsageError('usage: permalock import <domain> [--check-live] [--no-wayback]');
   const lock = await mustRead(lockfilePath);
-  const domain = domainOf(domainArg);
-  if (!lock.site) lock.site = `https://${domain}`;
-  console.log(c.dim(`collecting the history of ${domain}…`));
-  const history = await collectHistory(domain, { wayback: !values['no-wayback'] });
-  for (const e of history.errors) console.log(c.yellow(`! ${e}`));
-  const base = values.base ? '/' + values.base.replace(/^\/+|\/+$/g, '') : '';
-  const unknown = history.urls.filter((h) => !(h.path in lock.urls) && !(h.path + '/' in lock.urls) && (!base || h.path.startsWith(base)));
-  let adopted = 0,
-    skippedLive = 0;
-  let toAdd = unknown;
-  if (values['check-live'] && unknown.length) {
-    const live = await checkLive(
-      domain,
-      unknown.map((u) => u.path),
-    );
-    const byPath = new Map(live.map((l) => [l.path, l]));
-    toAdd = [];
-    for (const u of unknown) {
-      const l = byPath.get(u.path)!;
-      if (l.state === 'redirect' && l.final) {
-        const target = new URL(l.final);
-        const known = lock.urls[target.pathname];
-        if (known?.type === 'page' && target.host.replace(/^www\./, '') === domain) {
-          lock.urls[u.path] = { type: 'redirect', to: target.pathname, reason: 'adopted from live site' };
-          adopted++;
-          continue;
-        }
-      }
-      if (l.state === 'ok') {
-        skippedLive++;
-        continue;
-      }
-      toAdd.push(u);
-    }
-  }
-  for (const u of toAdd) lock.urls[u.path] = { type: 'page', origin: u.origin };
+  console.log(c.dim(`collecting the history of ${domainOf(domainArg)}…`));
+  const r = await importHistory(lock, domainArg, { wayback: !values['no-wayback'], base: values.base, checkLive: values['check-live'] });
+  for (const e of r.errors) console.log(c.yellow(`! ${e}`));
   await writeLockfile(lockfilePath, lock);
+  const sources = Object.entries(r.sources)
+    .map(([k, v]) => `${k} ${v}`)
+    .join(', ');
+  const adopted = r.adopted.length ? `, ${r.adopted.length} existing redirects adopted` : '';
+  const elsewhere = r.servedElsewhere.length ? `, ${r.servedElsewhere.length} still served by something outside the build (skipped)` : '';
   console.log(
-    `${c.green('✓')} ${history.urls.length} historic URLs found (${Object.entries(history.sources)
-      .map(([k, v]) => `${k} ${v}`)
-      .join(', ')}). ` +
-      `${toAdd.length} added to ${path.basename(lockfilePath)}${adopted ? `, ${adopted} existing redirects adopted` : ''}${skippedLive ? `, ${skippedLive} still served by something outside the build (skipped)` : ''}.`,
+    `${c.green('✓')} ${r.found} historic URLs found (${sources}). ${r.added.length} added to ${path.basename(lockfilePath)}${adopted}${elsewhere}.`,
   );
-  if (toAdd.length) console.log(`Next: build, then run ${c.bold('permalock resolve')} to decide where each old URL goes.`);
+  if (r.added.length) console.log(`Next: build, then run ${c.bold('permalock resolve')} to decide where each old URL goes.`);
   return 0;
 }
 
