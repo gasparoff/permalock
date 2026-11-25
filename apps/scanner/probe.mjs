@@ -47,6 +47,8 @@ for (const d of process.argv.slice(2)) {
     console.log(
       `- scan (${((Date.now() - t0) / 1000).toFixed(0)}s): published ${s.published}, sitemapOnly ${s.sitemapOnly ?? 0}, checked ${s.checked}, ${JSON.stringify(s.counts)}, sources ${JSON.stringify(s.sources)}${s.errors.length ? `, errors: ${s.errors.join('; ')}` : ''}`,
     );
+    for (const b of s.broken.slice(0, 20))
+      console.log(`  - broken ${b.status ?? ''} https://${d}${b.path} (first seen ${b.firstSeen ?? '?'})`);
   } catch (e) {
     console.log(`- scan error: ${e.message}`);
   }
