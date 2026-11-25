@@ -44,6 +44,8 @@ export function toSitePath(raw: string, domain: string): string | undefined {
   if (!p || p.length > 300) return undefined;
   if (ASSET_RE.test(p)) return undefined;
   if (/\/(wp-admin|wp-includes|wp-json|cgi-bin|xmlrpc\.php|feed)(\/|$)/i.test(p)) return undefined;
+  // listing pages and AMP copies come and go with the theme: not content anyone links to
+  if (/\/page\/\d+\/?$|\/amp\/?$/i.test(p)) return undefined;
   // collapse duplicate slashes, keep encoding stable
   p = p.replace(/\/{2,}/g, '/');
   try {
@@ -146,12 +148,17 @@ export async function waybackUrls(domain: string, opts: HistoryOptions = {}): Pr
       else if (seen && (!prev.firstSeen || seen < prev.firstSeen)) prev.firstSeen = seen;
     }
     opts.onStep?.(`Wayback Machine: ${out.size} URLs so far`);
+    // an empty prefix answer is sometimes an overloaded archive: ask once more, by domain
+    if (!fetched && !byDomain) {
+      byDomain = true;
+      continue;
+    }
     if (!resumeKey || fetched >= limit) break;
     if (opts.budgetMs && Date.now() - t0 > opts.budgetMs)
       throw Object.assign(new Error(`stopped after ${Math.round(opts.budgetMs / 1000)}s`), { partial: [...out.values()] });
   }
   // an empty answer to the slower fallback query proves nothing: report the first failure
-  if (byDomain && !fetched) throw prefixError;
+  if (byDomain && !fetched && prefixError) throw prefixError;
   return [...out.values()];
 }
 

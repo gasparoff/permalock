@@ -382,7 +382,7 @@ const KINDS = [
   { key: 'ok', label: 'Answer 200' },
   { key: 'redirect', label: 'One redirect' },
   { key: 'chain', label: 'Redirect chain' },
-  { key: 'broken', label: 'Broken (404/410)' },
+  { key: 'broken', label: 'Broken' },
   { key: 'error', label: 'No answer' },
 ];
 
@@ -568,7 +568,7 @@ function render(s, headline, fallback) {
     el('span', {}, el('i', { class: `c-${k.key}` }), `${k.label} `, el('b', { text: fmt(c[k.key]) }), ` ${pctText(c[k.key], s.checked)}`)));
 
   const tabs = [
-    { id: 'broken', label: 'Broken', items: s.broken, row: (b) => linkRow(s.domain, b.path, b.firstSeen ? `since ${b.firstSeen}` : String(b.status ?? '')), empty: 'No broken URLs in this scan. Nice.' },
+    { id: 'broken', label: 'Broken', items: s.broken, row: (b) => linkRow(s.domain, b.path, b.to ? (b.to === '/' ? 'sent to the home page' : `sent to ${b.to}`) : b.firstSeen ? `since ${b.firstSeen}` : String(b.status ?? '')), empty: 'No broken URLs in this scan. Nice.' },
     { id: 'chains', label: 'Redirect chains', items: s.chains, row: (x) => linkRow(s.domain, x.path, `${x.hops} hops`), empty: 'No redirect chains.' },
   ];
   const tl = $('#tabs');

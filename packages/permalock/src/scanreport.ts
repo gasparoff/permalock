@@ -15,11 +15,37 @@ export interface ScanSummary {
   sources: Record<string, number>;
   errors: string[];
   counts: { ok: number; redirect: number; chain: number; broken: number; error: number };
-  broken: { path: string; status?: number; firstSeen?: string }[];
+  /** `to`: a redirect that lands on the home page or on one page shared by most old URLs (a soft 404). */
+  broken: { path: string; status?: number; firstSeen?: string; to?: string }[];
   chains: { path: string; hops: number; final?: string }[];
 }
 
-export function summarizeScan(history: History, live: LiveCheck[], published: number): ScanSummary {
+/**
+ * A redirect to the home page, or to one page that most old URLs land on, loses the
+ * content as surely as a 404 (search engines call it a soft 404).
+ */
+export function softBroken(live: LiveCheck[]): LiveCheck[] {
+  const moved = live.filter((l) => (l.state === 'redirect' || l.state === 'chain') && l.final);
+  const landing = new Map<string, number>();
+  for (const l of moved) landing.set(pathOf(l.final!), (landing.get(pathOf(l.final!)) ?? 0) + 1);
+  const crowded = [...landing].filter(([, k]) => k >= 10 && k > moved.length / 2).map(([p]) => p);
+  return live.map((l) => {
+    if (!moved.includes(l)) return l;
+    const to = pathOf(l.final!);
+    return (to === '/' && l.path !== '/') || crowded.includes(to) ? { ...l, state: 'broken', to } : l;
+  });
+}
+
+const pathOf = (url: string) => {
+  try {
+    return new URL(url, 'https://x').pathname;
+  } catch {
+    return url;
+  }
+};
+
+export function summarizeScan(history: History, checks: LiveCheck[], published: number): ScanSummary {
+  const live = softBroken(checks) as (LiveCheck & { to?: string })[];
   const counts = { ok: 0, redirect: 0, chain: 0, broken: 0, error: 0 };
   for (const l of live) counts[l.state]++;
   const firstSeen = new Map(history.urls.map((u) => [u.path, u.firstSeen]));
@@ -32,7 +58,9 @@ export function summarizeScan(history: History, live: LiveCheck[], published: nu
     sources: history.sources,
     errors: history.errors,
     counts,
-    broken: live.filter((l) => l.state === 'broken').map((l) => ({ path: l.path, status: l.status, firstSeen: firstSeen.get(l.path) })),
+    broken: live
+      .filter((l) => l.state === 'broken')
+      .map((l) => ({ path: l.path, status: l.status, firstSeen: firstSeen.get(l.path), ...(l.to && { to: l.to }) })),
     chains: live.filter((l) => l.state === 'chain').map((l) => ({ path: l.path, hops: l.hops, final: l.final })),
   };
 }
@@ -94,6 +122,8 @@ const SOURCE_NAMES: Record<string, string> = {
 export function headline(s: ScanSummary): string {
   const since = s.firstSeen ? ` since ${s.firstSeen.slice(0, 4)}` : '';
   const head = `${s.domain} has published ${n(s.published)} URLs${since}.`;
+  if (s.checked && s.counts.error > s.checked / 2)
+    return `${head} The site refused most of our checks (${n(s.counts.error)} of ${n(s.checked)}), so we can't tell how many are broken.`;
   if (s.checked < s.published)
     return `${head} Of the ${n(s.checked)} we checked, ${n(s.counts.broken)} ${s.counts.broken === 1 ? 'is' : 'are'} broken today.`;
   return `${head} ${n(s.counts.broken)} of them ${s.counts.broken === 1 ? 'is' : 'are'} broken today.`;
@@ -116,7 +146,7 @@ export function renderScanText(s: ScanSummary): string {
   out.push(`  ${c.green('✓')} ${n(s.counts.ok).padStart(7)}  answer 200`);
   out.push(`  ${c.cyan('→')} ${n(s.counts.redirect).padStart(7)}  answer one redirect`);
   out.push(`  ${c.yellow('⤳')} ${n(s.counts.chain).padStart(7)}  take two or more redirects`);
-  out.push(`  ${c.red('✗')} ${n(s.counts.broken).padStart(7)}  are broken (404 or 410)  ${c.red(pct(s.counts.broken, s.checked))}`);
+  out.push(`  ${c.red('✗')} ${n(s.counts.broken).padStart(7)}  are broken (404, 410 or sent to the home page)  ${c.red(pct(s.counts.broken, s.checked))}`);
   if (s.counts.error) out.push(`  ${c.dim('?')} ${n(s.counts.error).padStart(7)}  did not answer`);
   if (s.broken.length) {
     out.push('');

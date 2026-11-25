@@ -128,6 +128,51 @@ describe('scanner', () => {
     expect((await last('empty.org', empty)).error).toMatch(/not answering right now \(web.archive.org answered 400\)/);
   });
 
+  it('counts redirects to the home page as broken, and says when a site refuses the checks', async () => {
+    const rows = [['original', 'timestamp'], ...Array.from({ length: 12 }, (_, i) => [`https://home.org/post-${i}`, '20200101000000'])];
+    const site = (status: number) =>
+      (async (input: any, init?: any) => {
+        const u = new URL(String(input));
+        if (u.host === 'web.archive.org')
+          return new Response(
+            u.searchParams.get('url')?.endsWith('/*') && !u.searchParams.has('collapse', 'digest') ? JSON.stringify(rows) : '[]',
+          );
+        if (u.pathname === '/') return new Response('', { status: 200 });
+        if (u.pathname.endsWith('.xml') || u.pathname.endsWith('.txt')) return new Response('', { status: 404 });
+        return new Response('', status === 301 ? { status, headers: { location: 'https://home.org/' } } : { status });
+      }) as typeof fetch;
+    const last = async (d: string, f: typeof fetch) =>
+      JSON.parse(
+        (await (await handleScan(new Request(`https://scan.test/api/scan?d=${d}`), { fetch: f })).text()).trim().split('\n').at(-1)!,
+      );
+    const home = await last('home.org', site(301));
+    expect(home.done.counts.broken).toBe(12);
+    expect(home.done.broken[0].to).toBe('/');
+    const blocked = await last('home.org&fresh=1', site(403));
+    expect(blocked.headline).toMatch(/refused most of our checks/);
+  });
+
+  it('skips listing pages and AMP copies, and asks again by domain when the prefix answer is empty', async () => {
+    let byDomain = 0;
+    const f = (async (input: any) => {
+      const u = new URL(String(input));
+      if (u.host !== 'web.archive.org') return new Response('', { status: 404 });
+      if (u.searchParams.get('url')!.endsWith('/*')) return new Response('');
+      byDomain++;
+      return new Response(
+        JSON.stringify([
+          ['original', 'timestamp'],
+          ['https://quiet.org/a', '2020'],
+          ['https://quiet.org/page/2/', '2020'],
+          ['https://quiet.org/a/amp/', '2020'],
+        ]),
+      );
+    }) as typeof fetch;
+    const lines = (await (await handleScan(new Request('https://scan.test/api/scan?d=quiet.org'), { fetch: f })).text()).trim().split('\n');
+    expect(byDomain).toBe(1);
+    expect(JSON.parse(lines.at(-1)!).done.published).toBe(1);
+  });
+
   it('answers a recent result at once, and limits fresh scans per client', async () => {
     const r = await handleScan(new Request('https://scan.test/api/scan?d=shop.org'));
     const lines = (await r.text())

@@ -90,7 +90,8 @@ describe('history', () => {
   it('classifies live behaviour and renders the report', async () => {
     const routes: Record<string, { status: number; location?: string }> = {
       '/': { status: 200 },
-      '/a': { status: 301, location: '/' },
+      '/new': { status: 200 },
+      '/a': { status: 301, location: '/new' },
       '/b': { status: 301, location: '/a' },
       '/c': { status: 404 },
       '/d': { status: 500 },
