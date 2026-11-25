@@ -50,6 +50,12 @@ button,input{font:inherit;color:inherit}
 .nav nav a:hover{color:var(--fg);background:var(--sunken)}
 .nav nav a.star{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line-strong);color:var(--fg)}
 .star svg{width:13px;height:13px;color:var(--chain)}
+.lock{margin-top:72px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:24px 48px;align-items:center}
+.lock h2{margin:0 0 8px;font-size:clamp(1.3rem,2.6vw,1.6rem);letter-spacing:-.02em}
+.lock p{margin:0;color:var(--muted);font-size:15px;max-width:34em}
+.lock .install{margin:0;box-shadow:var(--shadow)}
+@media (max-width:820px){.lock{grid-template-columns:minmax(0,1fr)}}
+.lock+.improve{margin-top:40px}
 .improve{margin-top:72px;padding:22px 24px;border:1px dashed var(--line-strong);border-radius:var(--radius);display:flex;gap:16px 32px;align-items:center;justify-content:space-between;flex-wrap:wrap}
 .improve h2{margin:0 0 4px;font-size:15px;letter-spacing:-.01em}
 .improve p{margin:0;color:var(--muted);font-size:14px;max-width:40em}
@@ -191,6 +197,17 @@ h1{font-size:clamp(2rem,6vw,3.25rem);line-height:1.08;letter-spacing:-.035em;mar
 .empty{padding:28px 18px;text-align:center;color:var(--muted)}
 
 .side{display:flex;flex-direction:column;gap:16px}
+.install{margin-top:4px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--sunken)}
+.install .bar{display:flex;align-items:center;border-bottom:1px solid var(--line);padding:0 4px 0 6px;overflow-x:auto;scrollbar-width:none}
+.install .bar::-webkit-scrollbar{display:none}
+.install .bar button{border:0;background:none;color:var(--faint);font:500 12.5px var(--sans);padding:9px 8px 8px;cursor:pointer;white-space:nowrap;border-bottom:1.5px solid transparent;margin-bottom:-1px}
+.install .bar button:hover{color:var(--fg)}
+.install .bar button[aria-selected=true]{color:var(--fg);border-bottom-color:var(--fg)}
+.install .body{position:relative}
+.install .body .copy{position:absolute;top:8px;right:8px}
+.install pre{margin:0;padding:12px 44px 12px 14px;font:13px/1.6 var(--mono);white-space:pre-wrap;word-break:break-word;color:var(--fg);min-height:3.2em}
+.install pre .p{color:var(--faint);user-select:none}
+.install pre.prompt{font:13px/1.55 var(--sans);color:var(--muted)}
 .cta{padding:18px}
 .cta h3{margin:0 0 6px;font-size:16px;letter-spacing:-.01em}
 .cta p{margin:0 0 14px;color:var(--muted);font-size:14px}
@@ -216,7 +233,7 @@ footer a{color:var(--muted)}
 .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translate(-50%,20px);background:var(--fg);color:var(--bg);padding:8px 14px;border-radius:8px;font-size:13.5px;opacity:0;pointer-events:none;transition:.2s}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 
-@media (max-width:820px){.cols{grid-template-columns:1fr}}
+@media (max-width:820px){.cols{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:720px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{padding:36px 0 20px}}
 @media (max-width:480px){
   .scan{flex-direction:column}.btn{width:100%}
@@ -305,10 +322,7 @@ footer a{color:var(--muted)}
         <div class="card cta">
           <h3>Never lose another URL</h3>
           <p>Permalock keeps a lockfile of every URL your site publishes. Moved pages get a redirect, deleted ones stop the build until you decide.</p>
-          <span class="cmd-lab" style="font-size:12px;color:var(--faint)">Any static site</span>
-          <div class="cmd"><code>npx permalock init</code><button class="copy" type="button" data-copy="npx permalock init" aria-label="Copy command"></button></div>
-          <span style="display:block;margin-top:12px;font-size:12px;color:var(--faint)">Astro</span>
-          <div class="cmd"><code>npx astro add @permalock/astro</code><button class="copy" type="button" data-copy="npx astro add @permalock/astro" aria-label="Copy command"></button></div>
+          <div class="install" data-install></div>
         </div>
         <div class="card share">
           <h3>Share this result</h3>
@@ -321,6 +335,14 @@ footer a{color:var(--muted)}
         </div>
       </aside>
     </div>
+  </section>
+
+  <section class="lock">
+    <div>
+      <h2>Stop losing URLs from today</h2>
+      <p>Permalock keeps a lockfile of every URL your site publishes. A moved page gets its redirect written for you. A deleted one stops the build until you decide what it should answer.</p>
+    </div>
+    <div class="install" data-install></div>
   </section>
 
   <section class="improve">
@@ -353,6 +375,7 @@ const HOST_RE = /^(?=.{4,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{
 const ICON = {
   ok: '<svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="var(--ok)"/><path d="M5 8.2 7 10l4-4.2" stroke="var(--surface)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   fail: '<svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" fill="var(--broken)"/><path d="m5.6 5.6 4.8 4.8m0-4.8-4.8 4.8" stroke="var(--surface)" stroke-width="1.8" stroke-linecap="round"/></svg>',
+  check: '<svg viewBox="0 0 16 16" fill="none" stroke="var(--ok)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5 6.5 11.5 12.5 5"/></svg>',
   copy: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.8A1.3 1.3 0 0 0 9.2 2.5H3.8a1.3 1.3 0 0 0-1.3 1.3v5.4a1.3 1.3 0 0 0 1.3 1.3h1.7"/></svg>',
 };
 const KINDS = [
@@ -669,6 +692,49 @@ for (const b of $$('[data-copy]')) {
   b.innerHTML = ICON.copy;
   b.addEventListener('click', () => copy(b.dataset.copy));
 }
+/* install commands, one tab per package manager plus a prompt for coding agents */
+const AGENT_PROMPT =
+  'Add Permalock to this project so no published URL ever breaks. Follow https://github.com/gasparoff/permalock/blob/main/skills/permalock/SKILL.md: build the site, run "npx permalock init" (or "npx astro add @permalock/astro" on Astro), commit permalock.json, and make CI run "npx permalock check".';
+const INSTALL = [
+  { id: 'npm', cmd: 'npx permalock init' },
+  { id: 'pnpm', cmd: 'pnpm dlx permalock init' },
+  { id: 'yarn', cmd: 'yarn dlx permalock init' },
+  { id: 'bun', cmd: 'bunx permalock init' },
+  { id: 'Astro', cmd: 'npx astro add @permalock/astro' },
+  { id: 'Agent', prompt: AGENT_PROMPT },
+];
+function mountInstall(box) {
+  let saved;
+  try {
+    saved = localStorage.getItem('install-tab');
+  } catch {}
+  const pre = el('pre');
+  const copyBtn = el('button', { class: 'copy', type: 'button', 'aria-label': 'Copy' });
+  copyBtn.innerHTML = ICON.copy;
+  let current = INSTALL.find((t) => t.id === saved) ?? INSTALL[0];
+  const tabs = INSTALL.map((t) => {
+    const b = el('button', { type: 'button', role: 'tab', text: t.id });
+    b.addEventListener('click', () => select(t));
+    return b;
+  });
+  function select(t) {
+    current = t;
+    tabs.forEach((b, i) => b.setAttribute('aria-selected', String(INSTALL[i] === t)));
+    pre.className = t.prompt ? 'prompt' : '';
+    pre.replaceChildren(...(t.prompt ? [t.prompt] : [el('span', { class: 'p', text: '$ ' }), t.cmd]));
+    try {
+      localStorage.setItem('install-tab', t.id);
+    } catch {}
+  }
+  copyBtn.addEventListener('click', async () => {
+    await copy(current.prompt ?? current.cmd);
+    copyBtn.innerHTML = ICON.check;
+    setTimeout(() => (copyBtn.innerHTML = ICON.copy), 1500);
+  });
+  box.append(el('div', { class: 'bar', role: 'tablist' }, ...tabs), el('div', { class: 'body' }, pre, copyBtn));
+  select(current);
+}
+for (const box of $$('[data-install]')) mountInstall(box);
 const initial = window.PERMALOCK_DOMAIN ?? new URLSearchParams(location.search).get('d') ?? decodeURIComponent(/^\/d\/([^/]+)/.exec(location.pathname)?.[1] ?? '');
 if (initial) {
   $('#domain').value = initial;
