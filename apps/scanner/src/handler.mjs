@@ -102,6 +102,7 @@ export async function handleScan(request, { fetch, ip } = {}) {
           concurrency: 16,
           limit: 10000,
           timeoutMs: 30000,
+          budgetMs: 120000,
           checkTimeoutMs: 10000,
           onSource: (name, count, error) => send({ source: { name, count, error } }),
           onHistory: (published, checking) => send({ history: { published, checking } }),

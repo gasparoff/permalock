@@ -112,6 +112,22 @@ describe('scanner', () => {
     expect(JSON.parse(lines.at(-1)!).done.published).toBe(1);
   });
 
+  it('explains a site the archive leaves out, and never trusts an empty fallback', async () => {
+    const last = async (d: string, f: typeof fetch) =>
+      JSON.parse(
+        (await (await handleScan(new Request(`https://scan.test/api/scan?d=${d}`), { fetch: f })).text()).trim().split('\n').at(-1)!,
+      );
+    const excluded = (async (input: any) =>
+      new Response('', { status: new URL(String(input)).host === 'web.archive.org' ? 403 : 404 })) as typeof fetch;
+    expect((await last('excluded.org', excluded)).error).toMatch(/does not share the history of excluded.org/);
+    const empty = (async (input: any) => {
+      const u = new URL(String(input));
+      if (u.host !== 'web.archive.org') return new Response('', { status: 404 });
+      return u.searchParams.get('url')!.endsWith('/*') ? new Response('', { status: 400 }) : new Response('');
+    }) as typeof fetch;
+    expect((await last('empty.org', empty)).error).toMatch(/not answering right now \(web.archive.org answered 400\)/);
+  });
+
   it('answers a recent result at once, and limits fresh scans per client', async () => {
     const r = await handleScan(new Request('https://scan.test/api/scan?d=shop.org'));
     const lines = (await r.text())

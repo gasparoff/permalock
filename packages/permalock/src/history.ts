@@ -17,6 +17,8 @@ export interface HistoryOptions {
   wayback?: boolean;
   sitemaps?: boolean;
   timeoutMs?: number;
+  /** Stop paging through the Wayback Machine after this long and keep what was read. */
+  budgetMs?: number;
   onStep?: (msg: string) => void;
   /** Called when a source finishes: its name and how many URLs it found (or the error). */
   onSource?: (name: string, count: number, error?: string) => void;
@@ -99,6 +101,8 @@ export async function waybackUrls(domain: string, opts: HistoryOptions = {}): Pr
   let fetched = 0;
   // the prefix query is the fast one; when it fails, the domain query often still answers
   let byDomain = false;
+  let prefixError: unknown;
+  const t0 = Date.now();
   for (;;) {
     const q = new URLSearchParams({
       url: byDomain ? domain : `${domain}/*`,
@@ -118,7 +122,9 @@ export async function waybackUrls(domain: string, opts: HistoryOptions = {}): Pr
     } catch (e) {
       // keep the pages already read: a partial history beats none
       if (out.size) throw Object.assign(e as Error, { partial: [...out.values()] });
-      if (byDomain || resumeKey) throw e;
+      // 403: the site asked the archive not to share its captures; asking again won't help
+      if (byDomain || resumeKey || /answered 403/.test((e as Error).message)) throw byDomain ? prefixError : e;
+      prefixError = e;
       byDomain = true;
       continue;
     }
@@ -141,7 +147,11 @@ export async function waybackUrls(domain: string, opts: HistoryOptions = {}): Pr
     }
     opts.onStep?.(`Wayback Machine: ${out.size} URLs so far`);
     if (!resumeKey || fetched >= limit) break;
+    if (opts.budgetMs && Date.now() - t0 > opts.budgetMs)
+      throw Object.assign(new Error(`stopped after ${Math.round(opts.budgetMs / 1000)}s`), { partial: [...out.values()] });
   }
+  // an empty answer to the slower fallback query proves nothing: report the first failure
+  if (byDomain && !fetched) throw prefixError;
   return [...out.values()];
 }
 

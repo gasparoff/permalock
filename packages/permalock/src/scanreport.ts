@@ -54,6 +54,10 @@ export async function scanDomain(domain: string, opts: ScanDomainOptions = {}): 
   const history = await collectHistory(domain, opts);
   if (opts.wayback !== false && !('wayback' in history.sources)) {
     const why = history.errors.find((e) => e.startsWith('Wayback Machine: '))?.slice(17);
+    if (why?.includes('answered 403'))
+      throw new Error(
+        `The Wayback Machine does not share the history of ${history.domain} (a site can ask to be left out), so there is nothing to check.`,
+      );
     throw new Error(
       `The Wayback Machine is not answering right now${why ? ` (${why})` : ''}, so we can't tell which URLs the site published. It is often busy for a minute or two: try again shortly.`,
     );
