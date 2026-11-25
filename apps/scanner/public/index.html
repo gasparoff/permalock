@@ -161,6 +161,7 @@ h1{font-size:clamp(2rem,6vw,3.25rem);line-height:1.08;letter-spacing:-.035em;mar
 .c-ok{background:var(--ok)}.c-redirect{background:var(--redirect)}.c-chain{background:var(--chain)}.c-broken{background:var(--broken)}.c-error{background:var(--error)}
 
 .cols{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px;align-items:start}
+.cols.solo{grid-template-columns:minmax(0,560px)}
 .tabs{display:flex;gap:4px;padding:8px 8px 0;border-bottom:1px solid var(--line)}
 .tab{border:0;background:none;padding:8px 12px 10px;border-bottom:2px solid transparent;margin-bottom:-1px;color:var(--muted);font-size:14px;font-weight:550;cursor:pointer}
 .tab[aria-selected=true]{color:var(--fg);border-bottom-color:var(--fg)}
@@ -541,13 +542,17 @@ function render(s, headline, fallback) {
   $('#report').hidden = false;
 }
 
-function renderEmpty(domain) {
+function renderEmpty(domain, s) {
   $('#report').hidden = false;
-  $('#headline').textContent = `We found no published URLs for ${domain}.`;
-  $('#meta').textContent = 'The Wayback Machine has no captures and the site has no sitemap we could read. Check the spelling, or try the domain with or without a subdomain.';
+  const listed = s?.sitemapOnly ?? 0;
+  $('#headline').textContent = listed ? `The Wayback Machine has no archived page of ${domain} yet.` : `We found no published URLs for ${domain}.`;
+  $('#meta').textContent = listed
+    ? `So there is no history to check: no old URL can be broken yet. Today the sitemap lists ${fmt(listed)} URLs. Lock them now and none of them will break when the site changes.`
+    : 'The Wayback Machine has no captures and the site has no sitemap we could read. Check the spelling, or try the domain with or without a subdomain.';
   for (const id of ['#stats', '#legend', '#dist', '#tabs', '#panel', '#notice']) $(id).replaceChildren();
   $('#dist').parentElement.hidden = true;
   $('#tabs').parentElement.hidden = true;
+  $('.cols').classList.add('solo');
 }
 
 /* ---------- scan ---------- */
@@ -570,6 +575,7 @@ async function scan(raw, fresh = false) {
   current = { ctrl, timer: setInterval(() => ($('#elapsed').textContent = `${((performance.now() - t0) / 1000).toFixed(1)}s`), 100) };
   $('#dist').parentElement.hidden = false;
   $('#tabs').parentElement.hidden = false;
+  $('.cols').classList.remove('solo');
   setBusy(true);
   resetRun(domain);
   $('#run').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'nearest' });
@@ -609,7 +615,7 @@ async function scan(raw, fresh = false) {
           finished = true;
           if (m.stored || !$('.step[data-s=done]')) showStored(m.done);
           finish(true);
-          if (m.done.published === 0) renderEmpty(domain);
+          if (m.done.published === 0) renderEmpty(domain, m.done);
           else render(m.done, m.headline, m.notice);
           if (!m.stored && $('#report').getBoundingClientRect().top > innerHeight * 0.8)
             $('#report').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });

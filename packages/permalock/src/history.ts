@@ -97,9 +97,12 @@ export async function waybackUrls(domain: string, opts: HistoryOptions = {}): Pr
   const out = new Map<string, HistoricUrl>();
   let resumeKey: string | undefined;
   let fetched = 0;
-  do {
+  // the prefix query is the fast one; when it fails, the domain query often still answers
+  let byDomain = false;
+  for (;;) {
     const q = new URLSearchParams({
-      url: `${domain}/*`,
+      url: byDomain ? domain : `${domain}/*`,
+      ...(byDomain && { matchType: 'domain' }),
       output: 'json',
       fl: 'original,timestamp',
       collapse: 'urlkey',
@@ -115,7 +118,9 @@ export async function waybackUrls(domain: string, opts: HistoryOptions = {}): Pr
     } catch (e) {
       // keep the pages already read: a partial history beats none
       if (out.size) throw Object.assign(e as Error, { partial: [...out.values()] });
-      throw e;
+      if (byDomain || resumeKey) throw e;
+      byDomain = true;
+      continue;
     }
     const rows: string[][] = text.trim() ? JSON.parse(text) : [];
     resumeKey = undefined;
@@ -135,7 +140,8 @@ export async function waybackUrls(domain: string, opts: HistoryOptions = {}): Pr
       else if (seen && (!prev.firstSeen || seen < prev.firstSeen)) prev.firstSeen = seen;
     }
     opts.onStep?.(`Wayback Machine: ${out.size} URLs so far`);
-  } while (resumeKey && fetched < limit);
+    if (!resumeKey || fetched >= limit) break;
+  }
   return [...out.values()];
 }
 

@@ -94,6 +94,24 @@ describe('scanner', () => {
     expect(last.notice).toMatch(/not answering right now/);
   }, 20000);
 
+  it('asks the Wayback Machine by domain when the prefix query fails', async () => {
+    const f = (async (input: any) => {
+      const u = new URL(String(input));
+      if (u.host !== 'web.archive.org') return new Response('', { status: 404 });
+      if (u.searchParams.get('url')!.endsWith('/*')) return new Response('', { status: 400 });
+      return new Response(
+        JSON.stringify([
+          ['original', 'timestamp'],
+          ['https://www.prefix.org/p', '20200101000000'],
+        ]),
+      );
+    }) as typeof fetch;
+    const lines = (await (await handleScan(new Request('https://scan.test/api/scan?d=prefix.org'), { fetch: f })).text())
+      .trim()
+      .split('\n');
+    expect(JSON.parse(lines.at(-1)!).done.published).toBe(1);
+  });
+
   it('answers a recent result at once, and limits fresh scans per client', async () => {
     const r = await handleScan(new Request('https://scan.test/api/scan?d=shop.org'));
     const lines = (await r.text())
