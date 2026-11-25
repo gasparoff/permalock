@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { fileToUrl, globToRegExp, scanBuild } from '../src/scan.js';
+import { canonicalPath, fileToUrl, globToRegExp, scanBuild } from '../src/scan.js';
 import { article, tmp, writeTree } from './helpers.js';
 
 describe('scan', () => {
@@ -14,6 +14,14 @@ describe('scan', () => {
     expect(fileToUrl('index.html', { trailingSlash: 'never' })).toBe('/');
     expect(fileToUrl(path.join('a', 'index.html'), { trailingSlash: 'never' })).toBe('/a');
     expect(fileToUrl('a.html', { trailingSlash: 'always' })).toBe('/a/');
+    // macOS writes NFD file names; the URL must not change between a Mac and CI
+    expect(fileToUrl(path.join('cafe\u0301', 'index.html'))).toBe('/caf%C3%A9/');
+    // a file already named with an escape is not encoded twice; ? and # stay in the path
+    expect(fileToUrl(path.join('caf%C3%A9', 'index.html'))).toBe('/caf%C3%A9/');
+    expect(fileToUrl('what?.html')).toBe('/what%3F');
+    expect(fileToUrl(path.join('c#', 'index.html'))).toBe('/c%23/');
+    expect(canonicalPath('/ja/はじめに/')).toBe('/ja/%E3%81%AF%E3%81%98%E3%82%81%E3%81%AB/');
+    expect(canonicalPath('/100%/')).toBe('/100%25/');
   });
 
   it('globs', () => {

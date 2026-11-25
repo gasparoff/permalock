@@ -87,6 +87,11 @@ site's base path and trailing slash convention:
 - it MUST NOT contain a scheme, host, query string or fragment;
 - it SHOULD be percent-encoded as the site serves it (non-ASCII characters
   encoded, `/` not encoded);
+- implementations SHOULD write one spelling per path: Unicode normalised to
+  NFC before encoding, each character encoded once (an existing `%XX` escape
+  is kept, not encoded again), and `?` and `#` that belong to the path
+  encoded as `%3F` and `%23`. File systems differ (macOS often stores names
+  in NFD), and the same build must give the same keys on every machine;
 - `/about` and `/about/` are **different** URLs. A change of trailing-slash
   policy is a change of every URL and is handled like any other move.
 
@@ -237,6 +242,12 @@ Steps, in order:
      absolute URL, is an error (**broken redirect**).
 4. Automatic redirects (rules 2.1–2.3) MUST target paths on the same site.
    An absolute target is only ever written by an explicit human decision.
+5. Rules 2.1–2.3 consider only pages in the same language. When one of the
+   first two path segments of *u* and of a candidate both look like a locale
+   (two letters, optionally followed by a region: `fr`, `pt-br`) and differ,
+   the candidate is skipped. Sites often serve the original text as a
+   fallback for untranslated pages, so the same content in another language
+   is not a page's new home.
 
 A build **passes** when resolution reports no orphans and no errors. In
 continuous integration, implementations SHOULD fail the build when it does

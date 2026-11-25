@@ -12,7 +12,7 @@ export {
   cloneLockfile,
   lockfilesEqual,
 } from './lockfile.js';
-export { scanBuild, fileToUrl, detectBuildDir, normalizeBase, globToRegExp, type ScanOptions } from './scan.js';
+export { scanBuild, fileToUrl, canonicalPath, detectBuildDir, normalizeBase, globToRegExp, type ScanOptions } from './scan.js';
 export { resolve, collapseRedirects, pathSimilarity, passes, isAbsoluteUrl, type ResolveInput } from './resolve.js';
 export { addRedirect, retire, forget, toUrlKey, DecisionError } from './decide.js';
 export { mergeLockfiles, type MergeResult } from './merge.js';

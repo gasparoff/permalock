@@ -1,3 +1,4 @@
+import { canonicalPath } from './scan.js';
 import { pool, trace, USER_AGENT, withRetry, type Fetch } from './http.js';
 
 export interface HistoricUrl {
@@ -48,10 +49,7 @@ export function toSitePath(raw: string, domain: string): string | undefined {
   if (/\/page\/\d+\/?$|\/amp\/?$/i.test(p)) return undefined;
   // collapse duplicate slashes, keep encoding stable
   p = p.replace(/\/{2,}/g, '/');
-  try {
-    p = encodeURI(decodeURI(p));
-  } catch {}
-  return p;
+  return canonicalPath(p);
 }
 
 /** An HTTP failure worth retrying: rate limits, server errors, timeouts and network errors. */

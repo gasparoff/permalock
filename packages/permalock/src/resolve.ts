@@ -85,6 +85,27 @@ export function pathSimilarity(a: string, b: string): number {
 
 const round2 = (n: number) => Math.round(n * 100) / 100;
 
+const LOCALE_RE = /^[a-z]{2}(?:-[a-z0-9]{2,4})?$/i;
+
+/** A locale-looking segment among the first two of a path ("/fr/...", "/docs/pt-br/..."). */
+export function localeOf(url: string): string | undefined {
+  return url
+    .split('/')
+    .slice(1, 3)
+    .find((s) => LOCALE_RE.test(s))
+    ?.toLowerCase();
+}
+
+/**
+ * A page never moves to another language on its own: an untranslated fallback
+ * page in /fr/ has the same text as the removed /en/ page, but is not its new home.
+ */
+function sameLanguage(a: string, b: string) {
+  const la = localeOf(a),
+    lb = localeOf(b);
+  return !la || !lb || la === lb;
+}
+
 export function resolve(input: ResolveInput): Resolution {
   const opts = input.options ?? {};
   const autoThreshold = opts.autoThreshold === undefined ? 0.94 : opts.autoThreshold;
@@ -148,8 +169,9 @@ export function resolve(input: ResolveInput): Resolution {
       continue;
     }
     // 2.1 same source
+    const here = (list: BuiltPage[] | undefined) => list?.filter((p) => sameLanguage(u, p.url));
     if (prev.source) {
-      const c = bySource.get(prev.source);
+      const c = here(bySource.get(prev.source));
       if (c && c.length === 1) {
         setRedirect(u, c[0].url, 'same-source');
         continue;
@@ -157,7 +179,7 @@ export function resolve(input: ResolveInput): Resolution {
     }
     // 2.2 same content
     if (prev.hash) {
-      const c = byHash.get(prev.hash);
+      const c = here(byHash.get(prev.hash));
       if (c && c.length === 1) {
         setRedirect(u, c[0].url, 'same-content');
         continue;
@@ -169,6 +191,7 @@ export function resolve(input: ResolveInput): Resolution {
       let first = { url: '', score: -1 };
       let second = -1;
       for (const p of withSim) {
+        if (!sameLanguage(u, p.url)) continue;
         const s = simSimilarity(prev.sim, p.sim!);
         if (s > first.score) {
           second = first.score;

@@ -51,6 +51,18 @@ export function normalizeBase(base?: string): string {
   return '/' + base.replace(/^\/+|\/+$/g, '');
 }
 
+/**
+ * One spelling per URL path: Unicode in NFC (macOS file names are often NFD), every
+ * character percent-encoded once, `?` and `#` encoded because they are part of the path.
+ */
+export function canonicalPath(p: string): string {
+  let s = p.normalize('NFC');
+  try {
+    s = decodeURI(s);
+  } catch {}
+  return encodeURI(s.normalize('NFC')).replace(/[?#]/g, encodeURIComponent);
+}
+
 /** Map a file path relative to the build directory to the URL it is served at. */
 export function fileToUrl(rel: string, opts: Pick<ScanOptions, 'base' | 'htmlExtension' | 'trailingSlash'> = {}): string {
   const parts = rel.split(path.sep).join('/');
@@ -64,7 +76,15 @@ export function fileToUrl(rel: string, opts: Pick<ScanOptions, 'base' | 'htmlExt
   const keepsExtension = opts.htmlExtension === 'keep' && full.endsWith('.html');
   if (opts.trailingSlash === 'never' && full.length > 1 && full.endsWith('/')) full = full.slice(0, -1);
   else if (opts.trailingSlash === 'always' && !full.endsWith('/') && !keepsExtension) full += '/';
-  return encodeURI(full);
+  return canonicalPath(full);
+}
+
+function safeDecode(s: string) {
+  try {
+    return decodeURI(s);
+  } catch {
+    return s;
+  }
 }
 
 async function* walk(dir: string, rel = ''): AsyncGenerator<string> {
@@ -109,7 +129,8 @@ export async function scanBuild(dir: string, opts: ScanOptions = {}): Promise<Sc
       const idx = i++;
       const rel = files[idx];
       const url = fileToUrl(rel, opts);
-      if (excludes.some((re) => re.test(url))) {
+      const plain = safeDecode(url);
+      if (excludes.some((re) => re.test(url) || re.test(plain))) {
         results[idx] = null;
         continue;
       }

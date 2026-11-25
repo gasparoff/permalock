@@ -1,5 +1,6 @@
 import { validateUrlKey } from './lockfile.js';
 import { collapseRedirects, isAbsoluteUrl } from './resolve.js';
+import { canonicalPath } from './scan.js';
 import type { Lockfile, ResolutionError } from './types.js';
 
 export class DecisionError extends Error {}
@@ -13,11 +14,7 @@ export function toUrlKey(input: string, site?: string): string {
     else return u.href;
   }
   if (!s.startsWith('/')) s = '/' + s;
-  try {
-    // re-encode consistently (keeps existing %XX escapes)
-    s = encodeURI(decodeURI(s));
-  } catch {}
-  return s;
+  return canonicalPath(s);
 }
 
 export function sameSite(a: string, b: string): boolean {
