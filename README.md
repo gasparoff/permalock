@@ -1,10 +1,10 @@
 <h1 align="center">Permalock</h1>
 
-<p align="center"><b>URLs are a public API. <code>permalock.json</code> is their lockfile.</b></p>
+<p align="center"><b>A lockfile for your site's URLs.</b></p>
 
 <p align="center">
-Every URL your site ever published keeps working: <code>200</code>, exactly one <code>301</code>, or a removal you decided.<br>
-Pages that move get their redirect automatically. A URL that would vanish fails the build, like a type error.
+Every URL your site ever published keeps answering: a page, one redirect, or a removal you chose.<br>
+When a page moves, Permalock writes the redirect. When a URL would vanish, the build fails.
 </p>
 
 <p align="center">
@@ -13,43 +13,49 @@ Pages that move get their redirect automatically. A URL that would vanish fails 
 <img src="https://img.shields.io/badge/license-MIT-green" alt="MIT">
 </p>
 
+```sh
+npx astro add @permalock/astro   # Astro
+npx permalock init               # any static site, after a build
+```
+
 <p align="center"><img src=".github/assets/demo.svg" width="860" alt="astro build with Permalock: two redirects created automatically, one orphan URL stops the build"></p>
 
 <p align="center">
 <a href="#quick-start">Quick start</a> ·
 <a href="#how-it-works">How it works</a> ·
 <a href="bench/README.md">Benchmark</a> ·
-<a href="spec/permalock-v1.md">Specification</a>
+<a href="spec/permalock-v1.md">Specification</a> ·
+<a href="https://permalock.dev">Scan a site</a>
 </p>
-
-### Proof, not promises
-
-We replayed **3,189 commits** of the Astro documentation (2022–2026) as if
-Permalock had run on every merge. It would have written **32** of the
-redirects the maintainers wrote by hand, with **zero wrong redirects**. And it
-would have stopped the **25 URLs that answer 404 on docs.astro.build today**,
-each at the pull request that removed it.
-[Method and data](bench/README.md).
-
-> **Status: pre-release (0.1).** The lockfile format is a
-> [draft specification](spec/permalock-v1.md). Feedback welcome.
 
 ## Why
 
-A URL is a promise. Somebody shared it in a forum, bookmarked it, cited it in
-a paper, or got it from an AI assistant last week. Static site generators
-rebuild everything from scratch and forget the previous build, so renaming a
-file, changing a slug or flipping `trailingSlash` silently breaks those links.
-Nobody notices until traffic drops.
+A static site generator forgets the previous build. Rename a file, change a
+slug or flip `trailingSlash`, and every link that pointed to the old URL
+breaks: in forum posts, bookmarks, papers, search results. The build still
+passes, and nobody finds out until someone clicks.
 
-- Pew Research Center found that 38% of the web pages that existed in 2013
-  were no longer reachable ten years later.
-- AI assistants already send people to 404 pages more often than search
-  engines do. Don't add yours to the pile.
+To see how often this happens to a careful team, I replayed the history of
+the Astro docs (3,189 commits, June 2021 to November 2026) as if Permalock
+had run on every merge:
 
-Type checkers protect your code's contract. Content schemas protect your data.
-Nothing protects the one part of your site that the rest of the web depends
-on. Permalock is a contract test for URLs.
+- it would have written 32 redirects on its own. 31 match the rule the
+  maintainers later wrote by hand, and the other one follows a CMS that was
+  renamed. None points to the wrong page.
+- 67 URLs were removed without a redirect. Some of those removals were surely
+  on purpose. Today 25 of them answer 404 on docs.astro.build, and Permalock
+  would have stopped each one at the pull request that removed it, asking for
+  a redirect or an explicit removal.
+
+The Astro docs are well maintained. The tooling just never told anyone. The
+[method and data](bench/README.md) are in this repo, so you can rerun it.
+
+Link rot is not rare. Pew Research Center found that
+[38% of the web pages that existed in 2013 were gone ten years later](https://www.pewresearch.org/data-labs/2024/05/17/when-online-content-disappears/).
+
+> **Status: pre-release (0.1).** The lockfile format is a
+> [draft specification](spec/permalock-v1.md). Feedback is very welcome,
+> especially from people running sites with thousands of pages.
 
 ## Quick start
 
