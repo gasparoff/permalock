@@ -223,8 +223,8 @@ async function runCheck(write: boolean, dirArg: string | undefined, values: Valu
     }
   }
   if (!passes(res)) {
-    if (!values.json)
-      console.log(c.red(`\n${res.orphans.length + res.errors.length} URL(s) would break. Decide each one, then build again.`));
+    if (!values.json) const n = res.orphans.length + res.errors.length;
+    console.log(c.red(`\n${n} ${n === 1 ? 'URL' : 'URLs'} would break. Decide each one, then build again.`));
     return 1;
   }
   if (!write && values.frozen && res.changed) {

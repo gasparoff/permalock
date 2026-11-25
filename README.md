@@ -87,6 +87,8 @@ See [`packages/astro`](packages/astro/README.md) for options.
 
 ### Any static site (Hugo, Eleventy, Jekyll, Next export, VitePress, Docusaurus…)
 
+Step by step, with Hugo and Eleventy: [docs/getting-started.md](docs/getting-started.md).
+
 ```sh
 npx permalock init          # after your first build: creates permalock.json
 # …change things, build again…
