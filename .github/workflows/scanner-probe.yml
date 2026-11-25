@@ -20,4 +20,6 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build -w permalock
-      - run: node apps/scanner/probe.mjs ${{ inputs.domains }} | tee -a "$GITHUB_STEP_SUMMARY"
+      - run: node apps/scanner/probe.mjs $DOMAINS | tee -a "$GITHUB_STEP_SUMMARY"
+        env:
+          DOMAINS: ${{ inputs.domains }}
