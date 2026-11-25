@@ -1,0 +1,16 @@
+name: Bug
+description: The CLI or an integration does something wrong.
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: The command you ran, its output, and what you expected.
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      placeholder: permalock 0.1.0, Node 22, Astro 7.4

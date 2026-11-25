@@ -249,4 +249,4 @@ npm run build
 
 MIT for the code, CC BY 4.0 for the specification.
 
-Made by [@gasparoff](https://github.com/gasparoff).
+Made by [@gasparoff](https://github.com/gasparoff). [Contributions](CONTRIBUTING.md) and [sponsors](https://github.com/sponsors/gasparoff) keep it going.

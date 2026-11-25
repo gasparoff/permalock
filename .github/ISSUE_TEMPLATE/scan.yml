@@ -1,0 +1,17 @@
+name: Wrong scan result
+description: The scanner at permalock.dev shows something that looks wrong for a site.
+labels: [scanner]
+body:
+  - type: input
+    id: domain
+    attributes:
+      label: Domain
+      placeholder: example.com
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What you saw, and what you expected
+    validations:
+      required: true
