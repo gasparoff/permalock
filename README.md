@@ -105,22 +105,23 @@ npx permalock check         # exits 1 if any URL would break
 ### How many URLs has a site already lost?
 
 ```sh
-npx permalock scan example.com
+npx permalock scan tauri.app --max 200
 ```
 
 ```text
-example.com has published 1,284 URLs since 2014. 212 of them are broken today.
-  sources: Wayback Machine 1,190 · current sitemaps 412 · archived sitemaps 600
-
-  ✓   1,031  answer 200
-  →       0  answer one redirect
-  ⤳      41  take two or more redirects
-  ✗     212  are broken (404 or 410)  16.5%
+tauri.app has published 4,399 URLs since 2022. Of the 200 we checked, 3 are broken today.
+  sources: current sitemaps 0 · Wayback Machine 4,399 · archived sitemaps 178
+  167 more URLs appear only in sitemaps, never captured answering 200: not counted
+  ✓      85  answer 200
+  →     102  answer one redirect
+  ⤳      10  take two or more redirects
+  ✗       3  are broken (404, 410 or sent to the home page)  1.5%
 ```
 
-(Numbers above are an illustration.) No install needed: the same scan runs
+That is a real scan from 25 November 2026, and a good result: the Tauri team
+redirects almost everything it moves. No install needed: the same scan runs
 in the browser at **[permalock.dev](https://permalock.dev)**. `scan` reads the Wayback Machine and the
-site's current and archived sitemaps, then checks every URL on the live site.
+site's current and archived sitemaps, then checks how each URL answers on the live site (an even sample, 2,000 URLs by default).
 Add `--html report.html` for a shareable page. `permalock import <domain>`
 adds those historic URLs to your lockfile, so you can decide where each one
 should go.
