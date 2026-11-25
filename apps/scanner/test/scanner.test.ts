@@ -148,6 +148,7 @@ describe('scanner', () => {
     const home = await last('home.org', site(301));
     expect(home.done.counts.broken).toBe(12);
     expect(home.done.broken[0].to).toBe('/');
+    expect(home.done.broken.some((b: any) => b.path === '/')).toBe(false);
     const blocked = await last('home.org&fresh=1', site(403));
     expect(blocked.headline).toMatch(/refused most of our checks/);
   });

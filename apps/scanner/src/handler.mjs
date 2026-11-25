@@ -4,6 +4,7 @@ import { domainOf, headline, scanDomain } from 'permalock';
 const HOST_RE = /^(?=.{4,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/;
 const RESERVED = /(^|\.)(localhost|local|internal|intranet|lan|home|corp|test|example|invalid|onion)$/;
 const MAX_CHECKS = Number(process.env.PERMALOCK_MAX_CHECKS ?? 200);
+const DEADLINE_MS = Number(process.env.PERMALOCK_DEADLINE_MS ?? 270_000);
 const RESULTS = new URL('../public/results/', import.meta.url);
 
 /** A public hostname, or undefined: never an IP, localhost or an internal name. */
@@ -96,7 +97,7 @@ export async function handleScan(request, { fetch, ip } = {}) {
       const counts = { ok: 0, redirect: 0, chain: 0, broken: 0, error: 0 };
       try {
         send({ start: { domain } });
-        const summary = await scanDomain(domain, {
+        const scan = scanDomain(domain, {
           fetch,
           max: MAX_CHECKS,
           concurrency: 16,
@@ -114,6 +115,16 @@ export async function handleScan(request, { fetch, ip } = {}) {
             }
           },
         });
+        scan.catch(() => {}); // a scan that loses the race below may still fail later
+        // the host stops the function at 300 s: answer before that, whatever the archive does
+        let timer;
+        const late = new Promise((_, reject) => {
+          timer = setTimeout(
+            () => reject(new Error('This scan took too long. The Wayback Machine is slow right now: try again in a few minutes.')),
+            DEADLINE_MS,
+          );
+        });
+        const summary = await Promise.race([scan, late]).finally(() => clearTimeout(timer));
         const result = { done: summary, headline: headline(summary) };
         if (!summary.errors.length) recent.set(domain, { at: Date.now(), result });
         if (recent.size > 500) recent.delete(recent.keys().next().value);

@@ -24,17 +24,28 @@ export interface ScanSummary {
  * A redirect to the home page, or to one page that most old URLs land on, loses the
  * content as surely as a 404 (search engines call it a soft 404).
  */
-export function softBroken(live: LiveCheck[]): LiveCheck[] {
+export function softBroken(live: LiveCheck[], domain?: string): LiveCheck[] {
   const moved = live.filter((l) => (l.state === 'redirect' || l.state === 'chain') && l.final);
   const landing = new Map<string, number>();
   for (const l of moved) landing.set(pathOf(l.final!), (landing.get(pathOf(l.final!)) ?? 0) + 1);
   const crowded = [...landing].filter(([, k]) => k >= 10 && k > moved.length / 2).map(([p]) => p);
   return live.map((l) => {
-    if (!moved.includes(l)) return l;
+    // the home page moving is not a lost page
+    if (!moved.includes(l) || l.path === '/') return l;
     const to = pathOf(l.final!);
-    return (to === '/' && l.path !== '/') || crowded.includes(to) ? { ...l, state: 'broken', to } : l;
+    if (to !== '/' && !crowded.includes(to)) return l;
+    const away = domain && hostOf(l.final!) !== domain;
+    return { ...l, state: 'broken', to: away ? l.final : to };
   });
 }
+
+const hostOf = (url: string) => {
+  try {
+    return new URL(url).host.replace(/^www\./, '');
+  } catch {
+    return undefined;
+  }
+};
 
 const pathOf = (url: string) => {
   try {
@@ -45,7 +56,7 @@ const pathOf = (url: string) => {
 };
 
 export function summarizeScan(history: History, checks: LiveCheck[], published: number): ScanSummary {
-  const live = softBroken(checks) as (LiveCheck & { to?: string })[];
+  const live = softBroken(checks, history.domain) as (LiveCheck & { to?: string })[];
   const counts = { ok: 0, redirect: 0, chain: 0, broken: 0, error: 0 };
   for (const l of live) counts[l.state]++;
   const firstSeen = new Map(history.urls.map((u) => [u.path, u.firstSeen]));

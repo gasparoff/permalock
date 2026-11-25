@@ -1,6 +1,6 @@
 // Why does a domain show what it shows? Raw Wayback counts, sitemaps and the scan, side by side.
 // node apps/scanner/probe.mjs example.com [...]
-import { scanDomain, sitemapUrls } from 'permalock';
+import { renderScanText, scanDomain, sitemapUrls } from 'permalock';
 
 async function cdx(params) {
   const q = new URLSearchParams({ output: 'json', fl: 'original,statuscode,mimetype', collapse: 'urlkey', limit: '5000', ...params });
@@ -47,6 +47,7 @@ for (const d of process.argv.slice(2)) {
     console.log(
       `- scan (${((Date.now() - t0) / 1000).toFixed(0)}s): published ${s.published}, sitemapOnly ${s.sitemapOnly ?? 0}, checked ${s.checked}, ${JSON.stringify(s.counts)}, sources ${JSON.stringify(s.sources)}${s.errors.length ? `, errors: ${s.errors.join('; ')}` : ''}`,
     );
+    console.log(renderScanText(s));
     for (const b of s.broken.slice(0, 20))
       console.log(`  - broken ${b.status ?? ''} https://${d}${b.path} (first seen ${b.firstSeen ?? '?'})`);
   } catch (e) {
