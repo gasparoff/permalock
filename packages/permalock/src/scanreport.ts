@@ -146,7 +146,9 @@ export function renderScanText(s: ScanSummary): string {
   out.push(`  ${c.green('✓')} ${n(s.counts.ok).padStart(7)}  answer 200`);
   out.push(`  ${c.cyan('→')} ${n(s.counts.redirect).padStart(7)}  answer one redirect`);
   out.push(`  ${c.yellow('⤳')} ${n(s.counts.chain).padStart(7)}  take two or more redirects`);
-  out.push(`  ${c.red('✗')} ${n(s.counts.broken).padStart(7)}  are broken (404, 410 or sent to the home page)  ${c.red(pct(s.counts.broken, s.checked))}`);
+  out.push(
+    `  ${c.red('✗')} ${n(s.counts.broken).padStart(7)}  are broken (404, 410 or sent to the home page)  ${c.red(pct(s.counts.broken, s.checked))}`,
+  );
   if (s.counts.error) out.push(`  ${c.dim('?')} ${n(s.counts.error).padStart(7)}  did not answer`);
   if (s.broken.length) {
     out.push('');
