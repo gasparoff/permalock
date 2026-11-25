@@ -1,50 +1,126 @@
+import { readFile } from 'node:fs/promises';
 import { domainOf, headline, scanDomain } from 'permalock';
 
 const HOST_RE = /^(?=.{4,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/;
-const MAX_CHECKS = Number(process.env.PERMALOCK_MAX_CHECKS ?? 400);
+const RESERVED = /(^|\.)(localhost|local|internal|intranet|lan|home|corp|test|example|invalid|onion)$/;
+const MAX_CHECKS = Number(process.env.PERMALOCK_MAX_CHECKS ?? 200);
+const RESULTS = new URL('../public/results/', import.meta.url);
 
 /** A public hostname, or undefined: never an IP, localhost or an internal name. */
 export function publicDomain(input) {
+  const raw = String(input ?? '').trim().toLowerCase();
+  if (!raw || raw.length > 300 || /\s/.test(raw)) return undefined;
   try {
-    const d = domainOf(String(input ?? '').trim().toLowerCase());
-    return HOST_RE.test(d) && !/\.(local|internal|localhost|test|example)$/.test(d) ? d : undefined;
+    const d = domainOf(raw).replace(/\.$/, '');
+    return HOST_RE.test(d) && !RESERVED.test(d) ? d : undefined;
   } catch {
     return undefined;
   }
 }
 
+/** A result computed ahead of time (public/results/<domain>.json), if any. */
+export async function storedResult(domain) {
+  try {
+    return JSON.parse(await readFile(new URL(`${domain}.json`, RESULTS), 'utf8'));
+  } catch {
+    return undefined;
+  }
+}
+
+// Per instance: recent successful scans, and fresh scans per client.
+const recent = new Map();
+const RECENT_MS = 60 * 60 * 1000;
+const hits = new Map();
+const LIMIT = Number(process.env.PERMALOCK_SCANS_PER_HOUR ?? 10);
+
+/** A successful scan this instance ran in the last hour, if any. */
+export function recentResult(domain) {
+  const hit = recent.get(domain);
+  return hit && Date.now() - hit.at < RECENT_MS ? hit.result : undefined;
+}
+
+function allowed(ip) {
+  const now = Date.now();
+  const list = (hits.get(ip) ?? []).filter((t) => now - t < 3600_000);
+  if (list.length >= LIMIT) return false;
+  list.push(now);
+  hits.set(ip, list);
+  if (hits.size > 10_000) hits.clear();
+  return true;
+}
+
+const ndjson = (lines, cache) =>
+  new Response(lines.map((l) => JSON.stringify(l) + '\n').join(''), {
+    headers: { 'content-type': 'application/x-ndjson; charset=utf-8', 'cache-control': cache, 'x-content-type-options': 'nosniff' },
+  });
+
 /**
- * GET /api/scan?d=example.com -> NDJSON stream: {"step"} and {"progress"} lines,
- * then {"done": summary, "headline"} or {"error"}.
+ * GET /api/scan?d=example.com[&fresh=1] -> NDJSON stream, one event per line:
+ *   {"start": {domain}}
+ *   {"source": {name, count, error?}}       each history source as it finishes
+ *   {"history": {published, checking}}      before the live checks
+ *   {"progress": [done, total]}             live checks, throttled
+ *   {"done": summary, "headline"} | {"error": message}   always last
+ * Stored and recent results answer at once. Live scans are never cached by a CDN,
+ * so an error or a partial result is never served twice.
  */
-export async function handleScan(request, { fetch } = {}) {
-  const domain = publicDomain(new URL(request.url).searchParams.get('d'));
+export async function handleScan(request, { fetch, ip } = {}) {
+  const url = new URL(request.url);
+  const domain = publicDomain(url.searchParams.get('d'));
   if (!domain) return Response.json({ error: 'Enter a public domain, like example.com' }, { status: 400 });
+  const fresh = url.searchParams.has('fresh');
+
+  if (!fresh) {
+    const hit = recentResult(domain);
+    if (hit) return ndjson([{ start: { domain } }, hit], 'no-store');
+    const stored = await storedResult(domain);
+    if (stored) return ndjson([{ start: { domain } }, { done: stored.done, headline: stored.headline, stored: true }], 'public, s-maxage=3600');
+  }
+
+  const client = ip ?? request.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? 'local';
+  if (!allowed(client))
+    return Response.json({ error: 'Too many scans from your network in the last hour. Try again later.' }, { status: 429 });
+
   const enc = new TextEncoder();
+  let closed = false;
   const body = new ReadableStream({
     async start(ctrl) {
-      const send = (o) => ctrl.enqueue(enc.encode(JSON.stringify(o) + '\n'));
+      const send = (o) => {
+        if (!closed) ctrl.enqueue(enc.encode(JSON.stringify(o) + '\n'));
+      };
       let last = 0;
       try {
-        send({ step: `Collecting every URL ${domain} ever published…` });
+        send({ start: { domain } });
         const summary = await scanDomain(domain, {
           fetch,
           max: MAX_CHECKS,
-          concurrency: 12,
-          limit: 20000,
-          onStep: (step) => send({ step }),
+          concurrency: 16,
+          limit: 10000,
+          timeoutMs: 25000,
+          checkTimeoutMs: 10000,
+          onSource: (name, count, error) => send({ source: { name, count, error } }),
+          onHistory: (published, checking) => send({ history: { published, checking } }),
           onProgress: (done, total) => {
-            if (done === total || Date.now() - last > 250) send({ progress: [done, total] }), (last = Date.now());
+            if (done === total || Date.now() - last > 200) {
+              last = Date.now();
+              send({ progress: [done, total] });
+            }
           },
         });
-        send({ done: summary, headline: headline(summary) });
+        const result = { done: summary, headline: headline(summary) };
+        if (!summary.errors.length) recent.set(domain, { at: Date.now(), result });
+        if (recent.size > 500) recent.delete(recent.keys().next().value);
+        send(result);
       } catch (e) {
         send({ error: e instanceof Error ? e.message : String(e) });
       }
-      ctrl.close();
+      if (!closed) ctrl.close();
+    },
+    cancel() {
+      closed = true;
     },
   });
   return new Response(body, {
-    headers: { 'content-type': 'application/x-ndjson; charset=utf-8', 'cache-control': 'public, s-maxage=86400, stale-while-revalidate=604800' },
+    headers: { 'content-type': 'application/x-ndjson; charset=utf-8', 'cache-control': 'no-store', 'x-content-type-options': 'nosniff' },
   });
 }

@@ -6,7 +6,10 @@ type History = Awaited<ReturnType<typeof collectHistory>>;
 export interface ScanSummary {
   domain: string;
   scannedAt: string;
+  /** URLs the Wayback Machine saw answer 200. */
   published: number;
+  /** URLs listed in sitemaps that the Wayback Machine never saw answer: not counted, not checked. */
+  sitemapOnly?: number;
   checked: number;
   firstSeen?: string;
   sources: Record<string, number>;
@@ -38,17 +41,29 @@ export interface ScanDomainOptions extends HistoryOptions {
   /** Max URLs checked on the live site; a larger history is sampled evenly. Default 2000 */
   max?: number;
   concurrency?: number;
+  /** Timeout of each live check. Default 15000 */
+  checkTimeoutMs?: number;
   onProgress?: (done: number, total: number) => void;
+  /** Called once the history is known, before the live checks start. */
+  onHistory?: (published: number, checking: number) => void;
 }
 
 /** Find every URL a domain published and check how each one answers today. */
 export async function scanDomain(domain: string, opts: ScanDomainOptions = {}): Promise<ScanSummary> {
   const history = await collectHistory(domain, opts);
-  const paths = history.urls.map((u) => u.path);
+  if (opts.wayback !== false && !('wayback' in history.sources))
+    throw new Error('The Wayback Machine did not answer, so the history is unknown. Try again in a minute.');
+  // Only a 200 capture proves a URL was published: sitemaps list pages that may never have existed.
+  const urls = opts.wayback === false ? history.urls : history.urls.filter((u) => u.captured);
+  const paths = urls.map((u) => u.path);
   const max = opts.max ?? 2000;
   const sample = paths.length > max ? paths.filter((_, i) => i % Math.ceil(paths.length / max) === 0) : paths;
-  const live = await checkLive(history.domain, sample, { fetch: opts.fetch, concurrency: opts.concurrency, onProgress: opts.onProgress });
-  return summarizeScan(history, live, paths.length);
+  opts.onHistory?.(paths.length, sample.length);
+  const live = await checkLive(history.domain, sample, { fetch: opts.fetch, concurrency: opts.concurrency, timeoutMs: opts.checkTimeoutMs, onProgress: opts.onProgress });
+  const firstSeen = urls.map((u) => u.firstSeen).filter(Boolean).sort()[0];
+  const summary = summarizeScan({ ...history, urls, firstSeen }, live, paths.length);
+  if (urls.length < history.urls.length) summary.sitemapOnly = history.urls.length - urls.length;
+  return summary;
 }
 
 const n = (x: number) => x.toLocaleString('en-US');
@@ -58,7 +73,7 @@ const SOURCE_NAMES: Record<string, string> = { wayback: 'Wayback Machine', sitem
 export function headline(s: ScanSummary): string {
   const since = s.firstSeen ? ` since ${s.firstSeen.slice(0, 4)}` : '';
   const head = `${s.domain} has published ${n(s.published)} URLs${since}.`;
-  if (s.checked < s.published) return `${head} In a sample of ${n(s.checked)}, ${pct(s.counts.broken, s.checked)} are broken today.`;
+  if (s.checked < s.published) return `${head} Of the ${n(s.checked)} we checked, ${n(s.counts.broken)} ${s.counts.broken === 1 ? 'is' : 'are'} broken today.`;
   return `${head} ${n(s.counts.broken)} of them ${s.counts.broken === 1 ? 'is' : 'are'} broken today.`;
 }
 
@@ -67,6 +82,7 @@ export function renderScanText(s: ScanSummary): string {
   out.push('');
   out.push(c.bold(headline(s)));
   out.push(c.dim(`  sources: ${Object.entries(s.sources).map(([k, v]) => `${SOURCE_NAMES[k] ?? k} ${n(v)}`).join(' · ')}`));
+  if (s.sitemapOnly) out.push(c.dim(`  ${n(s.sitemapOnly)} more URLs appear only in sitemaps, never captured answering 200: not counted`));
   for (const e of s.errors) out.push(c.yellow(`  ! ${e}`));
   out.push('');
   out.push(`  ${c.green('✓')} ${n(s.counts.ok).padStart(7)}  answer 200`);
@@ -112,7 +128,7 @@ code{background:var(--line);padding:2px 6px;border-radius:4px}
 </style></head><body><main>
 <p class="muted">Permalock scan · ${esc(s.scannedAt.slice(0, 10))}</p>
 <h1>${esc(headline(s))}</h1>
-<p class="muted">Sources: ${Object.entries(s.sources).map(([k, v]) => `${esc(SOURCE_NAMES[k] ?? k)} ${n(v)}`).join(' · ')}${s.checked < s.published ? ` · ${n(s.checked)} checked` : ''}</p>
+<p class="muted">Sources: ${Object.entries(s.sources).map(([k, v]) => `${esc(SOURCE_NAMES[k] ?? k)} ${n(v)}`).join(' · ')}${s.checked < s.published ? ` · ${n(s.checked)} checked` : ''}${s.sitemapOnly ? ` · ${n(s.sitemapOnly)} sitemap-only URLs not counted` : ''}</p>
 ${bar('Answer 200', s.counts.ok, 'ok')}${bar('One redirect', s.counts.redirect, 'redirect')}${bar('Redirect chains', s.counts.chain, 'chain')}${bar('Broken (404/410)', s.counts.broken, 'bad')}
 <p>Lock every URL you ever published: <code>npx permalock init</code></p>
 ${rows ? `<h2>Broken URLs</h2><table><thead><tr><th>URL</th><th>Status</th><th>First seen</th></tr></thead><tbody>${rows}</tbody></table>` : ''}

@@ -1,0 +1,6 @@
+[
+  "docs.astro.build", "astro.build", "starlight.astro.build", "react.dev", "vuejs.org", "nextjs.org",
+  "nuxt.com", "svelte.dev", "tailwindcss.com", "vite.dev", "vitest.dev", "biomejs.dev",
+  "eslint.org", "prettier.io", "tauri.app", "deno.com", "bun.sh", "nodejs.org",
+  "typescriptlang.org", "docusaurus.io", "gohugo.io", "11ty.dev", "remix.run", "angular.dev"
+]

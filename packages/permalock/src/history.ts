@@ -6,6 +6,8 @@ export interface HistoricUrl {
   origin: string;
   /** Earliest capture, YYYY-MM-DD, when known. */
   firstSeen?: string;
+  /** The Wayback Machine saw this URL answer 200: proof it was published. */
+  captured?: boolean;
 }
 
 export interface HistoryOptions {
@@ -16,6 +18,8 @@ export interface HistoryOptions {
   sitemaps?: boolean;
   timeoutMs?: number;
   onStep?: (msg: string) => void;
+  /** Called when a source finishes: its name and how many URLs it found (or the error). */
+  onSource?: (name: string, count: number, error?: string) => void;
 }
 
 const ASSET_RE = /\.(css|js|mjs|json|xml|txt|png|jpe?g|gif|webp|avif|svg|ico|woff2?|ttf|eot|otf|mp4|webm|mp3|wav|zip|gz|map|rss|atom)$/i;
@@ -165,21 +169,30 @@ export async function collectHistory(domainInput: string, opts: HistoryOptions =
   const errors: string[] = [];
   const add = (list: HistoricUrl[], name: string) => {
     sources[name] = list.length;
+    opts.onSource?.(name, list.length);
     for (const h of list) {
+      if (name === 'wayback') h.captured = true;
       const prev = all.get(h.path);
       if (!prev) all.set(h.path, h);
-      else if (h.firstSeen && (!prev.firstSeen || h.firstSeen < prev.firstSeen)) prev.firstSeen = h.firstSeen;
+      else {
+        if (h.firstSeen && (!prev.firstSeen || h.firstSeen < prev.firstSeen)) prev.firstSeen = h.firstSeen;
+        if (h.captured) prev.captured = true;
+      }
     }
+  };
+  const fail = (name: string, message: string) => {
+    errors.push(message);
+    opts.onSource?.(name, 0, message);
   };
   const tasks: Promise<void>[] = [];
   if (opts.wayback !== false) {
     tasks.push(
-      waybackUrls(domain, opts).then((l) => add(l, 'wayback'), (e) => void errors.push(`Wayback Machine: ${e.message}`)),
-      archivedSitemapUrls(domain, opts).then((l) => add(l, 'archived-sitemap'), (e) => void errors.push(`archived sitemaps: ${e.message}`)),
+      waybackUrls(domain, opts).then((l) => add(l, 'wayback'), (e) => fail('wayback', `Wayback Machine: ${e.message}`)),
+      archivedSitemapUrls(domain, opts).then((l) => add(l, 'archived-sitemap'), (e) => fail('archived-sitemap', `archived sitemaps: ${e.message}`)),
     );
   }
   if (opts.sitemaps !== false)
-    tasks.push(sitemapUrls(domain, opts).then((l) => add(l, 'sitemap'), (e) => void errors.push(`sitemaps: ${e.message}`)));
+    tasks.push(sitemapUrls(domain, opts).then((l) => add(l, 'sitemap'), (e) => fail('sitemap', `sitemaps: ${e.message}`)));
   await Promise.all(tasks);
   const urls = [...all.values()].sort((a, b) => (a.path < b.path ? -1 : 1));
   const firstSeen = urls.map((u) => u.firstSeen).filter(Boolean).sort()[0];

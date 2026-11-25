@@ -1,5 +1,9 @@
 {
   "installCommand": "npm ci --prefix ../.. --include=dev",
   "buildCommand": "npm run build -w permalock --prefix ../..",
-  "outputDirectory": "public"
+  "outputDirectory": "public",
+  "functions": {
+    "api/*.mjs": { "includeFiles": "public/results/**", "maxDuration": 300 }
+  },
+  "rewrites": [{ "source": "/d/:domain", "destination": "/api/page?d=:domain" }]
 }

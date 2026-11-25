@@ -1,0 +1,21 @@
+name: Scanner end-to-end
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['apps/scanner/**', 'packages/permalock/src/**']
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm ci
+      - run: npm run build -w permalock
+      - run: npm i --no-save playwright && npx playwright install --with-deps chromium
+      - run: PERMALOCK_SCANS_PER_HOUR=1000 node apps/scanner/server.mjs & sleep 2
+      - run: node apps/scanner/e2e/run.mjs http://localhost:8787
+      - run: node apps/scanner/e2e/ui.mjs http://localhost:8787
+        if: always()
