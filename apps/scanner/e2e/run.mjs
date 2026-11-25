@@ -82,6 +82,8 @@ await check('stored or recent result answers at once', async () => {
     .split('\n')
     .map((l) => JSON.parse(l))
     .at(-1);
+  // without a stored file, this needs the live scan above to have succeeded
+  if (last.error) return console.log(`      skipped: no earlier result (${last.error})`);
   assert.ok(last.done, 'has a result');
   assert.ok(Date.now() - t0 < 3000, `took ${Date.now() - t0} ms`);
 });

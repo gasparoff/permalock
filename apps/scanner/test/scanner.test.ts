@@ -56,7 +56,7 @@ describe('scanner', () => {
     expect(last.headline).toContain('shop.org has published 2 URLs');
   });
 
-  it('fails instead of reporting zero when the Wayback Machine is down', async () => {
+  it('fails instead of reporting zero when the Wayback Machine is down, and says why', async () => {
     const down = (async () => new Response('busy', { status: 503 })) as typeof fetch;
     const r = await handleScan(new Request('https://scan.test/api/scan?d=down-shop.org'), { fetch: down });
     const last = (await r.text())
@@ -64,8 +64,35 @@ describe('scanner', () => {
       .split('\n')
       .map((l) => JSON.parse(l))
       .at(-1);
-    expect(last.error).toMatch(/Wayback Machine did not answer/);
-  });
+    expect(last.error).toMatch(/Wayback Machine is not answering right now \(web.archive.org answered 503\)/);
+  }, 20000);
+
+  it('retries a busy Wayback Machine, and falls back to an earlier result', async () => {
+    let calls = 0;
+    const flaky = (async (input: any) => {
+      const u = new URL(String(input));
+      if (u.host !== 'web.archive.org') return new Response('', { status: 404 });
+      if (calls++ === 0) return new Response('slow down', { status: 429, headers: { 'retry-after': '1' } });
+      return new Response(
+        JSON.stringify([
+          ['original', 'timestamp'],
+          ['https://flaky.org/a', '20200101000000'],
+        ]),
+      );
+    }) as typeof fetch;
+    const ok = (await (await handleScan(new Request('https://scan.test/api/scan?d=flaky.org'), { fetch: flaky })).text())
+      .trim()
+      .split('\n');
+    expect(JSON.parse(ok.at(-1)!).done.published).toBe(1);
+
+    // shop.org was scanned above: a failing fresh scan shows that result, with the reason
+    const down = (async () => new Response('', { status: 503 })) as typeof fetch;
+    const r = await handleScan(new Request('https://scan.test/api/scan?d=shop.org&fresh=1'), { fetch: down, ip: '198.51.100.7' });
+    const last = JSON.parse((await r.text()).trim().split('\n').at(-1)!);
+    expect(last.stored).toBe(true);
+    expect(last.done.domain).toBe('shop.org');
+    expect(last.notice).toMatch(/not answering right now/);
+  }, 20000);
 
   it('answers a recent result at once, and limits fresh scans per client', async () => {
     const r = await handleScan(new Request('https://scan.test/api/scan?d=shop.org'));

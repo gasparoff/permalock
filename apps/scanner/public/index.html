@@ -38,7 +38,7 @@ body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 var(--sans);-w
 a{color:inherit}
 button,input{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--focus);outline-offset:2px}
-.wrap{max-width:960px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-left))}
+.wrap{max-width:1200px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-left))}
 [hidden]{display:none!important}
 
 /* nav */
@@ -72,6 +72,29 @@ h1{font-size:clamp(2rem,6vw,3.25rem);line-height:1.08;letter-spacing:-.035em;mar
 .examples{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:12px;font-size:13px;color:var(--faint)}
 .chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:3px 10px;font:12.5px var(--mono);color:var(--muted);cursor:pointer}
 .chip:hover{color:var(--fg);border-color:var(--line-strong)}
+
+/* top: hero beside the run panel on wide screens */
+.top{display:grid;gap:8px}
+.top>aside{display:flex;flex-direction:column}
+.top>aside .block{margin:0}
+#run:not([hidden])~#how{display:none}
+.how{padding:22px}
+.how h2{margin:0 0 14px;font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.how ol{list-style:none;margin:0;padding:0;display:grid;gap:16px;counter-reset:how}
+.how li{display:grid;grid-template-columns:28px 1fr;gap:12px;counter-increment:how}
+.how li::before{content:counter(how);width:26px;height:26px;border-radius:8px;background:var(--sunken);border:1px solid var(--line);display:grid;place-items:center;font:600 12.5px var(--mono);color:var(--muted)}
+.how b{display:block;font-weight:600;font-size:15px;margin-bottom:2px}
+.how span{color:var(--muted);font-size:14px}
+.verdicts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.verdicts i{font:normal 12px var(--mono);padding:2px 8px;border-radius:6px;background:var(--sunken);border:1px solid var(--line);color:var(--muted)}
+.verdicts i::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px;background:var(--c)}
+@media (min-width:1024px){
+  .top{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:56px;align-items:center;padding:40px 0 24px}
+  .top .hero{padding:24px 0}
+  h1{font-size:3.6rem}
+  .sub{font-size:1.15rem}
+  .headline{margin-top:40px}
+}
 
 /* cards */
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
@@ -197,6 +220,7 @@ footer a{color:var(--muted)}
     </nav>
   </header>
 
+  <div class="top">
   <section class="hero">
     <p class="eyebrow"><i></i>Free · no signup · public data only</p>
     <h1>How many URLs has your site lost?</h1>
@@ -212,6 +236,7 @@ footer a{color:var(--muted)}
     <div class="examples">Try <button class="chip" type="button" data-d="docs.astro.build">docs.astro.build</button><button class="chip" type="button" data-d="biomejs.dev">biomejs.dev</button><button class="chip" type="button" data-d="tauri.app">tauri.app</button></div>
   </section>
 
+  <aside>
   <section class="block card fade" id="run" hidden aria-live="polite">
     <div class="run-head">
       <span class="dom" id="run-domain"></span>
@@ -227,6 +252,17 @@ footer a{color:var(--muted)}
     </ol>
     <div class="run-err" id="run-err" hidden><span id="run-err-text"></span><button class="btn-ghost" type="button" id="retry">Try again</button></div>
   </section>
+  <section class="block card how" id="how">
+    <h2>How the scan works</h2>
+    <ol>
+      <li><div><b>Find what you published</b><span>Every URL the Wayback Machine saw answer 200, back to the first capture. A URL only in a sitemap is not counted.</span></div></li>
+      <li><div><b>Ask your site today</b><span>Up to 200 of those URLs, requested now, following every redirect.</span></div></li>
+      <li><div><b>Sort the answers</b><span>A page or one redirect is fine. Chains are slow, and a 404 is a broken link out there.</span>
+        <div class="verdicts"><i style="--c:var(--ok)">200</i><i style="--c:var(--redirect)">301</i><i style="--c:var(--chain)">301 → 301</i><i style="--c:var(--broken)">404</i></div></div></li>
+    </ol>
+  </section>
+  </aside>
+  </div>
 
   <section id="skeleton" class="block" hidden aria-hidden="true">
     <div class="sk sk-big"></div>
@@ -275,7 +311,7 @@ footer a{color:var(--muted)}
   </section>
 
   <footer>
-    <span>Scans read public data only and check at most a few hundred URLs. Results are cached for 15 minutes.</span>
+    <span>Scans read public data only and check at most a few hundred URLs. A scan is reused for an hour.</span>
     <span><a href="https://github.com/gasparoff/permalock">Permalock</a> is open source (MIT). Made by <a href="https://github.com/gasparoff">@gasparoff</a>.</span>
   </footer>
 </div>
@@ -431,7 +467,7 @@ function linkRow(domain, path, meta) {
     el('span', { text: meta }));
 }
 
-function render(s, headline) {
+function render(s, headline, fallback) {
   const c = s.counts;
   $('#headline').textContent = headline;
   const sources = { wayback: 'Wayback Machine', sitemap: 'sitemaps', 'archived-sitemap': 'archived sitemaps' };
@@ -441,6 +477,8 @@ function render(s, headline) {
 
   const notice = $('#notice');
   notice.replaceChildren();
+  if (fallback)
+    notice.append(el('div', { class: 'notice' }, el('b', { text: `Showing the scan from ${new Date(s.scannedAt).toLocaleDateString(undefined, { month: 'long', day: 'numeric' })}. ` }), fallback));
   if (s.errors.length)
     notice.append(el('div', { class: 'notice' }, el('b', { text: 'Partial result. ' }), `Some sources did not answer: ${s.errors.join('; ')}`));
   if (s.checked && c.error / s.checked > 0.5)
@@ -556,7 +594,7 @@ async function scan(raw, fresh = false) {
           if (m.stored || !$('.step[data-s=done]')) showStored(m.done);
           finish(true);
           if (m.done.published === 0) renderEmpty(domain);
-          else render(m.done, m.headline);
+          else render(m.done, m.headline, m.notice);
         }
       }
     }

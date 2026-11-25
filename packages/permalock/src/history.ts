@@ -50,13 +50,41 @@ export function toSitePath(raw: string, domain: string): string | undefined {
   return p;
 }
 
-async function getText(url: string, opts: HistoryOptions): Promise<string> {
+/** An HTTP failure worth retrying: rate limits, server errors, timeouts and network errors. */
+class HttpError extends Error {
+  constructor(
+    message: string,
+    readonly retry: boolean,
+    readonly waitMs = 0,
+  ) {
+    super(message);
+  }
+}
+
+async function getText(url: string, opts: HistoryOptions, retries = 2): Promise<string> {
   const f = opts.fetch ?? fetch;
-  return withRetry(async () => {
-    const res = await f(url, { headers: { 'user-agent': USER_AGENT }, signal: AbortSignal.timeout(opts.timeoutMs ?? 60000) });
-    if (!res.ok) throw new Error(`${url} answered ${res.status}`);
-    return res.text();
-  }, 2);
+  const timeoutMs = opts.timeoutMs ?? 60000;
+  const host = new URL(url).host;
+  for (let i = 0; ; i++) {
+    try {
+      let res: Response;
+      try {
+        res = await f(url, { headers: { 'user-agent': USER_AGENT }, signal: AbortSignal.timeout(timeoutMs) });
+      } catch (e) {
+        const timeout = e instanceof Error && (e.name === 'TimeoutError' || e.name === 'AbortError');
+        throw new HttpError(
+          timeout ? `${host} did not answer within ${Math.round(timeoutMs / 1000)}s` : `${host} could not be reached`,
+          true,
+        );
+      }
+      if (res.ok) return await res.text();
+      const after = Number(res.headers.get('retry-after'));
+      throw new HttpError(`${host} answered ${res.status}`, res.status === 429 || res.status >= 500, after > 0 ? after * 1000 : 0);
+    } catch (e) {
+      if (!(e instanceof HttpError) || !e.retry || i >= retries) throw e;
+      await new Promise((r) => setTimeout(r, Math.min(Math.max(e.waitMs, 1000 * 2 ** i), 8000)));
+    }
+  }
 }
 
 function ymd(ts: string) {
@@ -81,7 +109,14 @@ export async function waybackUrls(domain: string, opts: HistoryOptions = {}): Pr
     q.append('filter', 'statuscode:200');
     q.append('filter', 'mimetype:text/html');
     if (resumeKey) q.set('resumeKey', resumeKey);
-    const text = await getText(`https://web.archive.org/cdx/search/cdx?${q}`, opts);
+    let text: string;
+    try {
+      text = await getText(`https://web.archive.org/cdx/search/cdx?${q}`, opts, 3);
+    } catch (e) {
+      // keep the pages already read: a partial history beats none
+      if (out.size) throw Object.assign(e as Error, { partial: [...out.values()] });
+      throw e;
+    }
     const rows: string[][] = text.trim() ? JSON.parse(text) : [];
     resumeKey = undefined;
     for (let i = 1; i < rows.length; i++) {
@@ -193,7 +228,10 @@ export async function collectHistory(domainInput: string, opts: HistoryOptions =
     tasks.push(
       waybackUrls(domain, opts).then(
         (l) => add(l, 'wayback'),
-        (e) => fail('wayback', `Wayback Machine: ${e.message}`),
+        (e) => {
+          if (e.partial) add(e.partial, 'wayback');
+          fail('wayback', `Wayback Machine: ${e.message}${e.partial ? `, after ${e.partial.length} URLs` : ''}`);
+        },
       ),
       archivedSitemapUrls(domain, opts).then(
         (l) => add(l, 'archived-sitemap'),

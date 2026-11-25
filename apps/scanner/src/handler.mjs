@@ -62,7 +62,8 @@ const ndjson = (lines, cache) =>
  *   {"source": {name, count, error?}}       each history source as it finishes
  *   {"history": {published, checking}}      before the live checks
  *   {"progress": [done, total]}             live checks, throttled
- *   {"done": summary, "headline"} | {"error": message}   always last
+ *   {"done": summary, "headline", stored?, notice?} | {"error": message}   always last
+ *   (a failed live scan falls back to an earlier result, with the failure as notice)
  * Stored and recent results answer at once. Live scans are never cached by a CDN,
  * so an error or a partial result is never served twice.
  */
@@ -99,7 +100,7 @@ export async function handleScan(request, { fetch, ip } = {}) {
           max: MAX_CHECKS,
           concurrency: 16,
           limit: 10000,
-          timeoutMs: 25000,
+          timeoutMs: 30000,
           checkTimeoutMs: 10000,
           onSource: (name, count, error) => send({ source: { name, count, error } }),
           onHistory: (published, checking) => send({ history: { published, checking } }),
@@ -115,7 +116,10 @@ export async function handleScan(request, { fetch, ip } = {}) {
         if (recent.size > 500) recent.delete(recent.keys().next().value);
         send(result);
       } catch (e) {
-        send({ error: e instanceof Error ? e.message : String(e) });
+        const message = e instanceof Error ? e.message : String(e);
+        // the live scan failed: an earlier full result is better than nothing, if there is one
+        const earlier = recentResult(domain) ?? (await storedResult(domain));
+        send(earlier ? { done: earlier.done, headline: earlier.headline, stored: true, notice: message } : { error: message });
       }
       if (!closed) ctrl.close();
     },

@@ -51,8 +51,12 @@ export interface ScanDomainOptions extends HistoryOptions {
 /** Find every URL a domain published and check how each one answers today. */
 export async function scanDomain(domain: string, opts: ScanDomainOptions = {}): Promise<ScanSummary> {
   const history = await collectHistory(domain, opts);
-  if (opts.wayback !== false && !('wayback' in history.sources))
-    throw new Error('The Wayback Machine did not answer, so the history is unknown. Try again in a minute.');
+  if (opts.wayback !== false && !('wayback' in history.sources)) {
+    const why = history.errors.find((e) => e.startsWith('Wayback Machine: '))?.slice(17);
+    throw new Error(
+      `The Wayback Machine is not answering right now${why ? ` (${why})` : ''}, so we can't tell which URLs the site published. It is often busy for a minute or two: try again shortly.`,
+    );
+  }
   // Only a 200 capture proves a URL was published: sitemaps list pages that may never have existed.
   const urls = opts.wayback === false ? history.urls : history.urls.filter((u) => u.captured);
   const paths = urls.map((u) => u.path);
