@@ -50,6 +50,13 @@ button,input{font:inherit;color:inherit}
 .nav nav a:hover{color:var(--fg);background:var(--sunken)}
 .nav nav a.star{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line-strong);color:var(--fg)}
 .star svg{width:13px;height:13px;color:var(--chain)}
+.improve{margin-top:72px;padding:22px 24px;border:1px dashed var(--line-strong);border-radius:var(--radius);display:flex;gap:16px 32px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.improve h2{margin:0 0 4px;font-size:15px;letter-spacing:-.01em}
+.improve p{margin:0;color:var(--muted);font-size:14px;max-width:40em}
+.improve nav{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:14px}
+.improve a{color:var(--fg);text-decoration:none;border-bottom:1px solid var(--line-strong)}
+.improve a:hover{border-color:var(--fg)}
+.improve+footer{margin-top:24px}
 .oss{display:flex;flex-wrap:wrap;gap:4px 16px;margin:14px 0 0;padding-top:12px;border-top:1px solid var(--line);font-size:13px}
 .oss a{color:var(--muted);text-decoration:none;display:inline-flex;align-items:center;gap:5px}
 .oss a:hover{color:var(--fg)}
@@ -314,6 +321,18 @@ footer a{color:var(--muted)}
         </div>
       </aside>
     </div>
+  </section>
+
+  <section class="improve">
+    <div>
+      <h2>This scanner is open source</h2>
+      <p>One HTML page and a few small functions, no framework. Found a site it gets wrong, or have an idea to make it better? Help improve it.</p>
+    </div>
+    <nav>
+      <a href="https://github.com/gasparoff/permalock/tree/main/apps/scanner" target="_blank" rel="noopener">Read the code</a>
+      <a href="https://github.com/gasparoff/permalock/issues?q=is%3Aopen+label%3Ascanner" target="_blank" rel="noopener">Scanner issues</a>
+      <a href="https://github.com/gasparoff/permalock/blob/main/CONTRIBUTING.md#the-scanner" target="_blank" rel="noopener">Run it locally →</a>
+    </nav>
   </section>
 
   <footer>
