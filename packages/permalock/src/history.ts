@@ -105,7 +105,8 @@ export async function waybackUrls(domain: string, opts: HistoryOptions = {}): Pr
 }
 
 export function parseSitemap(xml: string): { urls: string[]; sitemaps: string[] } {
-  const locs = (block: string) => [...block.matchAll(/<loc>\s*(?:<!\[CDATA\[)?\s*([^<\]]+?)\s*(?:\]\]>)?\s*<\/loc>/gi)].map((m) => m[1].replace(/&amp;/g, '&'));
+  const locs = (block: string) =>
+    [...block.matchAll(/<loc>\s*(?:<!\[CDATA\[)?\s*([^<\]]+?)\s*(?:\]\]>)?\s*<\/loc>/gi)].map((m) => m[1].replace(/&amp;/g, '&'));
   if (/<sitemapindex\b/i.test(xml)) return { urls: [], sitemaps: locs(xml) };
   return { urls: locs(xml), sitemaps: [] };
 }
@@ -157,7 +158,10 @@ export async function archivedSitemapUrls(domain: string, opts: HistoryOptions =
   } catch {
     return [];
   }
-  const snaps = rows.slice(1).filter((r) => r.length === 2).map(([orig, ts]) => `https://web.archive.org/web/${ts}id_/${orig}`);
+  const snaps = rows
+    .slice(1)
+    .filter((r) => r.length === 2)
+    .map(([orig, ts]) => `https://web.archive.org/web/${ts}id_/${orig}`);
   return crawlSitemaps(snaps, domain, 'archived-sitemap', opts);
 }
 
@@ -187,15 +191,29 @@ export async function collectHistory(domainInput: string, opts: HistoryOptions =
   const tasks: Promise<void>[] = [];
   if (opts.wayback !== false) {
     tasks.push(
-      waybackUrls(domain, opts).then((l) => add(l, 'wayback'), (e) => fail('wayback', `Wayback Machine: ${e.message}`)),
-      archivedSitemapUrls(domain, opts).then((l) => add(l, 'archived-sitemap'), (e) => fail('archived-sitemap', `archived sitemaps: ${e.message}`)),
+      waybackUrls(domain, opts).then(
+        (l) => add(l, 'wayback'),
+        (e) => fail('wayback', `Wayback Machine: ${e.message}`),
+      ),
+      archivedSitemapUrls(domain, opts).then(
+        (l) => add(l, 'archived-sitemap'),
+        (e) => fail('archived-sitemap', `archived sitemaps: ${e.message}`),
+      ),
     );
   }
   if (opts.sitemaps !== false)
-    tasks.push(sitemapUrls(domain, opts).then((l) => add(l, 'sitemap'), (e) => fail('sitemap', `sitemaps: ${e.message}`)));
+    tasks.push(
+      sitemapUrls(domain, opts).then(
+        (l) => add(l, 'sitemap'),
+        (e) => fail('sitemap', `sitemaps: ${e.message}`),
+      ),
+    );
   await Promise.all(tasks);
   const urls = [...all.values()].sort((a, b) => (a.path < b.path ? -1 : 1));
-  const firstSeen = urls.map((u) => u.firstSeen).filter(Boolean).sort()[0];
+  const firstSeen = urls
+    .map((u) => u.firstSeen)
+    .filter(Boolean)
+    .sort()[0];
   return { domain, urls, sources, errors, firstSeen };
 }
 

@@ -12,14 +12,16 @@ const same = (a?: Entry, b?: Entry) => (a ? serializeEntry(a) : '') === (b ? ser
 export function mergeLockfiles(base: Lockfile, ours: Lockfile, theirs: Lockfile): MergeResult {
   const out: Lockfile = {
     permalock: Math.max(ours.permalock, theirs.permalock),
-    ...(ours.site ?? theirs.site ? { site: ours.site ?? theirs.site } : {}),
+    ...((ours.site ?? theirs.site) ? { site: ours.site ?? theirs.site } : {}),
     urls: {},
     ...(ours.extra || theirs.extra ? { extra: { ...theirs.extra, ...ours.extra } } : {}),
   };
   const conflicts: MergeResult['conflicts'] = [];
   const keys = new Set([...Object.keys(base.urls), ...Object.keys(ours.urls), ...Object.keys(theirs.urls)]);
   for (const k of keys) {
-    const b = base.urls[k], o = ours.urls[k], t = theirs.urls[k];
+    const b = base.urls[k],
+      o = ours.urls[k],
+      t = theirs.urls[k];
     let pick: Entry | undefined;
     if (same(o, t)) pick = o;
     else if (same(b, o)) pick = t;

@@ -9,7 +9,10 @@ async function scan(domain) {
   const t0 = Date.now();
   const res = await fetch(`${base}/api/scan?fresh=1&d=${encodeURIComponent(domain)}`);
   if (res.status !== 200) return { status: res.status, body: await res.json(), ms: Date.now() - t0 };
-  const events = (await res.text()).trim().split('\n').map((l) => JSON.parse(l));
+  const events = (await res.text())
+    .trim()
+    .split('\n')
+    .map((l) => JSON.parse(l));
   return { status: 200, events, last: events.at(-1), ms: Date.now() - t0 };
 }
 
@@ -52,7 +55,19 @@ await check('domain that does not exist', async () => {
   return note;
 });
 
-for (const bad of ['', 'localhost', '127.0.0.1', '10.0.0.1', '[::1]', 'intranet', 'printer.local', 'a'.repeat(300) + '.com', 'exa mple.com', '%00', 'javascript:alert(1)'])
+for (const bad of [
+  '',
+  'localhost',
+  '127.0.0.1',
+  '10.0.0.1',
+  '[::1]',
+  'intranet',
+  'printer.local',
+  'a'.repeat(300) + '.com',
+  'exa mple.com',
+  '%00',
+  'javascript:alert(1)',
+])
   await check(`rejects ${JSON.stringify(bad.slice(0, 30))}`, async () => {
     const r = await scan(bad);
     assert.equal(r.status, 400);
@@ -62,7 +77,11 @@ for (const bad of ['', 'localhost', '127.0.0.1', '10.0.0.1', '[::1]', 'intranet'
 await check('stored or recent result answers at once', async () => {
   const t0 = Date.now();
   const res = await fetch(`${base}/api/scan?d=docs.astro.build`);
-  const last = (await res.text()).trim().split('\n').map((l) => JSON.parse(l)).at(-1);
+  const last = (await res.text())
+    .trim()
+    .split('\n')
+    .map((l) => JSON.parse(l))
+    .at(-1);
   assert.ok(last.done, 'has a result');
   assert.ok(Date.now() - t0 < 3000, `took ${Date.now() - t0} ms`);
 });

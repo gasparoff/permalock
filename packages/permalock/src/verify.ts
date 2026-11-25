@@ -123,7 +123,8 @@ export async function verify(lock: Lockfile, opts: VerifyOptions = {}): Promise<
 
 function sameUrl(a: string, b: string) {
   try {
-    const x = new URL(a), y = new URL(b);
+    const x = new URL(a),
+      y = new URL(b);
     return x.host.replace(/^www\./, '') === y.host.replace(/^www\./, '') && x.pathname === y.pathname;
   } catch {
     return a === b;

@@ -207,8 +207,7 @@ export default function permalock(options: PermalockOptions = {}): AstroIntegrat
           });
         }
         if (goneList.length) addMiddleware({ entrypoint: new URL('./middleware.js', import.meta.url), order: 'pre' });
-        if (command === 'build' && lock)
-          logger.debug(`${Object.keys(injected).length} redirect(s) from ${path.basename(lockfilePath)}`);
+        if (command === 'build' && lock) logger.debug(`${Object.keys(injected).length} redirect(s) from ${path.basename(lockfilePath)}`);
       },
 
       'astro:config:done': ({ config: cfg }) => {
@@ -235,11 +234,14 @@ export default function permalock(options: PermalockOptions = {}): AstroIntegrat
         const knownRedirects = configRedirects(config);
         const resolve: ResolveOptions = {
           ...(options.thresholds ?? {}),
-          ...(options.similar === false ? { autoThreshold: false } : options.thresholds?.auto ? { autoThreshold: options.thresholds.auto } : {}),
+          ...(options.similar === false
+            ? { autoThreshold: false }
+            : options.thresholds?.auto
+              ? { autoThreshold: options.thresholds.auto }
+              : {}),
         };
         const t0 = Date.now();
-        const identify =
-          options.contentIdentity === false ? undefined : createMatcher(await loadEntries(fileURLToPath(config.cacheDir)));
+        const identify = options.contentIdentity === false ? undefined : createMatcher(await loadEntries(fileURLToPath(config.cacheDir)));
         const result = await checkProject({
           cwd: root,
           dir: outDir,
@@ -274,7 +276,10 @@ export default function permalock(options: PermalockOptions = {}): AstroIntegrat
           const out = emit(res.lock, target, { out: outDir, base: config.base });
           const { written } = await writeEmitted(out);
           for (const w of out.warnings) logger.warn(w);
-          if (written.length) logger.info(`${target}: ${out.redirects} redirect(s)${out.gone ? `, ${out.gone} removal(s)` : ''} → ${written.map((f) => path.relative(root, f)).join(', ')}`);
+          if (written.length)
+            logger.info(
+              `${target}: ${out.redirects} redirect(s)${out.gone ? `, ${out.gone} removal(s)` : ''} → ${written.map((f) => path.relative(root, f)).join(', ')}`,
+            );
         }
 
         const ms = Date.now() - t0;
@@ -293,7 +298,9 @@ export default function permalock(options: PermalockOptions = {}): AstroIntegrat
           const body = formatResolution(res, { cmd: 'npx permalock' });
           if (body) for (const line of body.split('\n')) logger.info(line);
           if (fresh.length)
-            logger.info(`${fresh.length} new redirect(s) served as HTML pages in this build; they become native ${config.output === 'server' ? 'server' : 'host'} redirects from the next build.`);
+            logger.info(
+              `${fresh.length} new redirect(s) served as HTML pages in this build; they become native ${config.output === 'server' ? 'server' : 'host'} redirects from the next build.`,
+            );
           if (result.written) logger.info(`updated ${path.relative(root, result.lockfilePath)}: commit it with this change.`);
           if (!write && res.changed) {
             const msg = `${path.basename(result.lockfilePath)} is out of date: run "astro build" locally and commit it.`;
@@ -303,13 +310,14 @@ export default function permalock(options: PermalockOptions = {}): AstroIntegrat
         }
         if (!passes(res) && (options.failOn ?? 'orphans') === 'orphans') {
           const n = res.orphans.length + res.errors.length;
-          throw quiet(new AstroError(
-            `${n} URL${n === 1 ? '' : 's'} would break.`,
-            'For each one, add a redirect (npx permalock redirect <old> <new>) or declare it removed (npx permalock retire <old>), then build again.',
-          ));
+          throw quiet(
+            new AstroError(
+              `${n} URL${n === 1 ? '' : 's'} would break.`,
+              'For each one, add a redirect (npx permalock redirect <old> <new>) or declare it removed (npx permalock retire <old>), then build again.',
+            ),
+          );
         }
       },
     },
   };
 }
-

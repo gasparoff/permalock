@@ -4,7 +4,8 @@ import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { headline, scanDomain } from 'permalock';
 
 const dir = new URL('./public/results/', import.meta.url);
-const sites = process.argv.length > 2 ? process.argv.slice(2) : JSON.parse(await readFile(new URL('./sites.json', import.meta.url), 'utf8'));
+const sites =
+  process.argv.length > 2 ? process.argv.slice(2) : JSON.parse(await readFile(new URL('./sites.json', import.meta.url), 'utf8'));
 await mkdir(dir, { recursive: true });
 let failed = 0;
 for (const domain of sites) {

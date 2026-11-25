@@ -1,0 +1,9 @@
+dist
+node_modules
+bench/results
+spec/conformance
+apps/scanner/public/results
+*.md
+*.json
+*.html
+*.svg

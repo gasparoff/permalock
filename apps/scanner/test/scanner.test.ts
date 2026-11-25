@@ -18,21 +18,37 @@ describe('scanner', () => {
     const fake = (async (input: any) => {
       const u = new URL(String(input));
       if (u.host === 'web.archive.org')
-        return new Response(JSON.stringify(u.searchParams.getAll('filter').some((x) => x.startsWith('original:')) ? [] : [
-          ['original', 'timestamp', 'statuscode'],
-          ['https://shop.org/a', '20150101000000', '200'],
-          ['https://shop.org/gone', '20160101000000', '200'],
-        ]));
+        return new Response(
+          JSON.stringify(
+            u.searchParams.getAll('filter').some((x) => x.startsWith('original:'))
+              ? []
+              : [
+                  ['original', 'timestamp', 'statuscode'],
+                  ['https://shop.org/a', '20150101000000', '200'],
+                  ['https://shop.org/gone', '20160101000000', '200'],
+                ],
+          ),
+        );
       if (u.pathname === '/sitemap.xml')
-        return new Response('<urlset><url><loc>https://shop.org/a</loc></url><url><loc>https://shop.org/never-existed</loc></url></urlset>');
+        return new Response(
+          '<urlset><url><loc>https://shop.org/a</loc></url><url><loc>https://shop.org/never-existed</loc></url></urlset>',
+        );
       if (u.pathname === '/a') return new Response('', { status: 200 });
       return new Response('', { status: 404 });
     }) as typeof fetch;
     const r = await handleScan(new Request('https://scan.test/api/scan?d=shop.org'), { fetch: fake });
     expect(r.headers.get('content-type')).toContain('ndjson');
-    const lines = (await r.text()).trim().split('\n').map((l) => JSON.parse(l));
+    const lines = (await r.text())
+      .trim()
+      .split('\n')
+      .map((l) => JSON.parse(l));
     expect(lines[0]).toEqual({ start: { domain: 'shop.org' } });
-    expect(lines.filter((l) => l.source).map((l) => l.source.name).sort()).toEqual(['archived-sitemap', 'sitemap', 'wayback']);
+    expect(
+      lines
+        .filter((l) => l.source)
+        .map((l) => l.source.name)
+        .sort(),
+    ).toEqual(['archived-sitemap', 'sitemap', 'wayback']);
     expect(lines.find((l) => l.history).history).toEqual({ published: 2, checking: 2 });
     const last = lines.at(-1);
     expect(last.done.counts).toMatchObject({ ok: 1, broken: 1 });
@@ -43,21 +59,31 @@ describe('scanner', () => {
   it('fails instead of reporting zero when the Wayback Machine is down', async () => {
     const down = (async () => new Response('busy', { status: 503 })) as typeof fetch;
     const r = await handleScan(new Request('https://scan.test/api/scan?d=down-shop.org'), { fetch: down });
-    const last = (await r.text()).trim().split('\n').map((l) => JSON.parse(l)).at(-1);
+    const last = (await r.text())
+      .trim()
+      .split('\n')
+      .map((l) => JSON.parse(l))
+      .at(-1);
     expect(last.error).toMatch(/Wayback Machine did not answer/);
   });
 
   it('answers a recent result at once, and limits fresh scans per client', async () => {
     const r = await handleScan(new Request('https://scan.test/api/scan?d=shop.org'));
-    const lines = (await r.text()).trim().split('\n').map((l) => JSON.parse(l));
+    const lines = (await r.text())
+      .trim()
+      .split('\n')
+      .map((l) => JSON.parse(l));
     expect(lines).toHaveLength(2);
     expect(lines[1].done.domain).toBe('shop.org');
     const codes = [];
     for (let i = 0; i < 12; i++) {
-      const x = await handleScan(new Request('https://scan.test/api/scan?d=bad.invalid-tld-zz&fresh=1'.replace('bad.invalid-tld-zz', `x${i}.org`)), {
-        ip: '203.0.113.9',
-        fetch: (async () => new Response('', { status: 503 })) as typeof fetch,
-      });
+      const x = await handleScan(
+        new Request('https://scan.test/api/scan?d=bad.invalid-tld-zz&fresh=1'.replace('bad.invalid-tld-zz', `x${i}.org`)),
+        {
+          ip: '203.0.113.9',
+          fetch: (async () => new Response('', { status: 503 })) as typeof fetch,
+        },
+      );
       codes.push(x.status);
       await x.body?.cancel();
     }

@@ -10,10 +10,7 @@ export interface Hop {
 }
 
 /** One request without following redirects. HEAD first, GET when HEAD is refused. */
-export async function probe(
-  url: string,
-  opts: { fetch?: Fetch; timeoutMs?: number; wantBody?: boolean } = {},
-): Promise<Hop> {
+export async function probe(url: string, opts: { fetch?: Fetch; timeoutMs?: number; wantBody?: boolean } = {}): Promise<Hop> {
   const f = opts.fetch ?? fetch;
   const timeoutMs = opts.timeoutMs ?? 15000;
   const req = async (method: 'HEAD' | 'GET') =>

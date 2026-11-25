@@ -18,7 +18,8 @@ describe('text', () => {
       for (const b of new TextEncoder().encode(str)) h = ((h ^ BigInt(b)) * 0x100000001b3n) & 0xffffffffffffffffn;
       return h.toString(16).padStart(16, '0');
     };
-    for (const str of ['caffè', 'città più bella', '日本語のテキスト', 'emoji 🚀 ok', 'lone \ud800 x']) expect(hex(fnv1a64(str))).toBe(ref(str));
+    for (const str of ['caffè', 'città più bella', '日本語のテキスト', 'emoji 🚀 ok', 'lone \ud800 x'])
+      expect(hex(fnv1a64(str))).toBe(ref(str));
   });
 
   it('extracts main text without chrome, scripts and entities', () => {
@@ -52,7 +53,13 @@ describe('text', () => {
 
   it('simhash: a light edit stays above 0.85, different texts stay far apart', () => {
     const base = simhash(words(normalizedText(article('T', TEXT.a))));
-    const edited = simhash(words(normalizedText(article('T', TEXT.a.replace('in a forum', 'on a forum').replace('The lockfile remembers.', 'The lockfile remembers them all.')))));
+    const edited = simhash(
+      words(
+        normalizedText(
+          article('T', TEXT.a.replace('in a forum', 'on a forum').replace('The lockfile remembers.', 'The lockfile remembers them all.')),
+        ),
+      ),
+    );
     const other = simhash(words(normalizedText(article('T', TEXT.c))));
     expect(simSimilarity(base, edited)).toBeGreaterThan(0.85);
     expect(simSimilarity(base, other)).toBeLessThan(0.75);

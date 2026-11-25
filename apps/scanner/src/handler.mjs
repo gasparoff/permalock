@@ -8,7 +8,9 @@ const RESULTS = new URL('../public/results/', import.meta.url);
 
 /** A public hostname, or undefined: never an IP, localhost or an internal name. */
 export function publicDomain(input) {
-  const raw = String(input ?? '').trim().toLowerCase();
+  const raw = String(input ?? '')
+    .trim()
+    .toLowerCase();
   if (!raw || raw.length > 300 || /\s/.test(raw)) return undefined;
   try {
     const d = domainOf(raw).replace(/\.$/, '');
@@ -74,7 +76,8 @@ export async function handleScan(request, { fetch, ip } = {}) {
     const hit = recentResult(domain);
     if (hit) return ndjson([{ start: { domain } }, hit], 'no-store');
     const stored = await storedResult(domain);
-    if (stored) return ndjson([{ start: { domain } }, { done: stored.done, headline: stored.headline, stored: true }], 'public, s-maxage=3600');
+    if (stored)
+      return ndjson([{ start: { domain } }, { done: stored.done, headline: stored.headline, stored: true }], 'public, s-maxage=3600');
   }
 
   const client = ip ?? request.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? 'local';

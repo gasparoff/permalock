@@ -4,10 +4,35 @@ import { MIN_WORDS } from './types.js';
 const REMOVE_TAGS = ['script', 'style', 'noscript', 'template', 'svg', 'nav', 'header', 'footer', 'aside'];
 
 const NAMED_ENTITIES: Record<string, string> = {
-  amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ', hellip: '…', mdash: '—', ndash: '–',
-  rsquo: '’', lsquo: '‘', rdquo: '”', ldquo: '“', copy: '©', reg: '®', trade: '™', laquo: '«', raquo: '»',
-  middot: '·', bull: '•', eacute: 'é', egrave: 'è', agrave: 'à', ograve: 'ò', ugrave: 'ù', igrave: 'ì',
-  euro: '€', times: '×', shy: '',
+  amp: '&',
+  lt: '<',
+  gt: '>',
+  quot: '"',
+  apos: "'",
+  nbsp: ' ',
+  hellip: '…',
+  mdash: '—',
+  ndash: '–',
+  rsquo: '’',
+  lsquo: '‘',
+  rdquo: '”',
+  ldquo: '“',
+  copy: '©',
+  reg: '®',
+  trade: '™',
+  laquo: '«',
+  raquo: '»',
+  middot: '·',
+  bull: '•',
+  eacute: 'é',
+  egrave: 'è',
+  agrave: 'à',
+  ograve: 'ò',
+  ugrave: 'ù',
+  igrave: 'ì',
+  euro: '€',
+  times: '×',
+  shy: '',
 };
 
 export function decodeEntities(s: string): string {
@@ -144,8 +169,10 @@ function popcount32(n: number) {
 
 /** 1 - hamming(a, b) / 64 */
 export function simSimilarity(a: string, b: string): number {
-  const ahi = parseInt(a.slice(0, 8), 16), alo = parseInt(a.slice(8), 16);
-  const bhi = parseInt(b.slice(0, 8), 16), blo = parseInt(b.slice(8), 16);
+  const ahi = parseInt(a.slice(0, 8), 16),
+    alo = parseInt(a.slice(8), 16);
+  const bhi = parseInt(b.slice(0, 8), 16),
+    blo = parseInt(b.slice(8), 16);
   const d = popcount32((ahi ^ bhi) >>> 0) + popcount32((alo ^ blo) >>> 0);
   return 1 - d / 64;
 }

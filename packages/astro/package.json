@@ -46,12 +46,12 @@
     "devalue": "^5.1.0 || ^6.0.0"
   },
   "peerDependencies": {
-    "astro": ">=5.0.0"
+    "astro": ">=7.0.0"
   },
   "devDependencies": {
     "astro": "7.4.13"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   }
 }

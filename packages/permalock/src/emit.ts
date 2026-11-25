@@ -79,7 +79,9 @@ export function emit(lock: Lockfile, format: EmitFormat, opts: EmitOptions): Emi
       const lines = redirects.map(([f, t]) => `${f} ${t} ${format === 'netlify' ? '301!' : '301'}`);
       if (format === 'netlify') lines.push(...gone.map((g) => `${g} ${(opts.base ?? '').replace(/\/+$/, '')}/404.html 410!`));
       else if (gone.length) {
-        warnings.push(`Cloudflare _redirects cannot answer 410: ${gone.length} removed URL(s) will answer 404, which permalock accepts as a declared removal.`);
+        warnings.push(
+          `Cloudflare _redirects cannot answer 410: ${gone.length} removed URL(s) will answer 404, which permalock accepts as a declared removal.`,
+        );
         goneCount = 0;
       }
       if (format === 'cloudflare' && redirects.length > 2000)
@@ -103,7 +105,9 @@ export function emit(lock: Lockfile, format: EmitFormat, opts: EmitOptions): Emi
         files.push({ path: path.join(opts.out, file), content: redirectHtml(t, lock.site), mode: 'create' });
       }
       if (redirects.length)
-        warnings.push('HTML redirect pages answer 200 with a meta refresh ("soft redirects"). Prefer real 301s where your host supports them.');
+        warnings.push(
+          'HTML redirect pages answer 200 with a meta refresh ("soft redirects"). Prefer real 301s where your host supports them.',
+        );
       if (gone.length) {
         warnings.push(`Static files cannot answer 410: ${gone.length} removed URL(s) will answer 404.`);
         goneCount = 0;
@@ -120,10 +124,7 @@ export function emit(lock: Lockfile, format: EmitFormat, opts: EmitOptions): Emi
     }
     case 'apache': {
       const q = (s: string) => (/\s/.test(s) ? `"${s}"` : s);
-      const lines = [
-        ...redirects.map(([f, t]) => `Redirect 301 ${q(f)} ${q(t)}`),
-        ...gone.map((g) => `Redirect gone ${q(g)}`),
-      ];
+      const lines = [...redirects.map(([f, t]) => `Redirect 301 ${q(f)} ${q(t)}`), ...gone.map((g) => `Redirect gone ${q(g)}`)];
       files.push({ path: path.join(opts.out, '.htaccess'), content: [START, ...lines, END].join('\n') + '\n', mode: 'block' });
       break;
     }

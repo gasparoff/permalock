@@ -43,8 +43,9 @@ beforeEach(() => {
   for (const k of CI_VARS) delete process.env[k];
 });
 afterEach(() => {
-  for (const k of CI_VARS) if (saved[k] === undefined) delete process.env[k];
-  else process.env[k] = saved[k];
+  for (const k of CI_VARS)
+    if (saved[k] === undefined) delete process.env[k];
+    else process.env[k] = saved[k];
 });
 
 describe('@permalock/astro', () => {
@@ -112,7 +113,14 @@ describe('@permalock/astro', () => {
 export default { site: 'https://example.com', base: '/docs', trailingSlash: 'never', build: { format: 'file' }, cacheDir: './.cache', integrations: [permalock({ emit: 'netlify' })] };`);
     expect((await astroBuild(dir)).error).toBeUndefined();
     const lock = lockOf(dir);
-    expect(Object.keys(lock.urls).sort()).toEqual(['/docs', '/docs/about', '/docs/blog', '/docs/blog/hello-world', '/docs/blog/pasta', '/docs/blog/summer-sale']);
+    expect(Object.keys(lock.urls).sort()).toEqual([
+      '/docs',
+      '/docs/about',
+      '/docs/blog',
+      '/docs/blog/hello-world',
+      '/docs/blog/pasta',
+      '/docs/blog/summer-sale',
+    ]);
     renameSync(md(dir, 'pasta.md'), md(dir, 'perfect-pasta.md'));
     rmSync(md(dir, 'summer-sale.md'));
     lock.urls['/docs/blog/summer-sale'] = { type: 'gone' };

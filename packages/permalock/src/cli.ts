@@ -10,7 +10,7 @@ import { checkLive, collectHistory, domainOf } from './history.js';
 import { emptyLockfile, LOCKFILE_NAME, LockfileError, parseLockfile, readLockfile, serializeLockfile, writeLockfile } from './lockfile.js';
 import { mergeLockfiles } from './merge.js';
 import { checkProject } from './project.js';
-import { c, formatResolution, reasonLabel, summaryLine } from './report.js';
+import { c, formatResolution, summaryLine } from './report.js';
 import { passes, pathSimilarity } from './resolve.js';
 import { detectBuildDir } from './scan.js';
 import { renderScanHtml, renderScanText, scanDomain } from './scanreport.js';
@@ -104,7 +104,6 @@ async function main(argv: string[]): Promise<number> {
   switch (cmd) {
     case 'update':
     case 'check':
-    case 'status':
       return runCheck(cmd === 'update', args[0], values, lockfilePath);
     case 'init':
       return runInit(args[0], values, lockfilePath);
@@ -180,6 +179,11 @@ function scanOpts(values: Values) {
 }
 
 async function runCheck(write: boolean, dirArg: string | undefined, values: Values, lockfilePath: string): Promise<number> {
+  if (!write && !(await readLockfile(lockfilePath))) {
+    const msg = `${path.basename(lockfilePath)} not found, so no URL is protected. Run "npx permalock init" after a build and commit the file.`;
+    console.log(values.json ? JSON.stringify({ ok: false, error: msg }) : c.red(msg));
+    return 1;
+  }
   const dir = await buildDir(dirArg);
   const t0 = Date.now();
   const r = await checkProject({ dir, lockfile: lockfilePath, write, ...scanOpts(values) });
@@ -205,7 +209,9 @@ async function runCheck(write: boolean, dirArg: string | undefined, values: Valu
     );
   } else {
     if (r.created && write) {
-      console.log(`${c.bold('permalock')} created ${path.relative(process.cwd(), r.lockfilePath)} with ${res.added.length} URLs. Commit it: from now on these URLs are protected.`);
+      console.log(
+        `${c.bold('permalock')} created ${path.relative(process.cwd(), r.lockfilePath)} with ${res.added.length} URLs. Commit it: from now on these URLs are protected.`,
+      );
     } else {
       console.log(`${c.bold('permalock')} ${summaryLine(res)} ${c.dim(`(${Date.now() - t0} ms)`)}`);
       const body = formatResolution(res);
@@ -216,7 +222,8 @@ async function runCheck(write: boolean, dirArg: string | undefined, values: Valu
     }
   }
   if (!passes(res)) {
-    if (!values.json) console.log(c.red(`\n${res.orphans.length + res.errors.length} URL(s) would break. Decide each one, then build again.`));
+    if (!values.json)
+      console.log(c.red(`\n${res.orphans.length + res.errors.length} URL(s) would break. Decide each one, then build again.`));
     return 1;
   }
   if (!write && values.frozen && res.changed) {
@@ -230,7 +237,11 @@ async function runCheck(write: boolean, dirArg: string | undefined, values: Valu
 function fixesFor(o: Orphan): string[] {
   const q = (u: string) => (/^[\w\-./:%~]+$/.test(u) ? u : `'${u.replace(/'/g, `'\\''`)}'`);
   const to = o.suggestion?.to;
-  return [...(to ? [`permalock redirect ${q(o.url)} ${q(to)}`] : []), `permalock retire ${q(o.url)} --reason "<why>"`];
+  return [
+    ...(to ? [`npx permalock redirect ${q(o.url)} ${q(to)}`] : []),
+    `npx permalock retire ${q(o.url)}`,
+    `npx permalock forget ${q(o.url)}`,
+  ];
 }
 
 async function runInit(dirArg: string | undefined, values: Values, lockfilePath: string): Promise<number> {
@@ -239,7 +250,9 @@ async function runInit(dirArg: string | undefined, values: Values, lockfilePath:
     const dir = dirArg ? path.resolve(dirArg) : await detectBuildDir(process.cwd());
     if (dir) {
       const r = await checkProject({ dir, lockfile: lockfilePath, ...scanOpts(values) });
-      console.log(`${c.green('✓')} created ${path.basename(lockfilePath)} with ${r.resolution.added.length} URLs from ${path.relative(process.cwd(), dir) || '.'}`);
+      console.log(
+        `${c.green('✓')} created ${path.basename(lockfilePath)} with ${r.resolution.added.length} URLs from ${path.relative(process.cwd(), dir) || '.'}`,
+      );
     } else {
       await writeLockfile(lockfilePath, emptyLockfile(values.site));
       console.log(`${c.green('✓')} created an empty ${path.basename(lockfilePath)} (build your site, then run "permalock update")`);
@@ -342,10 +355,19 @@ async function runEmit(format: string | undefined, values: Values, lockfilePath:
   if (!format || !(EMIT_FORMATS as readonly string[]).includes(format))
     throw new UsageError(`usage: permalock emit <${EMIT_FORMATS.join('|')}> [--out dir]`);
   const lock = await mustRead(lockfilePath);
-  const out = values.out ? path.resolve(values.out) : format === 'vercel' ? cwd : (await detectBuildDir(cwd)) ?? cwd;
+  const out = values.out ? path.resolve(values.out) : format === 'vercel' ? cwd : ((await detectBuildDir(cwd)) ?? cwd);
   const res = emit(lock, format as EmitFormat, { out, base: values.base });
   const { written, skipped } = await writeEmitted(res);
-  console.log(`${c.green('✓')} ${res.redirects} redirect(s)${res.gone ? `, ${res.gone} removal(s)` : ''} → ${written.length ? written.map((f) => path.relative(cwd, f)).slice(0, 5).join(', ') + (written.length > 5 ? ` and ${written.length - 5} more` : '') : 'nothing changed'}`);
+  console.log(
+    `${c.green('✓')} ${res.redirects} redirect(s)${res.gone ? `, ${res.gone} removal(s)` : ''} → ${
+      written.length
+        ? written
+            .map((f) => path.relative(cwd, f))
+            .slice(0, 5)
+            .join(', ') + (written.length > 5 ? ` and ${written.length - 5} more` : '')
+        : 'nothing changed'
+    }`,
+  );
   if (skipped.length) console.log(c.dim(`· ${skipped.length} file(s) already exist and were left alone`));
   for (const w of res.warnings) console.log(c.yellow(`! ${w}`));
   return 0;
@@ -367,7 +389,9 @@ async function runVerify(values: Values, lockfilePath: string): Promise<number> 
     console.log(JSON.stringify({ ok: failing.length === 0, origin: r.origin, counts: r.counts, failures: failing }, null, 2));
     return failing.length ? 1 : 0;
   }
-  console.log(`${c.bold('permalock verify')} ${r.origin}: ${c.green(`${r.counts.pass} pass`)} · ${r.counts.soft ? c.yellow(`${r.counts.soft} soft`) : '0 soft'} · ${r.counts.fail ? c.red(`${r.counts.fail} fail`) : '0 fail'}${r.counts.error ? ` · ${c.red(`${r.counts.error} error`)}` : ''}`);
+  console.log(
+    `${c.bold('permalock verify')} ${r.origin}: ${c.green(`${r.counts.pass} pass`)} · ${r.counts.soft ? c.yellow(`${r.counts.soft} soft`) : '0 soft'} · ${r.counts.fail ? c.red(`${r.counts.fail} fail`) : '0 fail'}${r.counts.error ? ` · ${c.red(`${r.counts.error} error`)}` : ''}`,
+  );
   for (const i of failing.slice(0, 50)) {
     const mark = i.status === 'soft' ? c.yellow('~') : c.red('✗');
     console.log(`  ${mark} ${i.url}  ${c.dim(`expected ${i.expected}, got ${i.observed}`)}`);
@@ -411,10 +435,14 @@ async function runImport(domainArg: string | undefined, values: Values, lockfile
   for (const e of history.errors) console.log(c.yellow(`! ${e}`));
   const base = values.base ? '/' + values.base.replace(/^\/+|\/+$/g, '') : '';
   const unknown = history.urls.filter((h) => !(h.path in lock.urls) && !(h.path + '/' in lock.urls) && (!base || h.path.startsWith(base)));
-  let adopted = 0, skippedLive = 0;
+  let adopted = 0,
+    skippedLive = 0;
   let toAdd = unknown;
   if (values['check-live'] && unknown.length) {
-    const live = await checkLive(domain, unknown.map((u) => u.path));
+    const live = await checkLive(
+      domain,
+      unknown.map((u) => u.path),
+    );
     const byPath = new Map(live.map((l) => [l.path, l]));
     toAdd = [];
     for (const u of unknown) {
@@ -438,7 +466,9 @@ async function runImport(domainArg: string | undefined, values: Values, lockfile
   for (const u of toAdd) lock.urls[u.path] = { type: 'page', origin: u.origin };
   await writeLockfile(lockfilePath, lock);
   console.log(
-    `${c.green('✓')} ${history.urls.length} historic URLs found (${Object.entries(history.sources).map(([k, v]) => `${k} ${v}`).join(', ')}). ` +
+    `${c.green('✓')} ${history.urls.length} historic URLs found (${Object.entries(history.sources)
+      .map(([k, v]) => `${k} ${v}`)
+      .join(', ')}). ` +
       `${toAdd.length} added to ${path.basename(lockfilePath)}${adopted ? `, ${adopted} existing redirects adopted` : ''}${skippedLive ? `, ${skippedLive} still served by something outside the build (skipped)` : ''}.`,
   );
   if (toAdd.length) console.log(`Next: build, then run ${c.bold('permalock resolve')} to decide where each old URL goes.`);
@@ -456,5 +486,3 @@ main(process.argv.slice(2)).then(
     process.exit(2);
   },
 );
-
-export { reasonLabel };

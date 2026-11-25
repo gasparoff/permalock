@@ -17,7 +17,8 @@ a build pass.
    - the page moved or was merged: `permalock redirect <old> <new>`. Use the
      `suggestion.to` target when it is the page that replaced the old one.
      Check that the target exists in the build.
-   - the content was removed on purpose: `permalock retire <old> --reason "<why>"`.
+   - the content was removed on purpose: `permalock retire <old> --reason "<why it was removed>"`,
+     writing the real reason (ask the user if you do not know it).
    - the URL was never public (a draft, a preview): `permalock forget <old>`.
 3. Run `npx permalock check` again. It must exit 0.
 4. Commit `permalock.json` with the change that moved the pages.

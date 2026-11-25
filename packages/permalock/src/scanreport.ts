@@ -59,8 +59,16 @@ export async function scanDomain(domain: string, opts: ScanDomainOptions = {}): 
   const max = opts.max ?? 2000;
   const sample = paths.length > max ? paths.filter((_, i) => i % Math.ceil(paths.length / max) === 0) : paths;
   opts.onHistory?.(paths.length, sample.length);
-  const live = await checkLive(history.domain, sample, { fetch: opts.fetch, concurrency: opts.concurrency, timeoutMs: opts.checkTimeoutMs, onProgress: opts.onProgress });
-  const firstSeen = urls.map((u) => u.firstSeen).filter(Boolean).sort()[0];
+  const live = await checkLive(history.domain, sample, {
+    fetch: opts.fetch,
+    concurrency: opts.concurrency,
+    timeoutMs: opts.checkTimeoutMs,
+    onProgress: opts.onProgress,
+  });
+  const firstSeen = urls
+    .map((u) => u.firstSeen)
+    .filter(Boolean)
+    .sort()[0];
   const summary = summarizeScan({ ...history, urls, firstSeen }, live, paths.length);
   if (urls.length < history.urls.length) summary.sitemapOnly = history.urls.length - urls.length;
   return summary;
@@ -68,12 +76,17 @@ export async function scanDomain(domain: string, opts: ScanDomainOptions = {}): 
 
 const n = (x: number) => x.toLocaleString('en-US');
 const pct = (a: number, b: number) => (b ? `${((a / b) * 100).toFixed(1)}%` : '0%');
-const SOURCE_NAMES: Record<string, string> = { wayback: 'Wayback Machine', sitemap: 'current sitemaps', 'archived-sitemap': 'archived sitemaps' };
+const SOURCE_NAMES: Record<string, string> = {
+  wayback: 'Wayback Machine',
+  sitemap: 'current sitemaps',
+  'archived-sitemap': 'archived sitemaps',
+};
 
 export function headline(s: ScanSummary): string {
   const since = s.firstSeen ? ` since ${s.firstSeen.slice(0, 4)}` : '';
   const head = `${s.domain} has published ${n(s.published)} URLs${since}.`;
-  if (s.checked < s.published) return `${head} Of the ${n(s.checked)} we checked, ${n(s.counts.broken)} ${s.counts.broken === 1 ? 'is' : 'are'} broken today.`;
+  if (s.checked < s.published)
+    return `${head} Of the ${n(s.checked)} we checked, ${n(s.counts.broken)} ${s.counts.broken === 1 ? 'is' : 'are'} broken today.`;
   return `${head} ${n(s.counts.broken)} of them ${s.counts.broken === 1 ? 'is' : 'are'} broken today.`;
 }
 
@@ -81,7 +94,13 @@ export function renderScanText(s: ScanSummary): string {
   const out: string[] = [];
   out.push('');
   out.push(c.bold(headline(s)));
-  out.push(c.dim(`  sources: ${Object.entries(s.sources).map(([k, v]) => `${SOURCE_NAMES[k] ?? k} ${n(v)}`).join(' · ')}`));
+  out.push(
+    c.dim(
+      `  sources: ${Object.entries(s.sources)
+        .map(([k, v]) => `${SOURCE_NAMES[k] ?? k} ${n(v)}`)
+        .join(' · ')}`,
+    ),
+  );
   if (s.sitemapOnly) out.push(c.dim(`  ${n(s.sitemapOnly)} more URLs appear only in sitemaps, never captured answering 200: not counted`));
   for (const e of s.errors) out.push(c.yellow(`  ! ${e}`));
   out.push('');
@@ -107,7 +126,10 @@ const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 export function renderScanHtml(s: ScanSummary): string {
   const rows = s.broken
     .slice(0, 500)
-    .map((b) => `<tr><td><a href="https://${esc(s.domain)}${esc(b.path)}">${esc(b.path)}</a></td><td>${b.status ?? ''}</td><td>${b.firstSeen ?? ''}</td></tr>`)
+    .map(
+      (b) =>
+        `<tr><td><a href="https://${esc(s.domain)}${esc(b.path)}">${esc(b.path)}</a></td><td>${b.status ?? ''}</td><td>${b.firstSeen ?? ''}</td></tr>`,
+    )
     .join('');
   const bar = (label: string, v: number, cls: string) =>
     `<div class="bar"><span>${label}</span><div class="track"><div class="fill ${cls}" style="width:${s.checked ? (v / s.checked) * 100 : 0}%"></div></div><b>${n(v)}</b></div>`;
@@ -128,7 +150,11 @@ code{background:var(--line);padding:2px 6px;border-radius:4px}
 </style></head><body><main>
 <p class="muted">Permalock scan · ${esc(s.scannedAt.slice(0, 10))}</p>
 <h1>${esc(headline(s))}</h1>
-<p class="muted">Sources: ${Object.entries(s.sources).map(([k, v]) => `${esc(SOURCE_NAMES[k] ?? k)} ${n(v)}`).join(' · ')}${s.checked < s.published ? ` · ${n(s.checked)} checked` : ''}${s.sitemapOnly ? ` · ${n(s.sitemapOnly)} sitemap-only URLs not counted` : ''}</p>
+<p class="muted">Sources: ${Object.entries(s.sources)
+    .map(([k, v]) => `${esc(SOURCE_NAMES[k] ?? k)} ${n(v)}`)
+    .join(
+      ' · ',
+    )}${s.checked < s.published ? ` · ${n(s.checked)} checked` : ''}${s.sitemapOnly ? ` · ${n(s.sitemapOnly)} sitemap-only URLs not counted` : ''}</p>
 ${bar('Answer 200', s.counts.ok, 'ok')}${bar('One redirect', s.counts.redirect, 'redirect')}${bar('Redirect chains', s.counts.chain, 'chain')}${bar('Broken (404/410)', s.counts.broken, 'bad')}
 <p>Lock every URL you ever published: <code>npx permalock init</code></p>
 ${rows ? `<h2>Broken URLs</h2><table><thead><tr><th>URL</th><th>Status</th><th>First seen</th></tr></thead><tbody>${rows}</tbody></table>` : ''}

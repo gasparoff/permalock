@@ -158,7 +158,9 @@ async function hasHtml(dir: string, depth = 2): Promise<boolean> {
   }
   if (entries.some((e) => e.isFile() && e.name.endsWith('.html'))) return true;
   if (depth === 0) return false;
-  for (const e of entries) if (e.isDirectory() && !e.name.startsWith('_') && !e.name.startsWith('.') && (await hasHtml(path.join(dir, e.name), depth - 1))) return true;
+  for (const e of entries)
+    if (e.isDirectory() && !e.name.startsWith('_') && !e.name.startsWith('.') && (await hasHtml(path.join(dir, e.name), depth - 1)))
+      return true;
   return false;
 }
 

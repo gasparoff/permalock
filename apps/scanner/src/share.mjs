@@ -40,17 +40,63 @@ export async function handleOg(request) {
   const big = s ? `${s.counts.broken.toLocaleString('en-US')} broken URLs` : 'How many URLs has your site lost?';
   const small = s
     ? `${domain} has published ${s.published.toLocaleString('en-US')} URLs${s.firstSeen ? ` since ${s.firstSeen.slice(0, 4)}` : ''}. ${s.checked.toLocaleString('en-US')} checked today.`
-    : domain ? `Scan ${domain}: every URL it ever published, checked today.` : 'Every URL you ever published, checked on your site today.';
+    : domain
+      ? `Scan ${domain}: every URL it ever published, checked today.`
+      : 'Every URL you ever published, checked on your site today.';
   const bar = s
-    ? h('div', { display: 'flex', height: 18, width: '100%', borderRadius: 9, overflow: 'hidden' },
-        ...Object.keys(COLORS).filter((k) => s.counts[k]).map((k) => h('div', { flexGrow: s.counts[k], height: 18, background: COLORS[k], marginRight: 3 })))
+    ? h(
+        'div',
+        { display: 'flex', height: 18, width: '100%', borderRadius: 9, overflow: 'hidden' },
+        ...Object.keys(COLORS)
+          .filter((k) => s.counts[k])
+          .map((k) => h('div', { flexGrow: s.counts[k], height: 18, background: COLORS[k], marginRight: 3 })),
+      )
     : h('div', { display: 'flex', height: 18, width: '100%', borderRadius: 9, background: '#26272b' });
-  const el = h('div', { width: 1200, height: 630, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '72px 80px', background: '#0e0f11', color: '#ececef', fontFamily: 'Noto Sans' },
+  const el = h(
+    'div',
+    {
+      width: 1200,
+      height: 630,
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+      padding: '72px 80px',
+      background: '#0e0f11',
+      color: '#ececef',
+      fontFamily: 'Noto Sans',
+    },
     h('div', { display: 'flex', alignItems: 'center', fontSize: 34, fontWeight: 700 }, 'permalock'),
-    h('div', { display: 'flex', flexDirection: 'column' },
-      h('div', { fontSize: s ? 96 : 76, fontWeight: 700, letterSpacing: -2, lineHeight: 1.05, color: s && s.counts.broken ? '#f87171' : '#ececef' }, big),
-      h('div', { fontSize: 32, color: '#a1a1aa', marginTop: 24 }, small)),
-    h('div', { display: 'flex', flexDirection: 'column' }, bar,
-      h('div', { display: 'flex', justifyContent: 'space-between', marginTop: 20, fontSize: 26, color: '#a1a1aa' }, h('div', {}, 'permalock.dev'), h('div', {}, 'free · open source'))));
-  return new ImageResponse(el, { width: 1200, height: 630, headers: { 'cache-control': s ? 'public, s-maxage=3600' : 'public, s-maxage=300' } });
+    h(
+      'div',
+      { display: 'flex', flexDirection: 'column' },
+      h(
+        'div',
+        {
+          fontSize: s ? 96 : 76,
+          fontWeight: 700,
+          letterSpacing: -2,
+          lineHeight: 1.05,
+          color: s && s.counts.broken ? '#f87171' : '#ececef',
+        },
+        big,
+      ),
+      h('div', { fontSize: 32, color: '#a1a1aa', marginTop: 24 }, small),
+    ),
+    h(
+      'div',
+      { display: 'flex', flexDirection: 'column' },
+      bar,
+      h(
+        'div',
+        { display: 'flex', justifyContent: 'space-between', marginTop: 20, fontSize: 26, color: '#a1a1aa' },
+        h('div', {}, 'permalock.dev'),
+        h('div', {}, 'free · open source'),
+      ),
+    ),
+  );
+  return new ImageResponse(el, {
+    width: 1200,
+    height: 630,
+    headers: { 'cache-control': s ? 'public, s-maxage=3600' : 'public, s-maxage=300' },
+  });
 }

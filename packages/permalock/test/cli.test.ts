@@ -56,7 +56,7 @@ describe('cli', () => {
     // agents get ready-to-run fixes
     const failing = JSON.parse(run(cwd, 'check', '--json').out);
     expect(failing.ok).toBe(false);
-    expect(failing.orphans[0].fixes.at(-1)).toBe('permalock retire /promo/ --reason "<why>"');
+    expect(failing.orphans[0].fixes).toEqual(['npx permalock retire /promo/', 'npx permalock forget /promo/']);
 
     // decide, then update writes the redirect
     r = run(cwd, 'retire', '/promo/', '--reason', 'campaign ended');
@@ -99,6 +99,10 @@ describe('cli', () => {
   it('manual redirect, frozen failure and usage errors', () => {
     const cwd = tmp();
     writeTree(cwd, { 'build/index.html': article('Home'), 'build/a/index.html': article('A', TEXT.b) });
+    // no lockfile: CI must not pass a project that protects nothing
+    const missing = run(cwd, 'check');
+    expect(missing.code).toBe(1);
+    expect(missing.out).toContain('permalock.json not found');
     expect(run(cwd, 'update').code).toBe(0);
     writeTree(cwd, { 'build/b/index.html': article('B', TEXT.c) });
     // new page: check passes but lockfile is stale -> --frozen fails

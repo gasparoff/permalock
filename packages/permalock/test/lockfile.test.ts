@@ -19,7 +19,16 @@ describe('lockfile', () => {
   it('writes one line per URL', () => {
     const lock: Lockfile = { permalock: 1, urls: { '/b/': { type: 'page' }, '/a/': { type: 'gone' } } };
     const lines = serializeLockfile(lock).split('\n');
-    expect(lines).toEqual(['{', '  "permalock": 1,', '  "urls": {', '    "/a/": { "type": "gone" },', '    "/b/": { "type": "page" }', '  }', '}', '']);
+    expect(lines).toEqual([
+      '{',
+      '  "permalock": 1,',
+      '  "urls": {',
+      '    "/a/": { "type": "gone" },',
+      '    "/b/": { "type": "page" }',
+      '  }',
+      '}',
+      '',
+    ]);
   });
 
   it('empty urls', () => {

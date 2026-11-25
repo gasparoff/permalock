@@ -4,7 +4,10 @@ import { chromium } from 'playwright';
 const base = process.argv[2] ?? 'http://localhost:8787';
 const b = await chromium.launch();
 let failed = false;
-for (const [name, viewport] of [['desktop', { width: 1280, height: 900 }], ['phone', { width: 390, height: 844 }]]) {
+for (const [name, viewport] of [
+  ['desktop', { width: 1280, height: 900 }],
+  ['phone', { width: 390, height: 844 }],
+]) {
   const page = await b.newPage({ viewport });
   const errors = [];
   page.on('pageerror', (e) => errors.push(e.message));

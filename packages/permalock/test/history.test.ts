@@ -25,20 +25,32 @@ describe('history', () => {
   });
 
   it('parses sitemaps and indexes', () => {
-    expect(parseSitemap('<urlset><url><loc>https://e.com/a</loc></url><url><loc><![CDATA[https://e.com/b?x=1&amp;y=2]]></loc></url></urlset>').urls).toEqual([
-      'https://e.com/a',
-      'https://e.com/b?x=1&y=2',
+    expect(
+      parseSitemap('<urlset><url><loc>https://e.com/a</loc></url><url><loc><![CDATA[https://e.com/b?x=1&amp;y=2]]></loc></url></urlset>')
+        .urls,
+    ).toEqual(['https://e.com/a', 'https://e.com/b?x=1&y=2']);
+    expect(parseSitemap('<sitemapindex><sitemap><loc>https://e.com/s1.xml</loc></sitemap></sitemapindex>').sitemaps).toEqual([
+      'https://e.com/s1.xml',
     ]);
-    expect(parseSitemap('<sitemapindex><sitemap><loc>https://e.com/s1.xml</loc></sitemap></sitemapindex>').sitemaps).toEqual(['https://e.com/s1.xml']);
   });
 
   it('collects from Wayback (with pagination), archived and current sitemaps', async () => {
     const { f } = fakeFetch({
       'https://web.archive.org/cdx/search/cdx': (u) => {
         if (u.searchParams.getAll('filter').some((x) => x.startsWith('original:')))
-          return { body: JSON.stringify([['original', 'timestamp'], ['https://example.com/sitemap.xml', '20150101000000']]) };
+          return {
+            body: JSON.stringify([
+              ['original', 'timestamp'],
+              ['https://example.com/sitemap.xml', '20150101000000'],
+            ]),
+          };
         if (u.searchParams.get('resumeKey'))
-          return { body: JSON.stringify([['original', 'timestamp'], ['https://example.com/page-3', '20180101000000']]) };
+          return {
+            body: JSON.stringify([
+              ['original', 'timestamp'],
+              ['https://example.com/page-3', '20180101000000'],
+            ]),
+          };
         return {
           body: JSON.stringify([
             ['original', 'timestamp'],
@@ -54,8 +66,12 @@ describe('history', () => {
         body: '<urlset><url><loc>https://example.com/old-archive-only</loc></url></urlset>',
       },
       'https://example.com/robots.txt': { body: 'User-agent: *\nSitemap: https://example.com/sitemap-index.xml\n' },
-      'https://example.com/sitemap-index.xml': { body: '<sitemapindex><sitemap><loc>https://example.com/sitemap-0.xml</loc></sitemap></sitemapindex>' },
-      'https://example.com/sitemap-0.xml': { body: '<urlset><url><loc>https://example.com/page-1</loc></url><url><loc>https://example.com/new</loc></url></urlset>' },
+      'https://example.com/sitemap-index.xml': {
+        body: '<sitemapindex><sitemap><loc>https://example.com/sitemap-0.xml</loc></sitemap></sitemapindex>',
+      },
+      'https://example.com/sitemap-0.xml': {
+        body: '<urlset><url><loc>https://example.com/page-1</loc></url><url><loc>https://example.com/new</loc></url></urlset>',
+      },
     });
     const h = await collectHistory('https://www.example.com', { fetch: f });
     expect(h.domain).toBe('example.com');
@@ -86,7 +102,17 @@ describe('history', () => {
     }) as typeof fetch;
     const live = await checkLive('example.com', ['/', '/a', '/b', '/c', '/d'], { fetch: f });
     expect(live.map((l) => l.state)).toEqual(['ok', 'redirect', 'chain', 'broken', 'error']);
-    const s = summarizeScan({ domain: 'example.com', urls: [{ path: '/c', origin: 'wayback', firstSeen: '2015-01-01' }], sources: { wayback: 5 }, errors: [], firstSeen: '2014-01-01' }, live, 5);
+    const s = summarizeScan(
+      {
+        domain: 'example.com',
+        urls: [{ path: '/c', origin: 'wayback', firstSeen: '2015-01-01' }],
+        sources: { wayback: 5 },
+        errors: [],
+        firstSeen: '2014-01-01',
+      },
+      live,
+      5,
+    );
     expect(renderScanText(s)).toContain('example.com has published 5 URLs since 2014. 1 of them is broken today.');
     expect(renderScanHtml(s)).toContain('<td>2015-01-01</td>');
   });

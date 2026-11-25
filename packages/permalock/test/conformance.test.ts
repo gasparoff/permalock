@@ -7,7 +7,9 @@ const root = path.resolve(__dirname, '../../../spec/conformance');
 
 describe('conformance: resolve', () => {
   const dir = path.join(root, 'resolve');
-  for (const f of readdirSync(dir).filter((f) => f.endsWith('.json')).sort()) {
+  for (const f of readdirSync(dir)
+    .filter((f) => f.endsWith('.json'))
+    .sort()) {
     const c = JSON.parse(readFileSync(path.join(dir, f), 'utf8'));
     it(`${f}: ${c.description}`, () => {
       const r = resolve({

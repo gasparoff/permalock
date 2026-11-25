@@ -37,7 +37,12 @@ function urlFor(file) {
     if (!c.dir.startsWith('src/pages/'))
       p = p
         .split('/')
-        .map((seg) => seg.toLowerCase().replace(/[^\p{L}\p{N}\s_-]/gu, '').replace(/\s/g, '-'))
+        .map((seg) =>
+          seg
+            .toLowerCase()
+            .replace(/[^\p{L}\p{N}\s_-]/gu, '')
+            .replace(/\s/g, '-'),
+        )
         .join('/');
     if (p === 'index') return c.url;
     if (p.endsWith('/index')) p = p.slice(0, -6);
@@ -104,14 +109,20 @@ function loadRules() {
     // quoted pairs: '/from': '/to'  or  ['/from', '/to']  or  i18nRedirect('/from', '/to')
     for (const m of src.matchAll(/(['"`])(\/[^'"`\s]*)\1\s*[:,]\s*(['"`])((?:\/|https?:)[^'"`\s]*)\3/g)) rules.push([m[2], m[4]]);
     // _redirects lines: /from /to [status]
-    for (const m of src.matchAll(/^\s*(\/\S*)\s+(\/\S*|https?:\/\/\S+)(?:\s+(\d{3}!?))?\s*$/gm)) if (!m[3]?.startsWith('404')) rules.push([m[1], m[2]]);
+    for (const m of src.matchAll(/^\s*(\/\S*)\s+(\/\S*|https?:\/\/\S+)(?:\s+(\d{3}!?))?\s*$/gm))
+      if (!m[3]?.startsWith('404')) rules.push([m[1], m[2]]);
     // netlify.toml [[redirects]] from = "..." to = "..."
     for (const m of src.matchAll(/from\s*=\s*"([^"]+)"\s*\n\s*to\s*=\s*"([^"]+)"/g)) rules.push([m[1], m[2]]);
   }
   return rules;
 }
 const rules = loadRules();
-const norm = (p) => p.replace(/^https?:\/\/[^/]+/, '').replace(/[#?].*$/, '').toLowerCase().replace(/\/?$/, '/');
+const norm = (p) =>
+  p
+    .replace(/^https?:\/\/[^/]+/, '')
+    .replace(/[#?].*$/, '')
+    .toLowerCase()
+    .replace(/\/?$/, '/');
 function humanTarget(url) {
   for (const [from, to] of rules) {
     const names = [];
@@ -164,7 +175,8 @@ for (const [i, c] of commits.entries()) {
   const r = resolve({ lock, pages });
   const date = git('show', '-s', '--format=%as', c).trim();
   for (const d of r.redirected) decisions.push({ ...d, commit: c.slice(0, 9), date });
-  for (const o of r.orphans) if (!orphanEvents.has(o.url)) orphanEvents.set(o.url, { commit: c.slice(0, 9), date, suggestion: o.suggestion });
+  for (const o of r.orphans)
+    if (!orphanEvents.has(o.url)) orphanEvents.set(o.url, { commit: c.slice(0, 9), date, suggestion: o.suggestion });
   // the bench plays a maintainer who decides every orphan the way the real
   // maintainers eventually did: their redirect rule if one exists, else a removal
   lock = r.lock;
@@ -191,7 +203,11 @@ const finalTarget = (from) => {
   }
   return norm(to);
 };
-const live = new Set(Object.entries(finalLock.urls).filter(([, e]) => e.type === 'page').map(([u]) => u));
+const live = new Set(
+  Object.entries(finalLock.urls)
+    .filter(([, e]) => e.type === 'page')
+    .map(([u]) => u),
+);
 const vanished = [...everPage].filter((u) => !live.has(u));
 const byReason = {};
 const scored = { agree: 0, disagree: 0, noHumanRule: 0 };

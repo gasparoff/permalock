@@ -14,7 +14,8 @@ const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&l
 
 function render(s: Status): string {
   let state: string;
-  if (!s.hasLockfile) state = `<p>No <code>permalock.json</code> yet. Run <code>astro build</code> once and commit it: from then on every URL is protected.</p>`;
+  if (!s.hasLockfile)
+    state = `<p>No <code>permalock.json</code> yet. Run <code>astro build</code> once and commit it: from then on every URL is protected.</p>`;
   else if (!s.entry)
     state = `<p><astro-dev-toolbar-badge badge-style="purple">new URL</astro-dev-toolbar-badge> This URL is not in <code>permalock.json</code> yet. It will be locked at the next build.</p>`;
   else if (s.entry.type === 'page')
@@ -23,7 +24,8 @@ function render(s: Status): string {
     }`;
   else if (s.entry.type === 'redirect')
     state = `<p><astro-dev-toolbar-badge badge-style="blue">redirect</astro-dev-toolbar-badge> In production this URL answers 301 to <code>${esc(s.entry.to ?? '')}</code>.</p>`;
-  else state = `<p><astro-dev-toolbar-badge badge-style="red">removed</astro-dev-toolbar-badge> Declared removed${s.entry.reason ? `: ${esc(s.entry.reason)}` : ''}. A page here will be locked again at the next build.</p>`;
+  else
+    state = `<p><astro-dev-toolbar-badge badge-style="red">removed</astro-dev-toolbar-badge> Declared removed${s.entry.reason ? `: ${esc(s.entry.reason)}` : ''}. A page here will be locked again at the next build.</p>`;
   const inbound = s.inbound.length
     ? `<h3>${s.inbound.length} old URL${s.inbound.length > 1 ? 's lead' : ' leads'} here</h3><ul>${s.inbound
         .slice(0, 20)

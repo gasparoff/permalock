@@ -14,7 +14,7 @@ export async function serve(routes: Record<string, Route>, opts: { noHead?: bool
     }
     const r = routes[req.url!.split('?')[0]] ?? { status: 404, body: 'not found' };
     res.writeHead(r.status, { 'content-type': r.type ?? 'text/html', ...(r.location ? { location: r.location } : {}) });
-    res.end(req.method === 'HEAD' ? undefined : r.body ?? '');
+    res.end(req.method === 'HEAD' ? undefined : (r.body ?? ''));
   });
   await new Promise<void>((r) => server.listen(0, '127.0.0.1', r));
   const origin = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;

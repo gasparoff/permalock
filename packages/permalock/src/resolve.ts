@@ -52,13 +52,15 @@ function bigrams(s: string): string[] {
 
 /** Similarity of two URL paths in [0, 1], weighted towards the last segment. */
 export function pathSimilarity(a: string, b: string): number {
-  const ta = tokens(a), tb = tokens(b);
+  const ta = tokens(a),
+    tb = tokens(b);
   if (!ta.length || !tb.length) return 0;
   const last = (u: string) => {
     const segs = decodeURIComponentSafe(u).toLowerCase().split('/').filter(Boolean);
     return (segs[segs.length - 1] ?? '').replace(/\.(html?|php|aspx?)$/, '');
   };
-  const la = bigrams(last(a)), lb = bigrams(last(b));
+  const la = bigrams(last(a)),
+    lb = bigrams(last(b));
   let dice = 0;
   if (la.length && lb.length) {
     const counts = new Map<string, number>();
@@ -73,7 +75,8 @@ export function pathSimilarity(a: string, b: string): number {
     }
     dice = (2 * inter) / (la.length + lb.length);
   }
-  const sa = new Set(ta), sb = new Set(tb);
+  const sa = new Set(ta),
+    sb = new Set(tb);
   let common = 0;
   for (const t of sa) if (sb.has(t)) common++;
   const jaccard = common / (sa.size + sb.size - common);
@@ -235,10 +238,7 @@ function push<K, V>(m: Map<K, V[]>, k: K, v: V) {
  * Collapse chains (A->B->C becomes A->C) and report cycles and broken
  * redirects. Mutates the lockfile.
  */
-export function collapseRedirects(
-  lock: Lockfile,
-  collapsed: { from: string; was: string; now: string }[] = [],
-): ResolutionError[] {
+export function collapseRedirects(lock: Lockfile, collapsed: { from: string; was: string; now: string }[] = []): ResolutionError[] {
   const urls = lock.urls;
   const errors: ResolutionError[] = [];
   for (const from of Object.keys(urls).sort()) {

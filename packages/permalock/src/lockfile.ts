@@ -72,7 +72,9 @@ export function parseLockfile(text: string, file = LOCKFILE_NAME): Lockfile {
   if (!raw || typeof raw !== 'object' || Array.isArray(raw)) throw new LockfileError(`${file}: expected an object`);
   if (typeof raw.permalock !== 'number') throw new LockfileError(`${file}: missing "permalock" format version`);
   if (raw.permalock > FORMAT_VERSION)
-    throw new LockfileError(`${file} uses format ${raw.permalock}; this version of permalock understands up to ${FORMAT_VERSION}. Upgrade permalock.`);
+    throw new LockfileError(
+      `${file} uses format ${raw.permalock}; this version of permalock understands up to ${FORMAT_VERSION}. Upgrade permalock.`,
+    );
   if (!raw.urls || typeof raw.urls !== 'object' || Array.isArray(raw.urls)) throw new LockfileError(`${file}: "urls" must be an object`);
   const urls: Record<string, Entry> = {};
   for (const [key, value] of Object.entries<any>(raw.urls)) {
