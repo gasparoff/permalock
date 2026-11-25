@@ -50,10 +50,10 @@ button,input{font:inherit;color:inherit}
 .nav nav a:hover{color:var(--fg);background:var(--sunken)}
 .nav nav a.star{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line-strong);color:var(--fg)}
 .star svg{width:13px;height:13px;color:var(--chain)}
-.oss{padding:18px}
-.oss h3{margin:0 0 6px;font-size:16px;letter-spacing:-.01em}
-.oss p{margin:0 0 14px;color:var(--muted);font-size:14px}
-.oss .btns{display:flex;flex-wrap:wrap;gap:8px}
+.oss{display:flex;flex-wrap:wrap;gap:4px 16px;margin:14px 0 0;padding-top:12px;border-top:1px solid var(--line);font-size:13px}
+.oss a{color:var(--muted);text-decoration:none;display:inline-flex;align-items:center;gap:5px}
+.oss a:hover{color:var(--fg)}
+.oss svg{width:12px;height:12px;color:var(--chain)}
 
 /* hero */
 .hero{padding:56px 0 28px}
@@ -303,16 +303,6 @@ footer a{color:var(--muted)}
           <span style="display:block;margin-top:12px;font-size:12px;color:var(--faint)">Astro</span>
           <div class="cmd"><code>npx astro add @permalock/astro</code><button class="copy" type="button" data-copy="npx astro add @permalock/astro" aria-label="Copy command"></button></div>
         </div>
-        <div class="card oss">
-          <h3>Built in the open</h3>
-          <p>Permalock and this scanner are open source. A star helps other people find it. If this scan looks wrong, tell us: odd sites make the scanner better.</p>
-          <div class="btns">
-            <a class="btn-ghost star" href="https://github.com/gasparoff/permalock" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 .8l2.2 4.6 5 .7-3.6 3.5.9 5L8 12.2 3.5 14.6l.9-5L.8 6.1l5-.7z"/></svg>Star on GitHub</a>
-            <a class="btn-ghost" href="https://github.com/gasparoff/permalock/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">Contribute</a>
-            <a class="btn-ghost" href="https://github.com/sponsors/gasparoff" target="_blank" rel="noopener">Sponsor</a>
-            <a class="btn-ghost" id="report-scan" href="https://github.com/gasparoff/permalock/issues/new?template=scan.yml" target="_blank" rel="noopener">Report this scan</a>
-          </div>
-        </div>
         <div class="card share">
           <h3>Share this result</h3>
           <div class="btns">
@@ -320,6 +310,7 @@ footer a{color:var(--muted)}
             <a class="btn-ghost" id="share-x" target="_blank" rel="noopener">Post on X</a>
             <a class="btn-ghost" id="share-bsky" target="_blank" rel="noopener">Bluesky</a>
           </div>
+          <p class="oss"><a href="https://github.com/gasparoff/permalock" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 .8l2.2 4.6 5 .7-3.6 3.5.9 5L8 12.2 3.5 14.6l.9-5L.8 6.1l5-.7z"/></svg>Star</a><a id="report-scan" href="https://github.com/gasparoff/permalock/issues/new?template=scan.yml" target="_blank" rel="noopener">Report this scan</a><a href="https://github.com/sponsors/gasparoff" target="_blank" rel="noopener">Sponsor</a></p>
         </div>
       </aside>
     </div>
