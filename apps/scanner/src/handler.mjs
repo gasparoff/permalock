@@ -61,7 +61,7 @@ const ndjson = (lines, cache) =>
  *   {"start": {domain}}
  *   {"source": {name, count, error?}}       each history source as it finishes
  *   {"history": {published, checking}}      before the live checks
- *   {"progress": [done, total]}             live checks, throttled
+ *   {"progress": [done, total], counts}     live checks so far, throttled
  *   {"done": summary, "headline", stored?, notice?} | {"error": message}   always last
  *   (a failed live scan falls back to an earlier result, with the failure as notice)
  * Stored and recent results answer at once. Live scans are never cached by a CDN,
@@ -93,6 +93,7 @@ export async function handleScan(request, { fetch, ip } = {}) {
         if (!closed) ctrl.enqueue(enc.encode(JSON.stringify(o) + '\n'));
       };
       let last = 0;
+      const counts = { ok: 0, redirect: 0, chain: 0, broken: 0, error: 0 };
       try {
         send({ start: { domain } });
         const summary = await scanDomain(domain, {
@@ -104,10 +105,11 @@ export async function handleScan(request, { fetch, ip } = {}) {
           checkTimeoutMs: 10000,
           onSource: (name, count, error) => send({ source: { name, count, error } }),
           onHistory: (published, checking) => send({ history: { published, checking } }),
-          onProgress: (done, total) => {
+          onProgress: (done, total, check) => {
+            counts[check.state]++;
             if (done === total || Date.now() - last > 200) {
               last = Date.now();
-              send({ progress: [done, total] });
+              send({ progress: [done, total], counts });
             }
           },
         });

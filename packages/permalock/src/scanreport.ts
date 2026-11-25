@@ -43,7 +43,8 @@ export interface ScanDomainOptions extends HistoryOptions {
   concurrency?: number;
   /** Timeout of each live check. Default 15000 */
   checkTimeoutMs?: number;
-  onProgress?: (done: number, total: number) => void;
+  /** After each live check, with its result. */
+  onProgress?: (done: number, total: number, check: LiveCheck) => void;
   /** Called once the history is known, before the live checks start. */
   onHistory?: (published: number, checking: number) => void;
 }

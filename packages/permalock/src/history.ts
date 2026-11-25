@@ -270,25 +270,29 @@ export interface LiveCheck {
 export async function checkLive(
   domain: string,
   paths: string[],
-  opts: { fetch?: Fetch; concurrency?: number; timeoutMs?: number; onProgress?: (d: number, t: number) => void } = {},
+  opts: { fetch?: Fetch; concurrency?: number; timeoutMs?: number; onProgress?: (d: number, t: number, check: LiveCheck) => void } = {},
 ): Promise<LiveCheck[]> {
   let done = 0;
   return pool(paths, opts.concurrency ?? 8, async (p) => {
-    try {
-      const hops = await withRetry(() => trace(`https://${domain}${p}`, { fetch: opts.fetch, timeoutMs: opts.timeoutMs ?? 15000 }));
-      const last = hops[hops.length - 1];
-      const n = hops.length - 1;
-      const final = n > 0 ? hops[hops.length - 1].url : undefined;
-      let state: LiveState;
-      if (last.status === 200) state = n === 0 ? 'ok' : n === 1 ? 'redirect' : 'chain';
-      else if (last.status === 404 || last.status === 410) state = 'broken';
-      else if (last.status >= 300 && last.status < 400) state = 'chain';
-      else state = 'error';
-      return { path: p, state, status: last.status, hops: n, final };
-    } catch (e) {
-      return { path: p, state: 'error' as const, hops: 0, detail: (e as Error).message };
-    } finally {
-      opts.onProgress?.(++done, paths.length);
-    }
+    const check = await checkOne(domain, p, opts.fetch, opts.timeoutMs);
+    opts.onProgress?.(++done, paths.length, check);
+    return check;
   });
+}
+
+async function checkOne(domain: string, p: string, fetch: Fetch | undefined, timeoutMs = 15000): Promise<LiveCheck> {
+  try {
+    const hops = await withRetry(() => trace(`https://${domain}${p}`, { fetch, timeoutMs }));
+    const last = hops[hops.length - 1];
+    const n = hops.length - 1;
+    const final = n > 0 ? hops[hops.length - 1].url : undefined;
+    let state: LiveState;
+    if (last.status === 200) state = n === 0 ? 'ok' : n === 1 ? 'redirect' : 'chain';
+    else if (last.status === 404 || last.status === 410) state = 'broken';
+    else if (last.status >= 300 && last.status < 400) state = 'chain';
+    else state = 'error';
+    return { path: p, state, status: last.status, hops: n, final };
+  } catch (e) {
+    return { path: p, state: 'error' as const, hops: 0, detail: (e as Error).message };
+  }
 }

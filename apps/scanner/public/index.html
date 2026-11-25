@@ -89,7 +89,13 @@ h1{font-size:clamp(2rem,6vw,3.25rem);line-height:1.08;letter-spacing:-.035em;mar
 .verdicts i{font:normal 12px var(--mono);padding:2px 8px;border-radius:6px;background:var(--sunken);border:1px solid var(--line);color:var(--muted)}
 .verdicts i::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px;background:var(--c)}
 @media (min-width:1024px){
-  .top{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:56px;align-items:center;padding:40px 0 24px}
+  .top{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:56px;align-items:stretch;padding:40px 0 24px}
+  .top>aside{padding:24px 0}
+  .top{min-height:min(680px,calc(100svh - 150px));align-content:center}
+  body{background:radial-gradient(900px 420px at 78% 0%,color-mix(in srgb,var(--redirect) 7%,transparent),transparent 70%) no-repeat,var(--bg)}
+  .top>aside>.card{flex:1;display:flex;flex-direction:column}
+  .top .steps{flex:1;display:flex;flex-direction:column;justify-content:center}
+  .how ol{flex:1;align-content:center}
   .top .hero{padding:24px 0}
   h1{font-size:3.6rem}
   .sub{font-size:1.15rem}
@@ -122,7 +128,15 @@ h1{font-size:clamp(2rem,6vw,3.25rem);line-height:1.08;letter-spacing:-.035em;mar
 .step[data-s=failed] .val{color:var(--broken);font-family:var(--sans)}
 .step .sub2{grid-column:2/-1;margin-top:-2px}
 .progress{height:6px;background:var(--sunken);border-radius:99px;overflow:hidden}
-.progress i{display:block;height:100%;width:0;background:var(--fg);border-radius:99px;transition:width .25s ease}
+.progress{display:flex;gap:2px}
+.progress i{display:block;height:100%;width:0;transition:width .25s ease}
+.progress i:first-child{border-radius:99px 0 0 99px}.progress i:last-child{border-radius:0 99px 99px 0}
+.run-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--line)}
+.run-stats div{padding:14px 18px;border-left:1px solid var(--line);min-width:0}
+.run-stats div:first-child{border-left:0}
+.run-stats span{display:block;font-size:12px;color:var(--faint);margin-bottom:2px}
+.run-stats b{font:600 20px var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.02em;color:var(--fg)}
+.run-stats b.bad{color:var(--broken)}
 .run-err{padding:14px 18px;border-top:1px solid var(--line);display:flex;gap:12px;align-items:center;flex-wrap:wrap;color:var(--broken)}
 .btn-ghost{border:1px solid var(--line-strong);background:var(--surface);color:var(--fg);border-radius:8px;padding:6px 12px;font-size:14px;font-weight:500;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
 .btn-ghost:hover{background:var(--sunken)}
@@ -177,13 +191,6 @@ h1{font-size:clamp(2rem,6vw,3.25rem);line-height:1.08;letter-spacing:-.035em;mar
 .share .btns{display:flex;flex-wrap:wrap;gap:8px}
 .notice{padding:12px 16px;font-size:13.5px;color:var(--muted);background:var(--chain-soft);border:1px solid color-mix(in srgb,var(--chain) 30%,transparent);border-radius:10px;margin-bottom:16px}
 .notice b{color:var(--fg)}
-
-/* skeleton */
-.sk{position:relative;overflow:hidden;background:var(--sunken);border-radius:8px}
-.sk::after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--surface) 70%,transparent),transparent);animation:shimmer 1.4s infinite}
-@keyframes shimmer{to{transform:translateX(100%)}}
-.sk-line{height:12px;margin:6px 0}
-.sk-big{height:30px;width:60%;margin-top:10px}
 
 .fade{animation:fade .35s ease both}
 @keyframes fade{from{opacity:0;transform:translateY(6px)}}
@@ -248,8 +255,9 @@ footer a{color:var(--muted)}
       <li class="step" data-step="wayback" data-s="pending"><span class="ic"></span><span class="lbl">Wayback Machine captures</span><span class="val"></span></li>
       <li class="step" data-step="sitemap" data-s="pending"><span class="ic"></span><span class="lbl">Current sitemaps</span><span class="val"></span></li>
       <li class="step" data-step="archived-sitemap" data-s="pending"><span class="ic"></span><span class="lbl">Archived sitemaps</span><span class="val"></span></li>
-      <li class="step" data-step="live" data-s="pending"><span class="ic"></span><span class="lbl">Checking each URL on the live site</span><span class="val"></span><div class="sub2"><div class="progress"><i id="bar"></i></div></div></li>
+      <li class="step" data-step="live" data-s="pending"><span class="ic"></span><span class="lbl">Checking each URL on the live site</span><span class="val"></span><div class="sub2"><div class="progress" id="bar"></div></div></li>
     </ol>
+    <div class="run-stats"><div><span>Published</span><b id="rs-pub">–</b></div><div><span>Checked</span><b id="rs-chk">–</b></div><div><span>Broken</span><b id="rs-brk">–</b></div></div>
     <div class="run-err" id="run-err" hidden><span id="run-err-text"></span><button class="btn-ghost" type="button" id="retry">Try again</button></div>
   </section>
   <section class="block card how" id="how">
@@ -263,17 +271,6 @@ footer a{color:var(--muted)}
   </section>
   </aside>
   </div>
-
-  <section id="skeleton" class="block" hidden aria-hidden="true">
-    <div class="sk sk-big"></div>
-    <div class="sk sk-line" style="width:40%;margin-bottom:18px"></div>
-    <div class="stats">
-      <div class="card stat"><div class="sk sk-line" style="width:50%"></div><div class="sk sk-big"></div></div>
-      <div class="card stat"><div class="sk sk-line" style="width:50%"></div><div class="sk sk-big"></div></div>
-      <div class="card stat"><div class="sk sk-line" style="width:50%"></div><div class="sk sk-big"></div></div>
-      <div class="card stat"><div class="sk sk-line" style="width:50%"></div><div class="sk sk-big"></div></div>
-    </div>
-  </section>
 
   <section id="report" hidden>
     <h2 class="headline fade" id="headline"></h2>
@@ -395,13 +392,30 @@ function resetRun(domain) {
   $('#run-domain').textContent = domain;
   for (const n of ['wayback', 'sitemap', 'archived-sitemap']) setStep(n, 'running');
   setStep('live', 'pending');
-  $('#bar').style.width = '0%';
+  bar();
+  for (const id of ['#rs-pub', '#rs-chk', '#rs-brk']) $(id).textContent = '–';
+  $('#rs-brk').classList.remove('bad');
   $('#run-err').hidden = true;
   $('#rescan').hidden = true;
   setBadge('running', 'Scanning');
   $('#run').hidden = false;
   $('#report').hidden = true;
-  $('#skeleton').hidden = false;
+}
+
+/** The live progress bar, one colored segment per kind of answer. */
+function bar(counts = {}, total = 1) {
+  $('#bar').replaceChildren(
+    ...KINDS.filter((k) => counts[k.key]).map((k) => el('i', { class: `c-${k.key}`, style: `width:${pct(counts[k.key], total)}%` })),
+  );
+}
+
+function runStats(published, done, total, broken) {
+  if (published != null) $('#rs-pub').textContent = fmt(published);
+  if (total) $('#rs-chk').textContent = `${fmt(done)}/${fmt(total)}`;
+  if (broken != null) {
+    $('#rs-brk').textContent = fmt(broken);
+    $('#rs-brk').classList.toggle('bad', broken > 0);
+  }
 }
 
 function setBusy(busy) {
@@ -414,7 +428,8 @@ function setBusy(busy) {
 function showStored(s) {
   for (const n of ['wayback', 'sitemap', 'archived-sitemap']) setStep(n, 'done', s.sources[n] != null ? `${fmt(s.sources[n])} URLs` : '');
   setStep('live', 'done', `${fmt(s.checked)} / ${fmt(s.checked)}`);
-  $('#bar').style.width = '100%';
+  bar(s.counts, s.checked);
+  runStats(s.published, s.checked, s.checked, s.counts.broken);
   $('#elapsed').textContent = `from ${new Date(s.scannedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}`;
   $('#rescan').hidden = false;
 }
@@ -422,7 +437,6 @@ function showStored(s) {
 function finish(ok, message) {
   if (current) clearInterval(current.timer);
   setBusy(false);
-  $('#skeleton').hidden = true;
   if (ok) return setBadge('done', 'Done');
   setBadge('failed', 'Failed');
   for (const s of $$('.step[data-s=running]')) setStep(s.dataset.step, 'failed', 'stopped');
@@ -581,12 +595,14 @@ async function scan(raw, fresh = false) {
         const m = JSON.parse(line);
         if (m.source) setStep(m.source.name, m.source.error ? 'failed' : 'done', m.source.error ? 'unavailable' : `${fmt(m.source.count)} URLs`);
         if (m.history) {
+          runStats(m.history.published, 0, m.history.checking);
           setStep('live', m.history.checking ? 'running' : 'done', m.history.checking ? `0 / ${fmt(m.history.checking)}` : 'nothing to check');
         }
         if (m.progress) {
           const [d, t] = m.progress;
           setStep('live', d >= t ? 'done' : 'running', `${fmt(d)} / ${fmt(t)}`);
-          $('#bar').style.width = `${pct(d, t)}%`;
+          bar(m.counts, t);
+          runStats(null, d, t, m.counts?.broken);
         }
         if (m.error) throw new Error(m.error);
         if (m.done) {
@@ -595,6 +611,8 @@ async function scan(raw, fresh = false) {
           finish(true);
           if (m.done.published === 0) renderEmpty(domain);
           else render(m.done, m.headline, m.notice);
+          if (!m.stored && $('#report').getBoundingClientRect().top > innerHeight * 0.8)
+            $('#report').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
         }
       }
     }
