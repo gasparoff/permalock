@@ -1,0 +1,23 @@
+name: Scanner probe
+
+# Explain a scan: raw Wayback counts, sitemaps and the result, for any domains.
+on:
+  workflow_dispatch:
+    inputs:
+      domains:
+        description: Domains (space separated)
+        required: true
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build -w permalock
+      - run: node apps/scanner/probe.mjs ${{ inputs.domains }} | tee -a "$GITHUB_STEP_SUMMARY"
