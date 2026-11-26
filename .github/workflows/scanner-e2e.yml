@@ -4,6 +4,8 @@ on:
   push:
     branches: [main]
     paths: ['apps/scanner/**', 'packages/permalock/src/**']
+permissions:
+  contents: read
 jobs:
   e2e:
     runs-on: ubuntu-latest
