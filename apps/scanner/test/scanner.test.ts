@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { handleScan, publicDomain } from '../src/handler.mjs';
+import { guardedFetch, internalHost, privateAddress } from '../src/guard.mjs';
 import { handleOg, handlePage } from '../src/share.mjs';
 
 describe('scanner', () => {
@@ -7,6 +8,37 @@ describe('scanner', () => {
     expect(publicDomain('https://www.Example.org/path')).toBe('example.org');
     for (const bad of ['localhost', '127.0.0.1', '10.0.0.1', 'intranet', 'db.internal', '[::1]', '', 'a.b'])
       expect(publicDomain(bad), bad).toBeUndefined();
+  });
+
+  it('never reaches an internal address, by name or through a redirect', async () => {
+    for (const ip of ['127.0.0.1', '10.1.2.3', '172.20.0.1', '192.168.1.1', '169.254.169.254', '100.64.0.1', '0.0.0.0'])
+      expect(privateAddress(ip), ip).toBe(true);
+    for (const ip of ['::1', '::', 'fe80::1', 'fd00::1', '::ffff:10.0.0.1', '::ffff:169.254.169.254', 'not-an-ip'])
+      expect(privateAddress(ip), ip).toBe(true);
+    for (const ip of ['93.184.216.34', '8.8.8.8', '2606:4700::1111', '::ffff:8.8.8.8']) expect(privateAddress(ip), ip).toBe(false);
+
+    const dns = (async (host: string) => {
+      if (host === 'rebound.example.org') return [{ address: '93.184.216.34' }, { address: '10.0.0.5' }];
+      if (host === 'public.example.org') return [{ address: '93.184.216.34' }];
+      throw new Error('ENOTFOUND');
+    }) as any;
+    expect(await internalHost('rebound.example.org', dns)).toBe(true);
+    expect(await internalHost('public.example.org', dns)).toBe(false);
+    expect(await internalHost('missing.example.org', dns)).toBe(false);
+    expect(await internalHost('[::1]', dns)).toBe(true);
+
+    const asked: string[] = [];
+    const inner = (async (input: any) => {
+      asked.push(String(input));
+      return new Response('', { status: 200 });
+    }) as typeof fetch;
+    const f = guardedFetch(inner, dns);
+    expect((await f('https://public.example.org/a')).status).toBe(200);
+    await expect(f('https://rebound.example.org/a')).rejects.toThrow(/not a public address/);
+    await expect(f('http://169.254.169.254/latest/meta-data/')).rejects.toThrow(/not a public address/);
+    await expect(f('http://[::ffff:127.0.0.1]/')).rejects.toThrow(/not a public address/);
+    await expect(f('file:///etc/passwd')).rejects.toThrow(/not a web address/);
+    expect(asked).toEqual(['https://public.example.org/a']);
   });
 
   it('rejects a bad domain with 400', async () => {

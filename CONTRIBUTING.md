@@ -11,7 +11,7 @@ Thanks for helping. Permalock is small on purpose, so most changes are small too
 
 ## Setup
 
-Node 22 or later.
+Node 22.23.4 or later (Astro 7, used by the tests and the example, needs it).
 
 ```sh
 npm ci

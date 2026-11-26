@@ -8,6 +8,9 @@ on:
         description: Domains (space separated)
         required: true
 
+permissions:
+  contents: read
+
 jobs:
   probe:
     runs-on: ubuntu-latest

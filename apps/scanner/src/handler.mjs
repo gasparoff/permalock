@@ -1,5 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { domainOf, headline, scanDomain } from 'permalock';
+import { guardedFetch, internalHost } from './guard.mjs';
 
 const HOST_RE = /^(?=.{4,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/;
 const RESERVED = /(^|\.)(localhost|local|internal|intranet|lan|home|corp|test|example|invalid|onion)$/;
@@ -80,6 +81,12 @@ export async function handleScan(request, { fetch, ip } = {}) {
     const stored = await storedResult(domain);
     if (stored)
       return ndjson([{ start: { domain } }, { done: stored.done, headline: stored.headline, stored: true }], 'public, s-maxage=3600');
+  }
+
+  // an injected fetch is a test double; the real one never reaches an internal address
+  if (!fetch) {
+    if (await internalHost(domain)) return Response.json({ error: 'Enter a public domain, like example.com' }, { status: 400 });
+    fetch = guardedFetch();
   }
 
   const client = ip ?? request.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? 'local';
