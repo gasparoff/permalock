@@ -13,6 +13,8 @@ for (const domain of sites) {
   try {
     const done = await scanDomain(domain, { max: 400, concurrency: 8, limit: 30000, timeoutMs: 60000 });
     if (done.errors.length) throw new Error(`partial: ${done.errors.join('; ')}`);
+    // no history is no result: a stored "0 URLs" would hide the live scan
+    if (!done.published) throw new Error('no URLs found');
     await writeFile(new URL(`${domain}.json`, dir), JSON.stringify({ done, headline: headline(done) }) + '\n');
     console.log(`ok   ${domain} (${((Date.now() - t0) / 1000).toFixed(0)}s): ${headline(done)}`);
   } catch (e) {
