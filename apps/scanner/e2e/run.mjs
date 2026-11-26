@@ -45,8 +45,13 @@ function invariants(r) {
     : `error: ${r.last.error}`;
 }
 
+const scanned = []; // domains whose live scan succeeded, so the server now remembers them
 for (const d of ['docs.astro.build', 'biomejs.dev', 'tauri.app', 'en.wikipedia.org', 'https://www.Example.org/some/path?q=1'])
-  await check(`real site ${d}`, async () => invariants(await scan(d)));
+  await check(`real site ${d}`, async () => {
+    const r = await scan(d);
+    if (r.last.done && !r.last.done.errors.length) scanned.push(r.last.done.domain);
+    return invariants(r);
+  });
 
 await check('domain that does not exist', async () => {
   const r = await scan('this-domain-does-not-exist-7f3a9c.com');
@@ -75,15 +80,15 @@ for (const bad of [
   });
 
 await check('stored or recent result answers at once', async () => {
+  const d = scanned[0];
+  if (!d) return console.log('      skipped: no live scan succeeded (the Wayback Machine is down)');
   const t0 = Date.now();
-  const res = await fetch(`${base}/api/scan?d=docs.astro.build`);
+  const res = await fetch(`${base}/api/scan?d=${d}`);
   const last = (await res.text())
     .trim()
     .split('\n')
     .map((l) => JSON.parse(l))
     .at(-1);
-  // without a stored file, this needs the live scan above to have succeeded
-  if (last.error) return console.log(`      skipped: no earlier result (${last.error})`);
   assert.ok(last.done, 'has a result');
   assert.ok(Date.now() - t0 < 3000, `took ${Date.now() - t0} ms`);
 });
